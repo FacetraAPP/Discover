@@ -34,6 +34,30 @@ class CatalogTests(unittest.TestCase):
     def build(self):
         return catalog.build_catalog(self.root, "a" * 40)
 
+    def test_workspace_metadata_comes_from_manifest_without_resource_inheritance(self):
+        manifest = {"id": "example", "title": "Workspace title", "kind": "localPath",
+                    "description": "Workspace description", "license": "MIT"}
+        (self.topic / "workspace.json").write_text(json.dumps(manifest))
+        self.chart["chart"]["notes"] = "Chart description"
+        self.write_chart("price", self.chart)
+        workspace = self.build()["workspaces"][0]
+        self.assertEqual(workspace["title"], manifest["title"])
+        self.assertEqual(workspace["description"], manifest["description"])
+        self.assertEqual(workspace["license"], manifest["license"])
+        self.assertEqual(workspace["resources"][0]["title"], "Prices")
+        self.assertEqual(workspace["resources"][0]["description"], "Chart description")
+
+    def test_optional_workspace_metadata_defaults_and_invalid_types(self):
+        workspace = self.build()["workspaces"][0]
+        self.assertEqual(workspace["description"], "")
+        self.assertEqual(workspace["license"], "Apache-2.0")
+        for field, value in [("description", []), ("license", {})]:
+            with self.subTest(field=field):
+                manifest = {"id": "example", "title": "Example", "kind": "localPath", field: value}
+                (self.topic / "workspace.json").write_text(json.dumps(manifest))
+                with self.assertRaises(ValueError):
+                    self.build()
+
     def test_dependency_closure_and_deterministic_metadata(self):
         derived = copy.deepcopy(self.chart)
         derived["chart"]["id"] = "derived"

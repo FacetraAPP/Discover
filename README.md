@@ -8,8 +8,7 @@ API keys, private data or personal health records.
 
 ```text
 example/
-  workspace.json       # Facetra portable localPath manifest
-  discover.yaml        # Optional description and license
+  workspace.json       # Portable localPath manifest with title, description and license
   charts/**/*.yaml
   dashboards/**/*.yaml
   data/**/*
@@ -22,6 +21,11 @@ dashboards within one workspace. External source/dataset references use
 `<chart-id>.yaml#/sources/<name>` or `<chart-id>.yaml#/dataset`, resolved by ID
 inside that workspace. Different workspaces may reuse the same IDs. Symlinks,
 hidden paths, path traversal, missing dependency targets and cycles are rejected.
+
+Workspace metadata is defined in `workspace.json`: `title`, optional `description`
+and optional `license` (defaults to this repository's Apache-2.0 license). The
+catalog uses these directly. Chart and dashboard names and descriptions come from
+their own YAML `title` and `notes` fields.
 
 ## Catalog publishing
 

@@ -67,8 +67,14 @@ def build_workspace(root):
     title = manifest.get("title", "").strip()
     if not title:
         raise ValueError(f"{topic}: workspace title is required")
-    metadata = yaml.safe_load(read_file(root, "discover.yaml")) if (root / "discover.yaml").exists() else {}
-    metadata = metadata or {}
+    description = manifest.get("description", "")
+    license = manifest.get("license", "Apache-2.0")
+    if description is None:
+        description = ""
+    if license is None:
+        license = "Apache-2.0"
+    if not isinstance(description, str) or not isinstance(license, str):
+        raise ValueError(f"{topic}: workspace description and license must be strings")
     resources, charts, ids = [], {}, set()
     for kind, directory in [("chart", "charts"), ("dashboard", "dashboards")]:
         folder = root / directory
@@ -181,8 +187,8 @@ def build_workspace(root):
     files = [file_record(root, path) for path in sorted(paths)]
     if sum(file["size"] for file in files) > 100 * 1024 * 1024:
         raise ValueError(f"{topic}: workspace exceeds the 100 MB installation limit")
-    result = {"id": topic, "title": title, "description": metadata.get("description", ""),
-              "license": metadata.get("license", "Apache-2.0"), "requiredConnections": sorted(required),
+    result = {"id": topic, "title": title, "description": description,
+              "license": license, "requiredConnections": sorted(required),
               "files": files, "resources": resources}
     if (root / "previews/workspace.png").exists():
         result["preview"] = file_record(root, "previews/workspace.png")

@@ -1,0 +1,22 @@
+version: 1
+kind: Dashboard
+id: example_health_dashboard
+title: 健康概览
+params: []
+tabs:
+- id: overview
+  title: 最近 30 天
+  panels:
+  - id: step_count
+    chart: example_health_step_count
+    height: 2.6e+2
+    params: {}
+  - id: active_energy
+    chart: example_health_active_energy
+    height: 2.6e+2
+    params: {}
+  - id: heart_rate
+    chart: example_health_heart_rate
+    height: 2.6e+2
+    params: {}
+notes: 使用本机真实健康记录。请先在设置开启健康数据，再在系统健康授权页面选择允许读取的数据类型和历史范围。Apple Watch 数据需先同步到本机；无记录或未授权时显示提示。

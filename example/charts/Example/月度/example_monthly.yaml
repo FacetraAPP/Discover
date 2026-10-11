@@ -1,0 +1,41 @@
+params:
+- name: symbol
+  label: 股票代码
+  type: string
+  required: true
+  options:
+  - 600519.SH
+  - 300750.SZ
+  - 000001.SZ
+  advanced: false
+  default: 600519.SH
+sources: {}
+dataset:
+  id: monthly
+  sources:
+  - id: prices
+    ref: example_price.yaml#/sources/prices
+    with:
+      symbol:
+        param: symbol
+  - id: symbols
+    ref: example_price.yaml#/sources/symbols
+  sql: |-
+    SELECT strftime(CAST(p.trade_date AS DATE), '%Y-%m') AS month,
+           s.name AS symbol_name,
+           AVG(CAST(p.close AS DOUBLE)) AS average_close,
+           COUNT(*) AS trading_days,
+           CAST(SUM(CAST(p.volume AS BIGINT)) AS BIGINT) AS volume
+    FROM prices p LEFT JOIN symbols s ON p.symbol = s.symbol
+    WHERE p.symbol = $symbol
+    GROUP BY month, s.name
+    ORDER BY month
+chart:
+  id: example_monthly
+  title: 月度均价
+  dataset: monthly
+  renderer: default
+  notes: DuckDB SQL 关联两个 CSV，按月聚合。
+  plot: bar
+  x: month
+  y: average_close

@@ -1,0 +1,139 @@
+params:
+- name: metric
+  label: 指标
+  type: string
+  required: true
+  options:
+  - revenue
+  - profit
+  advanced: false
+  default: revenue
+sources:
+  sales:
+    ref: example_echarts_business.yaml#/sources/sales
+dataset:
+  id: cells
+  sources:
+  - id: raw
+    ref: '#/sources/sales'
+  sql: |
+    WITH sales AS (
+      SELECT month, CAST(online AS DOUBLE) AS online, CAST(retail AS DOUBLE) AS retail,
+             CAST(cost AS DOUBLE) AS cost FROM raw
+    )
+    SELECT CAST(substr(month, 6, 2) AS INTEGER) - 1 AS month_index, 0 AS channel_index,
+           CASE WHEN $metric = 'profit' THEN round(online - cost * online / (online + retail), 1) ELSE online END AS value
+    FROM sales
+    UNION ALL
+    SELECT CAST(substr(month, 6, 2) AS INTEGER) - 1, 1,
+           CASE WHEN $metric = 'profit' THEN round(retail - cost * retail / (online + retail), 1) ELSE retail END
+    FROM sales ORDER BY channel_index, month_index
+chart:
+  id: example_echarts_heatmap
+  title: ECharts · 渠道月度热力图
+  dataset: cells
+  renderer: echarts
+  notes: |-
+    与收入图共享 CSV source，SQL 将宽表转换为 [月份索引, 渠道索引, 数值]。
+    切换 revenue / profit 查看收入或分摊成本后的利润，单位为万元。色阶、标签和坐标轴均由 option 配置。
+  option:
+    yAxis:
+      data:
+      - 线上
+      - 门店
+      splitArea:
+        show: true
+      type: category
+    xAxis:
+      type: category
+      splitArea:
+        show: true
+      data:
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    tooltip:
+      position: top
+      formatter: 'js: (p) => (p.value[0] + 1) + ''月 · '' + [''线上'', ''门店''][p.value[1]]
+        + '': '' + p.value[2] + ''万元'''
+    grid:
+      top: 30
+      bottom: 80
+      containLabel: true
+      right: 12
+      left: 10
+    media:
+    - query:
+        minWidth: 481
+      option:
+        series:
+        - label:
+            show: true
+    - option:
+        visualMap:
+          calculable: false
+          textStyle:
+            fontSize: 10
+          itemHeight: 120
+          itemWidth: 10
+        series:
+        - label:
+            show: false
+        xAxis:
+          axisLabel:
+            interval: 1
+        grid:
+          right: 6
+          containLabel: true
+          bottom: 58
+          top: 12
+          left: 6
+      query:
+        maxWidth: 480
+    - query:
+        maxHeight: 190
+      option:
+        grid:
+          top: 8
+          bottom: 18
+        series:
+        - label:
+            show: false
+        visualMap:
+          show: false
+    series:
+    - label:
+        fontSize: 10
+        show: true
+      type: heatmap
+      emphasis:
+        itemStyle:
+          borderColor: '#f59e0b'
+          borderWidth: 2
+      data:
+        fields:
+        - month_index
+        - channel_index
+        - value
+        from: cells
+    visualMap:
+      max: 150
+      orient: horizontal
+      min: 0
+      bottom: 8
+      left: center
+      calculable: true
+      inRange:
+        color:
+        - '#e0f2fe'
+        - '#38bdf8'
+        - '#0369a1'

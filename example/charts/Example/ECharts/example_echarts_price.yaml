@@ -1,0 +1,120 @@
+params:
+- name: symbol
+  label: 股票代码
+  type: string
+  required: true
+  options:
+  - 600519.SH
+  - 300750.SZ
+  - 000001.SZ
+  advanced: false
+  default: 600519.SH
+- name: days
+  label: 交易日数
+  type: integer
+  required: true
+  minimum: 1e+0
+  maximum: 1.8e+2
+  advanced: false
+  default: 60
+- name: ma_window
+  label: 均线窗口
+  type: integer
+  required: true
+  minimum: 2e+0
+  maximum: 6e+1
+  advanced: false
+  default: 20
+sources: {}
+dataset:
+  id: history
+  ref: example_price.yaml#/dataset
+  with:
+    ma_window:
+      param: ma_window
+    days:
+      param: days
+    symbol:
+      param: symbol
+chart:
+  id: example_echarts_price
+  title: ECharts · 股价与均线
+  dataset: history
+  renderer: echarts
+  notes: |-
+    虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
+    点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。
+  option:
+    media:
+    - query:
+        maxWidth: 480
+      option:
+        yAxis:
+          splitNumber: 3
+        grid:
+          bottom: 20
+          left: 8
+          top: 36
+          right: 12
+          containLabel: true
+    - option:
+        yAxis:
+          splitNumber: 2
+        grid:
+          bottom: 18
+          top: 8
+        legend:
+          show: false
+      query:
+        maxHeight: 190
+    color:
+    - '#3b82f6'
+    - '#f59e0b'
+    dataZoom:
+    - type: inside
+      zoomOnMouseWheel: ctrl
+    - show: false
+      bottom: 4
+      type: slider
+      height: 20
+    grid:
+      top: 40
+      right: 18
+      containLabel: true
+      bottom: 24
+      left: 12
+    series:
+    - showSymbol: false
+      areaStyle:
+        opacity: 8e-2
+      data:
+        x: trade_date
+        from: history
+        y: close
+      type: line
+      name: 收盘价
+    - lineStyle:
+        type: dashed
+      type: line
+      name: 移动均线
+      showSymbol: false
+      data:
+        x: trade_date
+        y: ma
+        from: history
+      connectNulls: false
+    xAxis:
+      type: time
+      boundaryGap: false
+    tooltip:
+      trigger: axis
+      valueFormatter:
+        from: script
+        name: price
+    legend:
+      top: 4
+    yAxis:
+      type: value
+      scale: true
+  scripts:
+    price: '(value) => value == null ? ''—'' : ''¥'' + Number(value).toFixed(2)'

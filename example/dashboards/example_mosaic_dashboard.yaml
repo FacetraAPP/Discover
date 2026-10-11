@@ -1,0 +1,106 @@
+version: 1
+kind: Dashboard
+id: example_mosaic_dashboard
+title: Mosaic · 组合示例
+params: []
+tabs:
+- id: mosaic
+  title: Mosaic
+  panels:
+  - id: mosaic_price
+    chart: example_echarts_price
+    height: 2.4e+2
+    params: {}
+    width: 7
+    responsive:
+      compact:
+        card_height: 3.6e+2
+    row_span: 10
+  - id: mosaic_monthly
+    chart: example_monthly
+    height: 2.4e+2
+    params: {}
+    width: 5
+    responsive:
+      compact:
+        card_height: 2.6e+2
+    row_span: 4
+  - id: mosaic_business
+    chart: example_echarts_business
+    height: 2.4e+2
+    params: {}
+    width: 5
+    responsive:
+      compact:
+        card_height: 3.2e+2
+    row_span: 6
+  - id: mosaic_candles
+    chart: example_echarts_candlestick
+    height: 2.4e+2
+    params: {}
+    width: 4
+    responsive:
+      compact:
+        card_height: 4e+2
+    row_span: 8
+  - id: mosaic_volume
+    chart: example_volume
+    height: 2.4e+2
+    params: {}
+    width: 5
+    responsive:
+      compact:
+        card_height: 2.6e+2
+    row_span: 4
+  - id: mosaic_channels
+    chart: example_echarts_heatmap
+    height: 2.4e+2
+    params: {}
+    width: 3
+    responsive:
+      compact:
+        card_height: 3.4e+2
+    row_span: 6
+  - id: mosaic_monthly_again
+    chart: example_monthly
+    height: 2.4e+2
+    params: {}
+    width: 5
+    responsive:
+      compact:
+        card_height: 2.6e+2
+    row_span: 4
+  - id: mosaic_volume_again
+    chart: example_volume
+    height: 2.4e+2
+    params: {}
+    width: 3
+    responsive:
+      compact:
+        card_height: 2.6e+2
+    row_span: 4
+  - id: mosaic_native_price
+    chart: example_price
+    height: 2.4e+2
+    params: {}
+    width: 9
+    responsive:
+      compact:
+        card_height: 3.6e+2
+    row_span: 6
+  - id: mosaic_channels_again
+    chart: example_echarts_heatmap
+    height: 2.4e+2
+    params: {}
+    width: 3
+    responsive:
+      compact:
+        card_height: 3.4e+2
+    row_span: 4
+  layout:
+    type: grid
+    columns: 12
+    gap: 1.2e+1
+    row_height: 4e+1
+    min_width: 1.2e+3
+notes: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。

@@ -1,0 +1,69 @@
+params:
+- name: symbol
+  label: 股票代码
+  type: string
+  required: true
+  options:
+  - 600519.SH
+  - 300750.SZ
+  - 000001.SZ
+  advanced: false
+  default: 600519.SH
+- name: days
+  label: 交易日数
+  type: integer
+  required: true
+  minimum: 1e+0
+  maximum: 1.8e+2
+  options:
+  - 30
+  - 60
+  - 120
+  - 180
+  advanced: false
+  default: 60
+- name: ma_window
+  label: 均线窗口
+  type: integer
+  required: true
+  minimum: 2e+0
+  maximum: 6e+1
+  advanced: true
+  default: 20
+sources:
+  prices:
+    source: duckdb
+    file: data/example/stock-daily.csv
+  symbols:
+    source: duckdb
+    file: data/example/symbols.csv
+dataset:
+  id: prices
+  sources:
+  - id: prices
+    ref: '#/sources/prices'
+  - id: symbols
+    ref: '#/sources/symbols'
+  sql: |-
+    WITH history AS (
+      SELECT p.symbol, s.name AS symbol_name, CAST(p.trade_date AS DATE) AS trade_date,
+        CAST(p.close AS DOUBLE) AS close,
+        CASE WHEN COUNT(*) OVER w >= $ma_window THEN
+          AVG(CAST(p.close AS DOUBLE)) OVER w END AS ma
+      FROM prices p LEFT JOIN symbols s ON p.symbol = s.symbol
+      WHERE p.symbol = $symbol
+      WINDOW w AS (ORDER BY p.trade_date ROWS BETWEEN ($ma_window - 1) PRECEDING AND CURRENT ROW)
+    ), recent AS (
+      SELECT * FROM history ORDER BY trade_date DESC LIMIT $days
+    )
+    SELECT * FROM recent ORDER BY trade_date
+chart:
+  id: example_price
+  title: 股价与均线
+  dataset: prices
+  renderer: default
+  notes: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
+  plot: line
+  x: trade_date
+  y: close
+  average: ma

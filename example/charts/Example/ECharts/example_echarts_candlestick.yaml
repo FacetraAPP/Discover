@@ -1,0 +1,183 @@
+params:
+- name: days
+  label: 交易日数
+  type: integer
+  required: true
+  minimum: 5e+0
+  maximum: 4e+1
+  advanced: false
+  default: 30
+- name: ma_window
+  label: 均线窗口
+  type: integer
+  required: true
+  minimum: 2e+0
+  maximum: 2e+1
+  advanced: false
+  default: 5
+sources:
+  prices:
+    source: duckdb
+    file: data/example/echarts-ohlcv.csv
+dataset:
+  id: candles
+  sources:
+  - id: raw
+    ref: '#/sources/prices'
+  sql: |
+    WITH typed AS (
+      SELECT trade_date, CAST(open AS DOUBLE) AS open, CAST(close AS DOUBLE) AS close,
+             CAST(low AS DOUBLE) AS low, CAST(high AS DOUBLE) AS high, CAST(volume AS BIGINT) AS volume
+      FROM raw
+    ), history AS (
+      SELECT *, CASE WHEN count(*) OVER w >= $ma_window THEN avg(close) OVER w END AS ma
+      FROM typed WINDOW w AS (ORDER BY trade_date ROWS BETWEEN ($ma_window - 1) PRECEDING AND CURRENT ROW)
+    ), recent AS (SELECT * FROM history ORDER BY trade_date DESC LIMIT $days)
+    SELECT * FROM recent ORDER BY trade_date
+chart:
+  id: example_echarts_candlestick
+  title: ECharts · K 线与成交量
+  dataset: candles
+  renderer: echarts
+  notes: |-
+    40 个交易日的离线虚构 OHLCV。K 线数据按 open、close、low、high 顺序绑定。
+    上下两个 grid 共享缩放；均线由 SQL 计算；成交量用 color_by 跟随当日涨跌。
+  option:
+    grid:
+    - height: 48%
+      top: 35
+      right: 12
+      left: 52
+    - right: 12
+      left: 52
+      top: 68%
+      height: 16%
+    dataZoom:
+    - zoomOnMouseWheel: ctrl
+      xAxisIndex:
+      - 0
+      - 1
+      type: inside
+    - type: slider
+      xAxisIndex:
+      - 0
+      - 1
+      height: 16
+      bottom: 0
+      show: false
+    tooltip:
+      axisPointer:
+        type: cross
+      trigger: axis
+    axisPointer:
+      link:
+      - xAxisIndex: all
+    series:
+    - data:
+        fields:
+        - open
+        - close
+        - low
+        - high
+        from: candles
+      name: K线
+      itemStyle:
+        borderColor: '#26a69a'
+        color: '#26a69a'
+        borderColor0: '#ef5350'
+        color0: '#ef5350'
+      type: candlestick
+    - lineStyle:
+        width: 1.5e+0
+        color: '#f59e0b'
+      name: 均线
+      data:
+        field: ma
+        from: candles
+      type: line
+      showSymbol: false
+    - data:
+        field: volume
+        from: candles
+        color_by:
+        - close
+        - open
+      name: 成交量
+      type: bar
+      yAxisIndex: 1
+      xAxisIndex: 1
+    xAxis:
+    - type: category
+      data:
+        field: trade_date
+        from: candles
+      boundaryGap: true
+      axisLabel:
+        show: false
+    - axisLabel:
+        formatter: 'js: (v) => v.slice(5)'
+      gridIndex: 1
+      type: category
+      data:
+        from: candles
+        field: trade_date
+    yAxis:
+    - scale: true
+      type: value
+    - splitNumber: 2
+      axisLabel:
+        formatter: 'js: (v) => (v / 1000).toFixed(0) + "k"'
+      type: value
+      gridIndex: 1
+    media:
+    - option:
+        yAxis:
+        - splitNumber: 3
+        - splitNumber: 2
+        xAxis:
+        - axisLabel:
+            show: false
+        - axisLabel:
+            interval: 6
+        grid:
+        - left: 42
+          right: 8
+          height: 47%
+          top: 36
+        - left: 42
+          right: 8
+          top: 68%
+          height: 18%
+      query:
+        maxWidth: 480
+    - query:
+        maxHeight: 190
+      option:
+        grid:
+        - height: 75%
+          left: 36
+          right: 8
+          top: 8
+        - height: 0
+          top: 100%
+        series:
+        - {}
+        - {}
+        - data: []
+        legend:
+          show: false
+        xAxis:
+        - axisLabel:
+            show: true
+            formatter: 'js: (v) => v.slice(5)'
+            interval: 9
+        - show: false
+        yAxis:
+        - splitNumber: 2
+        - show: false
+    legend:
+      data:
+      - K线
+      - 均线
+      - 成交量
+      top: 0

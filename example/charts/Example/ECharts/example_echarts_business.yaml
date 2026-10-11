@@ -1,0 +1,151 @@
+params:
+- name: months
+  label: 月数
+  type: integer
+  required: true
+  minimum: 3e+0
+  maximum: 1.2e+1
+  advanced: false
+  default: 12
+- name: target
+  label: 收入目标
+  type: number
+  required: true
+  minimum: 0e+0
+  maximum: 4e+2
+  advanced: false
+  default: 170
+- name: show_labels
+  label: 显示标签
+  type: boolean
+  required: true
+  advanced: false
+  default: false
+sources:
+  sales:
+    source: duckdb
+    file: data/example/echarts-sales.csv
+dataset:
+  id: sales
+  sources:
+  - id: raw
+    ref: '#/sources/sales'
+  sql: |
+    WITH recent AS (
+      SELECT month, CAST(online AS DOUBLE) AS online, CAST(retail AS DOUBLE) AS retail,
+             CAST(cost AS DOUBLE) AS cost
+      FROM raw ORDER BY month DESC LIMIT $months
+    )
+    SELECT month, online, retail, online + retail - cost AS profit,
+           round(100 * (online + retail - cost) / (online + retail), 1) AS margin
+    FROM recent ORDER BY month
+chart:
+  id: example_echarts_business
+  title: ECharts · 收入与利润率
+  dataset: sales
+  renderer: echarts
+  notes: |-
+    12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
+    months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。
+  option:
+    media:
+    - query:
+        maxWidth: 480
+      option:
+        legend:
+          top: 0
+          type: scroll
+        xAxis:
+          axisLabel:
+            interval: 1
+        yAxis:
+        - splitNumber: 3
+        - splitNumber: 3
+        grid:
+          containLabel: true
+          top: 44
+          left: 6
+          bottom: 12
+          right: 6
+    - query:
+        maxHeight: 190
+      option:
+        grid:
+          bottom: 16
+          top: 8
+        yAxis:
+        - splitNumber: 2
+          name: ''
+        - splitNumber: 2
+          name: ''
+        xAxis:
+          axisLabel:
+            interval: 3
+        legend:
+          show: false
+    grid:
+      top: 48
+      left: 10
+      containLabel: true
+      bottom: 16
+      right: 10
+    series:
+    - markLine:
+        data:
+        - yAxis:
+            from: params
+            name: target
+        symbol: none
+        label:
+          formatter: 目标
+      name: 线上
+      stack: revenue
+      data:
+        from: sales
+        field: online
+      label:
+        show:
+          from: params
+          name: show_labels
+      type: bar
+    - name: 门店
+      data:
+        field: retail
+        from: sales
+      label:
+        show:
+          name: show_labels
+          from: params
+      stack: revenue
+      type: bar
+    - type: line
+      tooltip:
+        valueFormatter: 'js: (v) => Number(v).toFixed(1) + ''%'''
+      name: 利润率
+      smooth: true
+      data:
+        field: margin
+        from: sales
+      yAxisIndex: 1
+    legend:
+      top: 4
+    color:
+    - '#3b82f6'
+    - '#14b8a6'
+    - '#f59e0b'
+    yAxis:
+    - type: value
+      name: 万元
+    - axisLabel:
+        formatter: '{value}%'
+      name: 利润率
+      type: value
+    xAxis:
+      axisLabel:
+        formatter: 'js: (v) => v.slice(5) + "月"'
+      type: category
+      data:
+        field: month
+        from: sales
+    tooltip:
+      trigger: axis

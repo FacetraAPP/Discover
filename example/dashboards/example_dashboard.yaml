@@ -1,0 +1,69 @@
+version: 1
+kind: Dashboard
+id: example_dashboard
+title: 个股分析
+params:
+- name: symbol
+  label: 股票代码
+  type: string
+  required: true
+  options:
+  - 600519.SH
+  - 300750.SZ
+  - 000001.SZ
+  advanced: false
+  default: 600519.SH
+- name: days
+  label: 交易日数
+  type: integer
+  required: true
+  minimum: 1e+0
+  maximum: 1.8e+2
+  options:
+  - 30
+  - 60
+  - 120
+  - 180
+  advanced: false
+  default: 60
+- name: ma_window
+  label: 均线窗口
+  type: integer
+  required: true
+  minimum: 2e+0
+  maximum: 6e+1
+  advanced: true
+  default: 20
+tabs:
+- id: overview
+  title: 概览
+  panels:
+  - id: price_main
+    chart: example_price
+    height: 2.4e+2
+    params:
+      symbol:
+        param: symbol
+      days:
+        param: days
+      ma_window:
+        param: ma_window
+  - id: volume_main
+    chart: example_volume
+    height: 2e+2
+    params:
+      symbol:
+        param: symbol
+      days:
+        param: days
+- id: detail
+  title: 近期成交
+  panels:
+  - id: volume_recent
+    chart: example_volume
+    height: 2.4e+2
+    params:
+      symbol:
+        param: symbol
+      days: 30
+notes: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。

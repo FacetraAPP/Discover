@@ -1,0 +1,21 @@
+params: []
+sources:
+  health:
+    source: healthkit
+    metric: step_count
+    days: 30
+dataset:
+  id: daily_health
+  sources:
+  - id: raw
+    ref: '#/sources/health'
+  sql: SELECT date, value, unit FROM raw ORDER BY date
+chart:
+  id: example_health_step_count
+  title: 健康 · 每日步数
+  dataset: daily_health
+  renderer: default
+  notes: 最近 30 天的每日步数。HealthKit 合并可读取的 iPhone、Apple Watch 等来源，避免直接累加重复记录。 请在设置开启健康数据，并在系统健康授权页面允许读取；缺失日期不补零。
+  plot: bar
+  x: date
+  y: value

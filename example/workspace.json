@@ -1,0 +1,9 @@
+{
+  "id" : "discover_example",
+  "isPersonal" : false,
+  "kind" : "localPath",
+  "requiredConnections" : [
+    "http_example"
+  ],
+  "title" : "示例 · Examples"
+}

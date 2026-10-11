@@ -69,9 +69,6 @@ def build_workspace(root):
         raise ValueError(f"{topic}: workspace title is required")
     metadata = yaml.safe_load(read_file(root, "discover.yaml")) if (root / "discover.yaml").exists() else {}
     metadata = metadata or {}
-    tags = metadata.get("tags", [])
-    if not isinstance(tags, list) or not all(isinstance(tag, str) for tag in tags):
-        raise ValueError(f"{topic}: tags must be strings")
     resources, charts, ids = [], {}, set()
     for kind, directory in [("chart", "charts"), ("dashboard", "dashboards")]:
         folder = root / directory
@@ -95,7 +92,7 @@ def build_workspace(root):
                 raise ValueError(f"{topic}/{relative}: title is required")
             item = {"id": f"{topic}/{kind}/{resource_id}", "resourceID": resource_id, "type": kind,
                     "title": header["title"], "description": header.get("notes", ""), "path": relative,
-                    "tags": tags, "document": document}
+                    "document": document}
             if kind == "chart":
                 item["chartType"] = header.get("plot", header.get("renderer", "chart"))
                 charts[resource_id] = item
@@ -184,7 +181,7 @@ def build_workspace(root):
     files = [file_record(root, path) for path in sorted(paths)]
     if sum(file["size"] for file in files) > 100 * 1024 * 1024:
         raise ValueError(f"{topic}: workspace exceeds the 100 MB installation limit")
-    result = {"id": topic, "title": title, "description": metadata.get("description", ""), "tags": tags,
+    result = {"id": topic, "title": title, "description": metadata.get("description", ""),
               "license": metadata.get("license", "Apache-2.0"), "requiredConnections": sorted(required),
               "files": files, "resources": resources}
     if (root / "previews/workspace.png").exists():

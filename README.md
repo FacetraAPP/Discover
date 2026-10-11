@@ -9,7 +9,7 @@ API keys, private data or personal health records.
 ```text
 example/
   workspace.json       # Facetra portable localPath manifest
-  discover.yaml        # Optional description, tags and license
+  discover.yaml        # Optional description and license
   charts/**/*.yaml
   dashboards/**/*.yaml
   data/**/*

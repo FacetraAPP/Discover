@@ -70,5 +70,4 @@ python3 -m venv .venv
 
 Individual files are limited to 20 MiB; an installed workspace is limited to
 100 MiB. The complete exported built-in [example workspace](example/README.md)
-contains 11 charts, 4 dashboards and four fictional-data CSV files. HealthKit
-charts read on-device health records only after the user enables access.
+contains 8 charts, 3 dashboards and four fictional-data CSV files.

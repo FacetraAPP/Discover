@@ -127,3 +127,14 @@ class CatalogTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PublishedExampleTests(unittest.TestCase):
+    def test_published_example_has_no_health_sources_or_dangling_references(self):
+        root = Path(__file__).resolve().parents[1]
+        result = catalog.build_catalog(root, "0" * 40)
+        example = next(w for w in result["workspaces"] if w["id"] == "example")
+        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 8)
+        self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 3)
+        self.assertFalse(any("health" in f["path"] for f in example["files"]))
+        self.assertFalse(any("healthkit" in r["sourceKinds"] for r in example["resources"]))

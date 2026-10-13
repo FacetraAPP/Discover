@@ -1,0 +1,20 @@
+version: 1
+kind: Dashboard
+id: overview
+title: Sales overview
+notes: Filter fictional sales with a shared revenue threshold.
+params:
+  - name: threshold
+    label: Minimum revenue
+    type: number
+    default: 0
+    minimum: 0
+tabs:
+  - id: summary
+    title: Summary
+    panels:
+      - id: revenue_main
+        chart: sales
+        height: 240
+        params:
+          min_revenue: {param: threshold}

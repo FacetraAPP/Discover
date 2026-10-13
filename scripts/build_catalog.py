@@ -7,7 +7,10 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 
-import yaml
+if __package__:
+    from .validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_dashboard, validate_workspace
+else:
+    from validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_dashboard, validate_workspace
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
@@ -65,45 +68,39 @@ def build_workspace(root):
     if len(manifests) != 1:
         raise ValueError(f"{topic}: define exactly one workspace.yaml (or legacy workspace.json)")
     manifest_path = manifests[0]
-    manifest = yaml.safe_load(read_file(root, manifest_path)) if manifest_path.endswith(".yaml") else json.loads(read_file(root, manifest_path))
-    if not isinstance(manifest, dict):
-        raise ValueError(f"{topic}: workspace manifest must be an object")
-    if not isinstance(manifest.get("id"), str) or not ID.fullmatch(manifest["id"]) or manifest.get("kind") != "localPath":
-        raise ValueError(f"{topic}: {manifest_path} must define a portable localPath workspace")
-    title = manifest.get("title", "")
-    if not isinstance(title, str):
-        raise ValueError(f"{topic}: workspace title must be a string")
-    title = title.strip()
-    if not title:
-        raise ValueError(f"{topic}: workspace title is required")
+    manifest = load_yaml(read_file(root, manifest_path), f"{topic}/{manifest_path}") if manifest_path.endswith(".yaml") else json.loads(read_file(root, manifest_path))
+    validate_workspace(manifest, f"{topic}/{manifest_path}")
+    title = manifest["title"].strip()
     description = manifest.get("description", "")
     license = manifest.get("license", "Apache-2.0")
     if description is None:
         description = ""
     if license is None:
         license = "Apache-2.0"
-    if not isinstance(description, str) or not isinstance(license, str):
-        raise ValueError(f"{topic}: workspace description and license must be strings")
     resources, charts, ids = [], {}, set()
     for kind, directory in [("chart", "charts"), ("dashboard", "dashboards")]:
         folder = root / directory
         if folder.is_symlink():
             raise ValueError(f"{topic}: resource directories cannot be symbolic links")
+        for path in sorted(folder.rglob("*.yml")):
+            raise ValueError(f"{topic}/{path.relative_to(root)}: use the .yaml extension; .yml is not loaded by Facetra")
         for path in sorted(folder.rglob("*.yaml")):
             relative = path.relative_to(root).as_posix()
-            document = yaml.safe_load(read_file(root, relative))
+            document = load_yaml(read_file(root, relative), f"{topic}/{relative}")
             if not isinstance(document, dict):
                 raise ValueError(f"{topic}/{relative}: YAML must be an object")
+            if kind == "chart":
+                validate_chart(document, f"{topic}/{relative}")
             header = document.get("chart", {}) if kind == "chart" else document
             if kind == "dashboard" and document.get("kind") != "Dashboard":
                 raise ValueError(f"{topic}/{relative}: expected a Dashboard")
             resource_id = header.get("id", "")
-            if not ID.fullmatch(resource_id) or resource_id.startswith("builtin_example_") or path.stem != resource_id:
+            if not isinstance(resource_id, str) or not ID.fullmatch(resource_id) or resource_id.startswith("builtin_example_") or path.stem != resource_id:
                 raise ValueError(f"{topic}/{relative}: invalid ID or mismatched filename")
             if resource_id in ids:
                 raise ValueError(f"{topic}: duplicate resource ID {resource_id}")
             ids.add(resource_id)
-            if not header.get("title", "").strip():
+            if not isinstance(header.get("title"), str) or not header["title"].strip():
                 raise ValueError(f"{topic}/{relative}: title is required")
             item = {"id": f"{topic}/{kind}/{resource_id}", "resourceID": resource_id, "type": kind,
                     "title": header["title"], "description": header.get("notes", ""), "path": relative,
@@ -116,41 +113,38 @@ def build_workspace(root):
                 item["preview"] = file_record(root, preview)
             resources.append(item)
 
+    documents = {name: item["document"] for name, item in charts.items()}
+    validate_chart_graph(documents, topic, {name: item["path"] for name, item in charts.items()})
+    for item in resources:
+        if item["type"] == "dashboard":
+            validate_dashboard(item["document"], documents, f"{topic}/{item['path']}")
+
     dependencies, assets, connections, kinds = {}, {}, {}, {}
     for resource_id, item in charts.items():
         dependencies[resource_id], assets[resource_id] = set(), set()
         connections[resource_id], kinds[resource_id] = set(), set()
-        for key, value in walk(item["document"]):
-            if key == "ref":
-                match = REF.fullmatch(value) if isinstance(value, str) else None
-                if not match:
-                    raise ValueError(f"{topic}/{item['path']}: ref must stay inside this workspace")
-                target_id = match[1] or resource_id
-                if target_id not in charts:
-                    raise ValueError(f"{topic}/{item['path']}: missing local chart {target_id}")
-                target = charts[target_id]["document"]
-                if (match[3] and match[3] not in target.get("sources", {})) or (not match[3] and "dataset" not in target):
-                    raise ValueError(f"{topic}/{item['path']}: missing reference target")
-                if target_id != resource_id:
-                    dependencies[resource_id].add(target_id)
-            if key == "source" and isinstance(value, str):
-                kinds[resource_id].add(value)
-            if key == "file":
-                path = str(relative_path(value))
+        for _, definition, _ in chart_references(item["document"]):
+            target_id = REF.fullmatch(definition["ref"])[1] or resource_id
+            if target_id != resource_id:
+                dependencies[resource_id].add(target_id)
+        for definition in item["document"].get("sources", {}).values():
+            if "source" in definition:
+                kinds[resource_id].add(definition["source"])
+            if "file" in definition:
+                path = str(relative_path(definition["file"]))
                 if not path.startswith("data/"):
                     raise ValueError(f"{topic}: data files must be in this workspace's data/")
                 read_file(root, path)
                 assets[resource_id].add(path)
-            if key == "file_path":
-                path = "data/" + str(relative_path(value))
+            if "file_path" in definition:
+                path = "data/" + str(relative_path(definition["file_path"]))
                 read_file(root, path)
                 assets[resource_id].add(path)
-            if key == "connection" and isinstance(value, str):
-                if not ID.fullmatch(value):
-                    raise ValueError(f"{topic}: invalid connection reference")
-                connections[resource_id].add(value)
-            if isinstance(value, str):
-                connections[resource_id].update(CONNECTION.findall(value))
+            if "connection" in definition:
+                connections[resource_id].add(definition["connection"])
+            for _, value in walk(definition):
+                if isinstance(value, str):
+                    connections[resource_id].update(CONNECTION.findall(value))
 
     def closure(resource_id, visiting=None):
         visiting = set() if visiting is None else visiting
@@ -161,12 +155,7 @@ def build_workspace(root):
             result.update(closure(dependency, visiting | {resource_id}))
         return result
 
-    declared_connections = manifest.get("requiredConnections", [])
-    if not isinstance(declared_connections, list) or not all(isinstance(value, str) for value in declared_connections):
-        raise ValueError(f"{topic}: requiredConnections must be a list of strings")
-    required = set(declared_connections)
-    if not all(isinstance(value, str) and ID.fullmatch(value) for value in required):
-        raise ValueError(f"{topic}: invalid requiredConnections")
+    required = set(manifest.get("requiredConnections", []))
     for item in resources:
         document = item.pop("document")
         if item["type"] == "chart":
@@ -217,8 +206,15 @@ def build_workspace(root):
 def build_catalog(root, revision):
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("sourceRevision must be a complete Git commit SHA")
-    workspaces = [build_workspace(path) for path in sorted(root.iterdir())
-                  if path.is_dir() and not path.name.startswith(".") and any((path / name).exists() or (path / name).is_symlink() for name in ["workspace.yaml", "workspace.json"])]
+    workspaces = []
+    for path in sorted(root.iterdir()):
+        if not path.is_dir() or path.name.startswith("."):
+            continue
+        if any((path / name).exists() or (path / name).is_symlink()
+               for name in ["workspace.yaml", "workspace.yml", "workspace.json", "charts", "dashboards"]):
+            if (path / "workspace.yml").exists() or (path / "workspace.yml").is_symlink():
+                raise ValueError(f"{path.name}/workspace.yml: use workspace.yaml")
+            workspaces.append(build_workspace(path))
     if not workspaces:
         raise ValueError("No publishable workspaces found")
     return {"schemaVersion": 1, "sourceRevision": revision, "workspaces": workspaces}
@@ -228,9 +224,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--revision", required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--validate-only", action="store_true", help="check all workspace/chart/dashboard documents without writing a catalog")
     args = parser.parse_args()
-    catalog = build_catalog(args.root.resolve(), args.revision)
+    if not args.validate_only and args.output is None:
+        parser.error("--output is required unless --validate-only is used")
+    try:
+        catalog = build_catalog(args.root.resolve(), args.revision)
+    except (ValueError, OSError) as error:
+        parser.exit(1, f"Validation failed: {error}\n")
+    if args.validate_only:
+        resources = sum(len(workspace["resources"]) for workspace in catalog["workspaces"])
+        print(f"Validated {len(catalog['workspaces'])} workspaces and {resources} charts/dashboards")
+        return
     args.output.mkdir(parents=True, exist_ok=True)
     data = json.dumps(catalog, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
     (args.output / "discover.json").write_text(data, encoding="utf-8")

@@ -1,0 +1,126 @@
+# Workspaces, paths and parameters
+
+## Directory layout
+
+Every top-level content directory is one independent workspace:
+
+~~~text
+sales/
+  workspace.yaml
+  README.md
+  charts/sales.yaml
+  dashboards/overview.yaml
+  data/sales.csv
+  previews/sales.png        # Optional chart preview
+  previews/overview.png     # Optional dashboard preview
+  previews/workspace.png    # Optional workspace preview
+~~~
+
+charts/ and dashboards/ can contain nested folders. File extensions are .yaml.
+The filename without its extension equals chart.id or dashboard.id. IDs use
+1–80 ASCII letters, digits, underscores or hyphens and are unique across charts
+and dashboards in the workspace. Do not use the reserved builtin_example_ prefix.
+Different topics may reuse resource IDs.
+
+Local references resolve by chart ID within the topic, regardless of folders.
+No cross-topic references, symlinks, hidden path segments, empty segments,
+backslashes, absolute paths or .. traversal are allowed. Files may be at most
+20 MiB; a complete workspace may be at most 100 MiB.
+
+## Workspace manifest
+
+[The complete starter manifest](starter/workspace.yaml) uses these fields:
+
+| Field | Type / requirement | Meaning |
+| --- | --- | --- |
+| id | Required ID string | Portable workspace identity |
+| title | Required nonempty string | Workspace card and detail title |
+| kind | Required, localPath | Portable local workspace |
+| description | Optional string | Workspace card/detail description |
+| license | Optional string, defaults to Apache-2.0 | License for redistributed content |
+| isPersonal | Optional boolean | Personal-space marker; normally false for public topics |
+| requiredConnections | Optional list of unique IDs, defaults to [] | Local connection IDs or aliases needed by this workspace |
+
+For new topics, use workspace.yaml. Legacy workspace.json accepts the same
+fields, but a topic must have exactly one manifest. To migrate, preserve the ID
+and metadata, write YAML and remove the old JSON manifest. Device paths,
+connection values and imported discoverOrigin metadata do not belong in a
+public manifest. Optional description/license may be null to use their defaults.
+
+README.md explains the workspace purpose, chart/dashboard list, column names,
+units, data provenance/license and any setup. Legacy readme.md is accepted,
+but keep only one of the two. Facetra displays this Markdown in workspace details
+and includes it in complete workspace imports.
+
+## YAML conventions
+
+Use two-space indentation, explicit true/false booleans and typed numeric
+values. Quote strings that look like numbers, dates or YAML booleans:
+default: "001", x: "date" and option labels such as "on".
+Use | or |- for SQL and multiline notes. Numeric fields accept scientific
+notation such as 1e+0. Quoted "240" is a string and is invalid for panel height.
+Duplicate keys are rejected, including collisions introduced by YAML merges.
+Avoid YAML aliases/merge tricks in public examples; explicit definitions are easier
+to review. Unknown fields fail validation rather than being ignored.
+
+## Parameter definitions
+
+Chart and dashboard params use the same list-of-objects format:
+
+~~~yaml
+params:
+  - name: min_revenue
+    label: Minimum revenue
+    type: number
+    default: 0
+    minimum: 0
+    maximum: 1000
+    options: [0, 100, 200]
+    required: true
+    advanced: false
+~~~
+
+| Field | Rule |
+| --- | --- |
+| name | Required ID; unique in this document |
+| type | Required: string, integer, number or boolean |
+| label | Optional nonempty string; defaults to name |
+| default | Optional scalar of the declared type |
+| required | Optional boolean, defaults to true |
+| minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum |
+| options | Optional list of typed permitted scalar values |
+| advanced | Optional boolean, defaults to false |
+
+All defaults and options must satisfy the type/range rules; a default with options
+must be one of them. number accepts integers and decimals; integer accepts
+integral numbers. Boolean values are not integers. Required string values cannot
+be empty. Give charts useful defaults so a single-chart import works independently.
+A required parameter without a default must receive a value before execution;
+dashboard panels and external references must bind it.
+
+There are two binding forms:
+
+~~~yaml
+params:
+  min_revenue: {param: threshold}  # Use a caller/dashboard parameter
+  region: "west"                 # Use a typed fixed value
+~~~
+
+The left-hand name belongs to the target chart. The param name belongs to the
+caller or dashboard and must have the same type. Fixed values and passed defaults
+must satisfy the target's ranges/options. Bindings cannot contain extra keys.
+Dashboard params and a reference's with follow these rules. Same-file source
+references inherit chart parameters; references to another chart receive only
+explicit with values plus that chart's defaults.
+
+## Connections
+
+Connections are configured on the user's device. A database source uses
+connection: business; an HTTP source can use templates such as
+"{{ connections.market.endpoint }}" and "{{ connections.market.token }}".
+requiredConnections lists these IDs/aliases without their values. The catalog
+also discovers dependencies from chart source definitions and referenced charts.
+
+The topic README must explain what each connection means and which local fields
+are needed. Do not commit tokens, API keys, private data, personal health records
+or machine-specific paths. Offline validation does not need real connections.

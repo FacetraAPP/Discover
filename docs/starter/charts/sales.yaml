@@ -1,0 +1,32 @@
+params:
+  - name: min_revenue
+    label: Minimum revenue
+    type: number
+    default: 0
+    minimum: 0
+
+sources:
+  sales:
+    source: duckdb
+    file: data/sales.csv
+
+dataset:
+  id: monthly_sales
+  sources:
+    - id: raw
+      ref: "#/sources/sales"
+  sql: |
+    SELECT month, CAST(revenue AS DOUBLE) AS revenue
+    FROM raw
+    WHERE CAST(revenue AS DOUBLE) >= $min_revenue
+    ORDER BY month
+
+chart:
+  id: sales
+  title: Monthly revenue
+  dataset: monthly_sales
+  renderer: default
+  plot: bar
+  x: month
+  y: revenue
+  notes: Fictional monthly revenue in thousands of currency units.

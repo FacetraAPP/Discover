@@ -1,6 +1,6 @@
 # Facetra Discover
 
-Public, portable workspaces for [Facetra](https://github.com/BoringHappy/Facetra).
+Public, portable workspaces for [Facetra](https://github.com/FacetraAPP/Facetra).
 Each top-level topic directory **is a workspace**. Charts, dashboards and local
 data dependencies may reference only files in their own workspace. Required
 connections refer to values configured on the user's device; never commit tokens,
@@ -37,6 +37,20 @@ README contents are not embedded in the index.
 
 Legacy `workspace.json` remains accepted; a topic must contain exactly one manifest.
 For migration, preserve the same metadata in `workspace.yaml` and remove the JSON file.
+
+## Contributing and agent skills
+
+Start with [AGENTS.md](AGENTS.md) and the [contributor guide](docs/contributing.md).
+This repository includes a [complete minimal starter](docs/starter/) and
+self-contained specifications for [workspaces and parameters](docs/workspace-yaml.md),
+[charts](docs/chart-yaml.md) and [dashboards](docs/dashboard-yaml.md).
+No Facetra source checkout or private documentation is required.
+
+Repository skills are available at
+[create-chart-yaml](.agents/skills/create-chart-yaml/SKILL.md) and
+[create-dashboard-yaml](.agents/skills/create-dashboard-yaml/SKILL.md).
+Agents supporting repository skill discovery can invoke $create-chart-yaml or
+$create-dashboard-yaml; others can read the same SKILL.md files.
 
 ## Catalog publishing
 
@@ -76,9 +90,14 @@ Requires Python 3.12 or newer:
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --validate-only
 .venv/bin/python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --output dist
 ```
 
 Individual files are limited to 20 MiB; an installed workspace is limited to
 100 MiB. The complete exported built-in [example workspace](example/README.md)
 contains 8 charts, 3 dashboards and four fictional-data CSV files.
+CI uses the same tests and --validate-only command on every PR and main push.
+It checks YAML structure/types, parameters, references and dashboard layouts in
+addition to catalog dependencies and file limits. Validation is offline; SQL
+execution, remote responses and visual rendering still require a Facetra preview.

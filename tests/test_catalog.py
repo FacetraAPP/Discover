@@ -1,5 +1,4 @@
 import copy
-import importlib.util
 import json
 from pathlib import Path
 import tempfile
@@ -7,9 +6,7 @@ import unittest
 
 import yaml
 
-spec = importlib.util.spec_from_file_location("build_catalog", Path(__file__).parents[1] / "scripts/build_catalog.py")
-catalog = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(catalog)
+from scripts import build_catalog as catalog
 
 
 class CatalogTests(unittest.TestCase):
@@ -25,7 +22,7 @@ class CatalogTests(unittest.TestCase):
         (self.topic / "data/prices.csv").write_text("x,y\n1,2\n")
         self.chart = {"sources": {"prices": {"source": "duckdb", "file": "data/prices.csv"}},
                       "dataset": {"id": "prices", "sources": [{"id": "raw", "ref": "#/sources/prices"}]},
-                      "chart": {"id": "price", "title": "Prices", "plot": "line"}}
+                      "chart": {"id": "price", "title": "Prices", "dataset": "prices", "renderer": "default", "plot": "line", "x": "x", "y": "y"}}
         self.write_chart("price", self.chart)
 
     def write_chart(self, name, chart):
@@ -104,9 +101,10 @@ class CatalogTests(unittest.TestCase):
         derived["chart"]["id"] = "derived"
         derived["sources"] = {}
         derived["dataset"] = {"id": "derived", "ref": "price.yaml#/dataset"}
+        derived["chart"]["dataset"] = "derived"
         self.write_chart("derived", derived)
-        dashboard = {"kind": "Dashboard", "id": "overview", "title": "Overview",
-                     "tabs": [{"id": "main", "panels": [{"id": "price", "chart": "derived"}]}]}
+        dashboard = {"version": 1, "kind": "Dashboard", "id": "overview", "title": "Overview", "notes": "", "params": [],
+                     "tabs": [{"id": "main", "title": "Main", "panels": [{"id": "price", "chart": "derived"}]}]}
         (self.topic / "dashboards/overview.yaml").write_text(yaml.safe_dump(dashboard))
         result = self.build()
         self.assertEqual(result, self.build())
@@ -135,6 +133,7 @@ class CatalogTests(unittest.TestCase):
         other = copy.deepcopy(self.chart)
         other["chart"]["id"] = "other"
         other["dataset"] = {"id": "other", "ref": "price.yaml#/dataset"}
+        other["chart"]["dataset"] = "other"
         self.chart["dataset"] = {"id": "prices", "ref": "other.yaml#/dataset"}
         self.write_chart("other", other)
         self.write_chart("price", self.chart)

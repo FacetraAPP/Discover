@@ -1,4 +1,4 @@
-name: Build Discover catalog
+name: Validate YAML and build Discover catalog
 
 on:
   push:
@@ -16,16 +16,19 @@ concurrency:
 
 jobs:
   validate:
+    name: Validate workspace, chart and dashboard YAML
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements.txt
-      - run: python -m unittest discover -s tests -v
-      - name: Validate all workspaces
-        run: python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --output "$RUNNER_TEMP/catalog-validation"
+      - name: Run validator and catalog regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Check every workspace, chart and dashboard
+        run: python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --validate-only
 
   publish:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

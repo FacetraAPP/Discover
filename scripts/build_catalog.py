@@ -61,10 +61,19 @@ def build_workspace(root):
     topic = root.name
     if not ID.fullmatch(topic):
         raise ValueError(f"Invalid workspace directory: {topic}")
-    manifest = json.loads(read_file(root, "workspace.json"))
-    if not ID.fullmatch(manifest.get("id", "")) or manifest.get("kind") != "localPath":
-        raise ValueError(f"{topic}: workspace.json must define a portable localPath workspace")
-    title = manifest.get("title", "").strip()
+    manifests = [name for name in ["workspace.yaml", "workspace.json"] if (root / name).exists() or (root / name).is_symlink()]
+    if len(manifests) != 1:
+        raise ValueError(f"{topic}: define exactly one workspace.yaml (or legacy workspace.json)")
+    manifest_path = manifests[0]
+    manifest = yaml.safe_load(read_file(root, manifest_path)) if manifest_path.endswith(".yaml") else json.loads(read_file(root, manifest_path))
+    if not isinstance(manifest, dict):
+        raise ValueError(f"{topic}: workspace manifest must be an object")
+    if not isinstance(manifest.get("id"), str) or not ID.fullmatch(manifest["id"]) or manifest.get("kind") != "localPath":
+        raise ValueError(f"{topic}: {manifest_path} must define a portable localPath workspace")
+    title = manifest.get("title", "")
+    if not isinstance(title, str):
+        raise ValueError(f"{topic}: workspace title must be a string")
+    title = title.strip()
     if not title:
         raise ValueError(f"{topic}: workspace title is required")
     description = manifest.get("description", "")
@@ -152,7 +161,10 @@ def build_workspace(root):
             result.update(closure(dependency, visiting | {resource_id}))
         return result
 
-    required = set(manifest.get("requiredConnections", []))
+    declared_connections = manifest.get("requiredConnections", [])
+    if not isinstance(declared_connections, list) or not all(isinstance(value, str) for value in declared_connections):
+        raise ValueError(f"{topic}: requiredConnections must be a list of strings")
+    required = set(declared_connections)
     if not all(isinstance(value, str) and ID.fullmatch(value) for value in required):
         raise ValueError(f"{topic}: invalid requiredConnections")
     for item in resources:
@@ -179,7 +191,14 @@ def build_workspace(root):
         item["requiredConnections"] = sorted(resource_connections)
         required.update(resource_connections)
 
-    paths = {"workspace.json"} | {item["path"] for item in resources}
+    paths = {manifest_path} | {item["path"] for item in resources}
+    names = {path.name for path in root.iterdir()}
+    readmes = [name for name in ["README.md", "readme.md"] if name in names]
+    if len(readmes) > 1:
+        raise ValueError(f"{topic}: keep only one README.md or legacy readme.md")
+    for name in readmes:
+        read_file(root, name).decode("utf-8")
+        paths.add(name)
     data_root = root / "data"
     if data_root.is_symlink():
         raise ValueError(f"{topic}: data/ cannot be a symbolic link")
@@ -199,7 +218,7 @@ def build_catalog(root, revision):
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("sourceRevision must be a complete Git commit SHA")
     workspaces = [build_workspace(path) for path in sorted(root.iterdir())
-                  if path.is_dir() and not path.name.startswith(".") and (path / "workspace.json").exists()]
+                  if path.is_dir() and not path.name.startswith(".") and any((path / name).exists() or (path / name).is_symlink() for name in ["workspace.yaml", "workspace.json"])]
     if not workspaces:
         raise ValueError("No publishable workspaces found")
     return {"schemaVersion": 1, "sourceRevision": revision, "workspaces": workspaces}

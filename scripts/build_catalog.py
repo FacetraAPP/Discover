@@ -193,9 +193,9 @@ def build_workspace(root):
 
     paths = {manifest_path} | {item["path"] for item in resources}
     names = {path.name for path in root.iterdir()}
-    readmes = [name for name in ["readme.md", "README.md"] if name in names]
+    readmes = [name for name in ["README.md", "readme.md"] if name in names]
     if len(readmes) > 1:
-        raise ValueError(f"{topic}: keep only one readme.md or README.md")
+        raise ValueError(f"{topic}: keep only one README.md or legacy readme.md")
     for name in readmes:
         read_file(root, name).decode("utf-8")
         paths.add(name)

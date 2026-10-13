@@ -39,20 +39,20 @@ class CatalogTests(unittest.TestCase):
         (self.topic / "workspace.json").unlink()
         (self.topic / "workspace.yaml").write_text(yaml.safe_dump(manifest))
         markdown = "# Guide\n\n## Setup\n\n- Configure **market**\n"
-        (self.topic / "readme.md").write_text(markdown, encoding="utf-8")
+        (self.topic / "README.md").write_text(markdown, encoding="utf-8")
         workspace = self.build()["workspaces"][0]
         files = {file["path"]: file for file in workspace["files"]}
         self.assertEqual(workspace["title"], "YAML workspace")
         self.assertIn("workspace.yaml", files)
         self.assertNotIn("workspace.json", files)
-        self.assertEqual(files["readme.md"], catalog.file_record(self.topic, "readme.md"))
-        self.assertNotIn("readme.md", workspace["resources"][0]["files"])
+        self.assertEqual(files["README.md"], catalog.file_record(self.topic, "README.md"))
+        self.assertNotIn("README.md", workspace["resources"][0]["files"])
         self.assertNotIn(markdown, json.dumps(workspace))
 
-    def test_legacy_json_and_uppercase_readme_remain_supported(self):
-        (self.topic / "README.md").write_text("# Legacy Guide\n")
+    def test_legacy_json_and_lowercase_readme_remain_supported(self):
+        (self.topic / "readme.md").write_text("# Legacy Guide\n")
         files = {file["path"] for file in self.build()["workspaces"][0]["files"]}
-        self.assertTrue({"workspace.json", "README.md"}.issubset(files))
+        self.assertTrue({"workspace.json", "readme.md"}.issubset(files))
 
     def test_multiple_manifests_invalid_yaml_and_readme_links_are_rejected(self):
         manifest = self.topic / "workspace.yaml"
@@ -67,11 +67,11 @@ class CatalogTests(unittest.TestCase):
                     self.build()
         manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")
         (self.root / "outside.md").write_text("private")
-        (self.topic / "readme.md").symlink_to(self.root / "outside.md")
+        (self.topic / "README.md").symlink_to(self.root / "outside.md")
         with self.assertRaises(ValueError):
             self.build()
-        (self.topic / "readme.md").unlink()
-        (self.topic / "readme.md").write_bytes(b"\xff")
+        (self.topic / "README.md").unlink()
+        (self.topic / "README.md").write_bytes(b"\xff")
         with self.assertRaises(ValueError):
             self.build()
 
@@ -178,5 +178,5 @@ class PublishedExampleTests(unittest.TestCase):
         self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 8)
         self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 3)
         self.assertFalse(any("health" in f["path"] for f in example["files"]))
-        self.assertTrue({"workspace.yaml", "readme.md"}.issubset({f["path"] for f in example["files"]}))
+        self.assertTrue({"workspace.yaml", "README.md"}.issubset({f["path"] for f in example["files"]}))
         self.assertFalse(any("healthkit" in r["sourceKinds"] for r in example["resources"]))

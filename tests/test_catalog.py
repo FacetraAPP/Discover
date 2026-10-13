@@ -34,6 +34,47 @@ class CatalogTests(unittest.TestCase):
     def build(self):
         return catalog.build_catalog(self.root, "a" * 40)
 
+    def test_yaml_manifest_and_readme_are_published_with_digests(self):
+        manifest = {"id": "example", "title": "YAML workspace", "kind": "localPath"}
+        (self.topic / "workspace.json").unlink()
+        (self.topic / "workspace.yaml").write_text(yaml.safe_dump(manifest))
+        markdown = "# Guide\n\n## Setup\n\n- Configure **market**\n"
+        (self.topic / "readme.md").write_text(markdown, encoding="utf-8")
+        workspace = self.build()["workspaces"][0]
+        files = {file["path"]: file for file in workspace["files"]}
+        self.assertEqual(workspace["title"], "YAML workspace")
+        self.assertIn("workspace.yaml", files)
+        self.assertNotIn("workspace.json", files)
+        self.assertEqual(files["readme.md"], catalog.file_record(self.topic, "readme.md"))
+        self.assertNotIn("readme.md", workspace["resources"][0]["files"])
+        self.assertNotIn(markdown, json.dumps(workspace))
+
+    def test_legacy_json_and_uppercase_readme_remain_supported(self):
+        (self.topic / "README.md").write_text("# Legacy Guide\n")
+        files = {file["path"] for file in self.build()["workspaces"][0]["files"]}
+        self.assertTrue({"workspace.json", "README.md"}.issubset(files))
+
+    def test_multiple_manifests_invalid_yaml_and_readme_links_are_rejected(self):
+        manifest = self.topic / "workspace.yaml"
+        manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")
+        with self.assertRaises(ValueError):
+            self.build()
+        (self.topic / "workspace.json").unlink()
+        for text in ["[]", "null", "id: [broken"]:
+            with self.subTest(text=text):
+                manifest.write_text(text)
+                with self.assertRaises((ValueError, yaml.YAMLError)):
+                    self.build()
+        manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")
+        (self.root / "outside.md").write_text("private")
+        (self.topic / "readme.md").symlink_to(self.root / "outside.md")
+        with self.assertRaises(ValueError):
+            self.build()
+        (self.topic / "readme.md").unlink()
+        (self.topic / "readme.md").write_bytes(b"\xff")
+        with self.assertRaises(ValueError):
+            self.build()
+
     def test_workspace_metadata_comes_from_manifest_without_resource_inheritance(self):
         manifest = {"id": "example", "title": "Workspace title", "kind": "localPath",
                     "description": "Workspace description", "license": "MIT"}
@@ -137,4 +178,5 @@ class PublishedExampleTests(unittest.TestCase):
         self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 8)
         self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 3)
         self.assertFalse(any("health" in f["path"] for f in example["files"]))
+        self.assertTrue({"workspace.yaml", "readme.md"}.issubset({f["path"] for f in example["files"]}))
         self.assertFalse(any("healthkit" in r["sourceKinds"] for r in example["resources"]))

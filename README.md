@@ -8,7 +8,8 @@ API keys, private data or personal health records.
 
 ```text
 example/
-  workspace.json       # Portable localPath manifest with title, description and license
+  workspace.yaml       # Portable localPath manifest with title, description and license
+  readme.md            # Markdown overview shown in Facetra workspace details
   charts/**/*.yaml
   dashboards/**/*.yaml
   data/**/*
@@ -22,10 +23,20 @@ dashboards within one workspace. External source/dataset references use
 inside that workspace. Different workspaces may reuse the same IDs. Symlinks,
 hidden paths, path traversal, missing dependency targets and cycles are rejected.
 
-Workspace metadata is defined in `workspace.json`: `title`, optional `description`
+Workspace metadata is defined in `workspace.yaml`: `title`, optional `description`
 and optional `license` (defaults to this repository's Apache-2.0 license). The
 catalog uses these directly. Chart and dashboard names and descriptions come from
 their own YAML `title` and `notes` fields.
+
+Workspace documentation lives in `readme.md` (existing `README.md` is also accepted).
+Describe the purpose, included charts and dashboards, required connections and setup
+steps in Markdown. The catalog lists this file with its size and SHA-256 digest;
+Facetra downloads it at the catalog's source revision for the workspace detail and
+retains it in complete workspace imports. Individual resource imports do not copy it.
+README contents are not embedded in the index.
+
+Legacy `workspace.json` remains accepted; a topic must contain exactly one manifest.
+For migration, preserve the same metadata in `workspace.yaml` and remove the JSON file.
 
 ## Catalog publishing
 
@@ -69,5 +80,5 @@ python3 -m venv .venv
 ```
 
 Individual files are limited to 20 MiB; an installed workspace is limited to
-100 MiB. The complete exported built-in [example workspace](example/README.md)
+100 MiB. The complete exported built-in [example workspace](example/readme.md)
 contains 8 charts, 3 dashboards and four fictional-data CSV files.

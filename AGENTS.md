@@ -13,6 +13,9 @@ content; no application checkout, private documentation or credentials are neede
   manifest fields, metadata, parameter types and connection requirements.
 - [Chart format](docs/chart-yaml.md): acquisition sources, datasets, references,
   native/value/ECharts renderers and complete examples.
+- [Chart authoring lessons](LESSONS.md): metric interpretation, ISO dates, axes,
+  parameter controls and visual checks learned from actual chart usage. Read
+  before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
 - [Working examples](example/README.md): eight charts and three dashboards.

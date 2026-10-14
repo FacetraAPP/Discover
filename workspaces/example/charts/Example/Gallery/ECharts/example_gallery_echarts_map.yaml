@@ -17,7 +17,8 @@ chart:
   - 图表原型
   - ECharts
   - map
-  notes: 两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。
+  notes: '两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。 layoutCenter/layoutSize
+    与 aspectScale: 1 保持虚构平面坐标的等比例形状。'
   option:
     animation: false
     tooltip:
@@ -33,9 +34,12 @@ chart:
     - type: map
       map: gallery-islands
       roam: false
-      top: 10%
-      bottom: 24%
       label:
         show: true
       data: 'js: (() => { echarts.registerMap("gallery-islands", {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"West"},"geometry":{"type":"Polygon","coordinates":[[[0,0],[2,0],[2,2],[0,2],[0,0]]]}},{"type":"Feature","properties":{"name":"East"},"geometry":{"type":"Polygon","coordinates":[[[3,0],[5,0],[5,2],[3,2],[3,0]]]}}]});
         return [{name:"West",value:8},{name:"East",value:16}]; })()'
+      aspectScale: 1
+      layoutCenter:
+      - 50%
+      - 44%
+      layoutSize: 90%

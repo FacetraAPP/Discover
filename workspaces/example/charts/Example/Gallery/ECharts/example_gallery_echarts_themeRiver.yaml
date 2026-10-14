@@ -32,10 +32,14 @@ chart:
       type: time
       top: 45
       bottom: 35
-      left: 15
-      right: 15
+      left: 32
+      right: 32
       axisLabel:
         formatter: '{MM}-{dd}'
+        hideOverlap: true
+      splitNumber: 3
+      minInterval: 86400000
+      maxInterval: 86400000
     series:
     - type: themeRiver
       data:

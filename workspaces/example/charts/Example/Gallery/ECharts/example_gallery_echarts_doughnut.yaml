@@ -8,8 +8,9 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-  sql: |
-    SELECT label AS name, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
+  sql: 'SELECT label AS name, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
+
+    '
 chart:
   id: example_gallery_echarts_doughnut
   title: ECharts · 环形
@@ -28,13 +29,20 @@ chart:
     series:
     - type: pie
       radius:
-      - 40%
-      - 65%
+      - 35%
+      - 55%
       center:
       - 50%
       - 45%
       label:
         formatter: '{b}: {c}'
+        alignTo: edge
+        edgeDistance: 8
+        bleedMargin: 4
+        distanceToLabelLine: 4
       data:
         from: sample
         rows: true
+      labelLine:
+        length: 8
+        length2: 8

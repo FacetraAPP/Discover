@@ -305,6 +305,30 @@ def echarts_option(value, chart, params, context, depth=0):
         scalar(value, context)
 
 
+def vela_option(value, params, context):
+    required = {"time", "open", "high", "low", "close"}
+    option = mapping(value, context, required | {"volume", "time_unit", "timeframe", "show_volume", "indicators"}, required)
+    for field in required | ({"volume"} if "volume" in option else set()):
+        text(option[field], context + "." + field)
+    require(option.get("time_unit", "iso8601") in ("iso8601", "seconds", "milliseconds"), context, "unsupported time_unit")
+    timeframe = text(option.get("timeframe", "1d"), context + ".timeframe")
+    require(re.fullmatch(r"[1-9][0-9]{0,5}[mhdw]", timeframe), context, "timeframe requires a positive m/h/d/w interval")
+    if "show_volume" in option:
+        require(type(option["show_volume"]) is bool, context, "show_volume must be boolean")
+        require(not option["show_volume"] or "volume" in option, context, "show_volume requires volume")
+    for index, indicator in enumerate(sequence(option.get("indicators", []), context + ".indicators", 0, 16)):
+        location = f"{context}.indicators[{index}]"
+        mapping(indicator, location, {"type", "inputs"}, {"type"})
+        text(indicator["type"], location + ".type")
+        for name, value in mapping(indicator.get("inputs", {}), location + ".inputs").items():
+            if isinstance(value, dict):
+                mapping(value, location + ".inputs." + name, {"from", "name"}, {"from", "name"})
+                parameter = text(value["name"], location + ".inputs." + name)
+                require(value["from"] == "params" and parameter in params, location, "input must reference a defined parameter")
+            else:
+                scalar(value, location + ".inputs." + name)
+
+
 def validate_chart(document, context):
     mapping(document, context, {"params", "sources", "dataset", "chart"}, {"dataset", "chart"})
     params = parameters(document.get("params", []), context + ".params")
@@ -335,7 +359,7 @@ def validate_chart(document, context):
             text(dataset["sql"], context + ".dataset.sql")
     chart = mapping(document["chart"], context + ".chart")
     renderer = chart.get("renderer", "default")
-    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}}
+    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
     mapping(chart, context + ".chart", {"id", "title", "dataset", "renderer", "notes", "tags"} | fields[renderer], {"id", "title", "dataset"})
     identifier(chart["id"], context + ".chart.id")
@@ -361,6 +385,8 @@ def validate_chart(document, context):
             require(chart["plot"] != "pie", context, "pie does not support average")
     elif renderer == "value":
         text(chart.get("value"), context + ".chart.value")
+    elif renderer == "vela":
+        vela_option(chart.get("option"), params, context + ".chart.option")
     else:
         require(chart["dataset"] not in ("params", "script"), context, "reserved ECharts dataset ID")
         require(bool(mapping(chart.get("option"), context + ".chart.option")), context, "option cannot be empty")

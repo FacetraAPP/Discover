@@ -239,6 +239,64 @@ value is the required result-column name. Configure the dataset to return the
 intended scalar, for example SELECT SUM(revenue) AS total_revenue FROM raw.
 Do not add native plot/x/y fields, ECharts option or scripts.
 
+### Vela OHLCV
+
+Requires a Facetra version supporting `renderer: vela` (application integration:
+[Facetra #51](https://github.com/FacetraAPP/Facetra/pull/51)). Vela is bundled in
+the app and receives the SQL result offline; no provider or scripting engine is
+loaded. Only metadata, `renderer` and `option` belong in this chart block.
+
+~~~yaml
+chart:
+  id: prices
+  title: Daily candles
+  dataset: candles
+  renderer: vela
+  option:
+    time: trade_date
+    open: open
+    high: high
+    low: low
+    close: close
+    volume: volume
+    timeframe: 1d
+    indicators:
+      - type: sma
+        inputs: {length: 20, color: '#f59e0b'}
+      - type: rsi
+        inputs: {length: 14}
+~~~
+
+This is a rendering fragment. Use the complete offline [candlestick chart](../workspaces/example/charts/Example/Vela/example_vela_candlestick.yaml),
+[indicator chart](../workspaces/example/charts/Example/Vela/example_vela_indicators.yaml)
+or [dashboard](../workspaces/example/dashboards/example_vela_dashboard.yaml) for an importable resource.
+
+- Required `time/open/high/low/close` name SQL output columns. `volume` is optional;
+  when mapped it shows by default, or set `show_volume: false` to hide it. Prices
+  and volume must be finite SQL numbers; cast CSV strings in SQL. Invalid/null
+  bars, negative volume and inconsistent OHLC ranges cause an error.
+- `time_unit` defaults to `iso8601`: ISO dates/timestamps, with unzoned values
+  interpreted as UTC. Numeric epochs require `seconds` or `milliseconds`.
+  Bars are sorted by time and duplicate timestamps rejected. Filter to one
+  symbol and aggregate intervals in SQL first.
+- `timeframe` defaults to `1d`, accepts a positive integer plus `m/h/d/w`, and
+  controls axis spacing rather than resampling the data.
+- Optional `indicators` holds up to 16 `{type, inputs?}` entries. Built-in types
+  include `sma`, `ema`, `bollinger-bands`, `rsi`, `macd`, `volume` and `vpvr`.
+  `inputs` contains scalars or `{from: params, name: parameter_name}`. Input
+  names follow Vela's API, for example `length`, `mult`, `fastLength`,
+  `slowLength`, `signalLength`, `source: Close`, and `color`.
+- Native studies determine main-chart overlays or separate oscillator panes.
+  Several instances of SMA/EMA can use different periods; `volume/vpvr` are
+  single-instance. Keep enough history for warmup before limiting the dataset.
+  Compact cards hide oscillator panes, volume and indicator titles.
+
+Offline validation checks the option shape and parameter references. Vela checks
+indicator types and input names/types/ranges in the actual preview. Temporary
+changes in its settings dialog are not saved; write YAML to persist them.
+Extra SQL factor columns are not yet bound as custom Vela series. The core is
+Apache-2.0; the separately licensed PineTS addon is not part of this integration.
+
 ### ECharts
 
 ~~~yaml

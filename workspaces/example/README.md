@@ -1,6 +1,6 @@
 # 示例工作区 · Example workspace
 
-这个工作区包含 45 个图表、4 个看板和 8 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
+这个工作区包含 47 个图表、5 个看板和 8 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
 
 股票行情、销售与 OHLCV 数据均为虚构示例。工作区不包含任何凭据。
 
@@ -36,7 +36,16 @@ GL 3D、GL 流场、第三方插件和在线地图底图需要独立渲染扩展
 - **行情与月度数据**：股票价格、成交量和月度统计，展示本地 CSV、SQL 与图表间数据引用。
 - **HTTP**：通过 HTTP 请求展示 IP 分布，演示连接别名与请求模板。
 - **ECharts**：价格走势、K 线、热力图与经营数据。
+- **Vela**：[OHLCV 蜡烛图](charts/Example/Vela/example_vela_candlestick.yaml)与[技术指标](charts/Example/Vela/example_vela_indicators.yaml)，共享已有的 40 日虚构 `echarts-ohlcv.csv`，无需新增数据或连接。
 - **看板**：常规、ECharts 与 Mosaic 布局，可以查看并编辑各分页的图表组合。
+
+## Vela 金融图表
+
+[Vela · OHLCV 与技术指标](dashboards/example_vela_dashboard.yaml)看板分两页：基础蜡烛图展示开高低收与成交量；技术指标页展示 SMA、EMA、布林带、RSI 与 MACD，SMA 周期显式绑定看板参数。价格单位为虚构价格点，成交量为虚构成交单位。
+
+需要支持 `renderer: vela` 的 Facetra 版本（应用支持见 [Facetra PR #51](https://github.com/FacetraAPP/Facetra/pull/51)）。数据先由 SQL 转成日期与数值列，再交给离线 Vela 计算指标；40 行历史的预热期会保留空值。`timeframe: 1d` 设置日线刻度，不重采样、不补周末。窄屏可查看完整副图，小高度卡片只显示主图指标。
+
+扩展时可在 `chart.option.indicators` 添加 Vela 内置类型，`inputs` 配置周期、价格来源及颜色，也可绑定普通参数。修改 YAML 才会持久保存；图内临时设置不会回写文件。完整字段见 [Vela 配置](../../docs/chart-yaml.md#vela-ohlcv)。
 
 ## 使用
 

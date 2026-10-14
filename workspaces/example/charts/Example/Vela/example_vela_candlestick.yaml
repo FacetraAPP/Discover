@@ -1,0 +1,33 @@
+sources:
+  prices: {source: duckdb, file: data/example/echarts-ohlcv.csv}
+
+dataset:
+  id: candles
+  sources: [{id: raw, ref: '#/sources/prices'}]
+  sql: |
+    SELECT CAST(trade_date AS DATE) AS time,
+           CAST(open AS DOUBLE) AS open, CAST(high AS DOUBLE) AS high,
+           CAST(low AS DOUBLE) AS low, CAST(close AS DOUBLE) AS close,
+           CAST(volume AS BIGINT) AS volume
+    FROM raw
+    ORDER BY time
+
+chart:
+  id: example_vela_candlestick
+  title: Vela · OHLCV 蜡烛图
+  dataset: candles
+  renderer: vela
+  tags: [股票, 行情, K线, 成交量, Vela]
+  notes: |-
+    40 个交易日的离线虚构 OHLCV；价格单位为虚构价格点，成交量为虚构成交单位。
+    每根蜡烛展示开高低收，底部成交量独立刻度；可拖动、缩放并使用十字光标查看。
+    数据按交易日升序排列，不补周末；需要支持 renderer: vela 的 Facetra 版本。
+  option:
+    time: time
+    open: open
+    high: high
+    low: low
+    close: close
+    volume: volume
+    time_unit: iso8601
+    timeframe: 1d

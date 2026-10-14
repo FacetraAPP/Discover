@@ -12,13 +12,13 @@ content; no application checkout, private documentation or credentials are neede
 - [Workspace and parameter format](docs/workspace-yaml.md): directory layout,
   manifest fields, metadata, parameter types and connection requirements.
 - [Chart format](docs/chart-yaml.md): acquisition sources, datasets, references,
-  native/value/ECharts renderers and complete examples.
+  native/value/ECharts/Vela renderers and complete examples.
 - [Chart authoring lessons](LESSONS.md): metric interpretation, ISO dates, axes,
   parameter controls and visual checks learned from actual chart usage. Read
   before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
-- [Working examples](workspaces/example/README.md): 45 charts and four dashboards, including an offline chart prototype gallery.
+- [Working examples](workspaces/example/README.md): 47 charts and five dashboards, including an offline chart prototype gallery and Vela OHLCV studies.
 - [Minimal starter](docs/starter/): a CSV, chart, dashboard and manifest that can
   be copied together into a new topic under `workspaces/`.
 

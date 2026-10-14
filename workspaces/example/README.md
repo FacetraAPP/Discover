@@ -1,8 +1,35 @@
 # 示例工作区 · Example workspace
 
-这个工作区包含 8 个图表、3 个看板和 4 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
+这个工作区包含 45 个图表、4 个看板和 8 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
 
 股票行情、销售与 OHLCV 数据均为虚构示例。工作区不包含任何凭据。
+
+## 图表原型库
+
+[图表原型看板](dashboards/example_chart_gallery.yaml) 包含 **37 个新增原型**，全部无需参数、连接或网络。打开图表的「编辑 YAML」即可复制配置；重点是 `chart` 区块。
+
+Swift Charts 按 Apple 文档的 **7 种基础 Mark** 分类：AreaMark、LineMark、PointMark、RectangleMark、RuleMark、BarMark、SectorMark。
+向量化 Plot 是这些 Mark 的批量 API，并非额外图形类别；iOS 26+ 的 Chart3D/SurfacePlot 不在本次兼容 iOS 17 的 YAML 原生接口范围。
+另有 Facetra 的 value 数值卡片原型，它不属于 Swift Charts。
+
+ECharts 固定到 **6.1.0**，覆盖 **23 种核心 series**；另提供面积、环形、柱线组合、极坐标、日历、matrix 六个原型。
+GL 3D、GL 流场、第三方插件和在线地图底图需要独立渲染扩展，不属于核心离线 SVG 原型库。
+
+| 引擎 | 原型（每个名称对应独立 YAML） |
+| --- | --- |
+| Swift Charts | line、area、bar、pie、scatter、heatmap、rule；另有 value |
+| ECharts 核心 | line、bar、pie、scatter、effectScatter、radar、tree、treemap、sunburst、boxplot、candlestick、heatmap、map、lines、parallel、graph、sankey、funnel、gauge、pictorialBar、themeRiver、custom、chord |
+| ECharts 变体/坐标 | area、doughnut、mixed、polar、calendar、matrix |
+
+新增文件在 `charts/Example/Gallery/SwiftCharts/` 和 `charts/Example/Gallery/ECharts/`。图表 ID 采用 `example_gallery_<swift|echarts>_<类型>`。
+`gallery-categories.csv` 只有 4 行，`gallery-scatter.csv` 5 行、`gallery-heatmap.csv` 6 行、`gallery-intervals.csv` 3 行；均为本项目创作的虚构数据（Apache-2.0）。数值单位、K 线顺序和区间含义写在各图 notes 中。
+层级、网络、箱线图等结构化样本直接内嵌 `chart.option`，共享小 CSV 作为可执行 dataset；无需外部资产。
+地图使用本项目创作的两个虚构岛屿 GeoJSON，通过内嵌表达式 `echarts.registerMap` 注册，不代表真实地理区域。
+自定义图使用可复制的 `renderItem` 表达式，矩形裁剪在绘图区内。
+散点使用真实数值 X 轴；原生热力图以 `chart.color` 绑定颜色；原生区间以 `chart.x_end` 绑定终点。这三类原生配置需要支持相应字段的 Facetra 版本。
+弦图与 matrix 需要 Facetra 内置 ECharts 6+。
+
+来源：[Apple Swift Charts](https://developer.apple.com/documentation/charts)、[ECharts 官方示例](https://echarts.apache.org/examples/en/index.html)、[ECharts 6.1.0](https://github.com/apache/echarts/releases/tag/6.1.0)。
 
 ## 内容
 
@@ -12,6 +39,8 @@
 - **看板**：常规、ECharts 与 Mosaic 布局，可以查看并编辑各分页的图表组合。
 
 ## 使用
+
+工作区本身无需连接；只有保留的 HTTP 演示单独需要 `http_example` 连接，图表原型看板完全离线。
 
 1. 在 Discover 中选择本工作区并点击 **导入**。
 2. 打开导入工作区的图表或看板；本地 CSV 示例可以直接查看。

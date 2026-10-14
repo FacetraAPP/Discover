@@ -78,7 +78,7 @@ class YAMLValidationTests(unittest.TestCase):
 
     def test_invalid_chart_shapes_and_renderer_mixtures_are_rejected(self):
         for field, value in [("dataset", "missing"), ("renderer", "unknown"), ("x", ""),
-                             ("x", 1), ("option", None), ("plot", "scatter"), ("notes", []),
+                             ("x", 1), ("option", None), ("plot", "unknown"), ("notes", []),
                              ("unknown", "typo")]:
             with self.subTest(field=field, value=value):
                 document = copy.deepcopy(self.chart)
@@ -86,6 +86,22 @@ class YAMLValidationTests(unittest.TestCase):
                 self.write(self.chart_path, document)
                 with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml"):
                     self.build()
+
+    def test_coordinate_marks_require_their_own_fields_and_reject_mixtures(self):
+        for plot, extras in [("scatter", {}), ("heatmap", {"color": "value"}), ("rule", {"x_end": "value"})]:
+            document = copy.deepcopy(self.chart)
+            document["chart"].update(plot=plot, **extras)
+            validation.validate_chart(document, plot)
+            for invalid in [{"average": "value"}, {"color": "value"} if plot != "heatmap" else {"color": ""},
+                            {"x_end": "value"} if plot != "rule" else {"x_end": None}]:
+                broken = copy.deepcopy(document)
+                broken["chart"].update(invalid)
+                with self.subTest(plot=plot, invalid=invalid), self.assertRaises(ValueError):
+                    validation.validate_chart(broken, plot)
+        for plot in ["heatmap", "rule"]:
+            document = copy.deepcopy(self.chart)
+            document["chart"]["plot"] = plot
+            with self.assertRaises(ValueError): validation.validate_chart(document, plot)
 
     def test_parameter_types_defaults_and_ranges_are_checked(self):
         for update in [{"type": "date"}, {"type": "integer", "default": True},

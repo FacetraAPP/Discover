@@ -1,6 +1,4 @@
-description: Facetra 的完整示例工作区：股票行情、HTTP、ECharts 与 Mosaic 布局。股票和经营数据均为虚构示例。
+description: 图表原型库：7 种 Swift Charts 基础 Mark、23 种 ECharts 核心 series 与常用变体，使用少量离线虚构数据；另保留行情、HTTP 和布局示例。
 license: Apache-2.0
-requiredConnections:
-- alias: http_example
-  type: key-value
+requiredConnections: []
 title: 示例 · Examples

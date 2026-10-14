@@ -1,0 +1,25 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+  sql: |
+    SELECT label, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
+chart:
+  id: example_gallery_swift_bar
+  title: Swift Charts · 柱状 · BarMark
+  dataset: sample
+  renderer: default
+  tags:
+  - 图表原型
+  - Swift Charts
+  - bar
+  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  plot: bar
+  x: label
+  y: value

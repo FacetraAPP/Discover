@@ -1,0 +1,39 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-scatter.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_effectScatter
+  title: ECharts · 涟漪散点
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - effectScatter
+  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    xAxis:
+      type: value
+      min: 0
+    yAxis:
+      type: value
+      min: 0
+    series:
+    - type: effectScatter
+      symbolSize: 14
+      data:
+        from: sample
+        fields:
+        - x
+        - y

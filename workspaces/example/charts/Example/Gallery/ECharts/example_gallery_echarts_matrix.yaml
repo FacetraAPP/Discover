@@ -1,0 +1,69 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_matrix
+  title: ECharts · 矩阵坐标
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - matrix
+  notes: ECharts 6+ matrix 坐标系：3 列 × 2 行，6 个虚构散点，颜色绑定第三维数值。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    matrix:
+      x:
+        data:
+        - A
+        - B
+        - C
+      y:
+        data:
+        - Web
+        - Store
+      left: 55
+      right: 20
+      top: 25
+      bottom: 55
+    visualMap:
+      min: 0
+      max: 6
+      dimension: 2
+      orient: horizontal
+      left: center
+      bottom: 0
+    series:
+    - type: scatter
+      coordinateSystem: matrix
+      symbolSize: 28
+      data:
+      - - 0
+        - 0
+        - 2
+      - - 1
+        - 0
+        - 5
+      - - 2
+        - 0
+        - 3
+      - - 0
+        - 1
+        - 4
+      - - 1
+        - 1
+        - 1
+      - - 2
+        - 1
+        - 6

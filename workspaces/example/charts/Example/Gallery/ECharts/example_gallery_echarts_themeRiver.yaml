@@ -1,0 +1,71 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_themeRiver
+  title: ECharts · 主题河流
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - themeRiver
+  notes: 4 个 ISO 日期、2 个渠道的 8 条虚构记录，数据格式为 [日期, 数值, 系列名]。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    legend:
+      top: 0
+      data:
+      - Web
+      - Store
+    singleAxis:
+      type: time
+      top: 45
+      bottom: 35
+      left: 32
+      right: 32
+      axisLabel:
+        formatter: '{MM}-{dd}'
+        hideOverlap: true
+      splitNumber: 3
+      minInterval: 86400000
+      maxInterval: 86400000
+    series:
+    - type: themeRiver
+      data:
+      - - '2026-01-01'
+        - 3
+        - Web
+      - - '2026-01-01'
+        - 5
+        - Store
+      - - '2026-01-02'
+        - 5
+        - Web
+      - - '2026-01-02'
+        - 4
+        - Store
+      - - '2026-01-03'
+        - 8
+        - Web
+      - - '2026-01-03'
+        - 3
+        - Store
+      - - '2026-01-04'
+        - 6
+        - Web
+      - - '2026-01-04'
+        - 5
+        - Store
+      label:
+        show: false

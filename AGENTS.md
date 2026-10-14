@@ -18,7 +18,7 @@ content; no application checkout, private documentation or credentials are neede
   before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
-- [Working examples](workspaces/example/README.md): eight charts and three dashboards.
+- [Working examples](workspaces/example/README.md): 45 charts and four dashboards, including an offline chart prototype gallery.
 - [Minimal starter](docs/starter/): a CSV, chart, dashboard and manifest that can
   be copied together into a new topic under `workspaces/`.
 

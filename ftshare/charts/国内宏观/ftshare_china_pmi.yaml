@@ -1,0 +1,89 @@
+params:
+- name: periods
+  label: 显示期数（月）
+  type: integer
+  default: 60
+  minimum: 1
+  maximum: 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-pmi
+    format: json
+    recordsPath:
+    - data
+    - items
+    params:
+      page: 1
+      page_size: '{{ params.periods }}'
+dataset:
+  id: pmi_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(manufacturing_pmi AS DOUBLE) AS manufacturing_pmi,
+             TRY_CAST(non_manufacturing_pmi AS DOUBLE) AS non_manufacturing_pmi
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
+chart:
+  id: ftshare_china_pmi
+  title: PMI · 制造业与非制造业
+  dataset: pmi_data
+  renderer: echarts
+  notes: |-
+    FTShare 国内宏观：PMI · 制造业与非制造业。PMI 单位为指数点，50 为荣枯线。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/s4xvqnu0
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 16
+      top: 56
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      boundaryGap: false
+      data:
+        from: pmi_data
+        field: period
+    yAxis:
+      type: value
+      name: 指数点
+      scale: true
+    series:
+    - name: 制造业
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: pmi_data
+        field: manufacturing_pmi
+      markLine:
+        symbol: none
+        label:
+          formatter: 荣枯线 50
+        lineStyle:
+          type: dashed
+        data:
+        - yAxis: 50
+    - name: 非制造业
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: pmi_data
+        field: non_manufacturing_pmi

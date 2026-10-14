@@ -124,3 +124,26 @@ also discovers dependencies from chart source definitions and referenced charts.
 The topic README must explain what each connection means and which local fields
 are needed. Do not commit tokens, API keys, private data, personal health records
 or machine-specific paths. Offline validation does not need real connections.
+
+### Optional connection type definitions
+
+A workspace may include `connections/<type-id>.yaml` to offer a Key-Value
+connection form in Facetra. Definitions are included in complete workspace
+imports; they do not create a connection or store values. A definition alone
+does not make the workspace require a connection. For example:
+
+~~~yaml
+name: FTShare
+notes: Optional credentials for FTShare hosted APIs.
+fields:
+  - key: endpoint
+  - key: api_key
+~~~
+
+`fields` is required and contains objects with only `key`. Keys must be unique
+IDs. Optional `name` is a nonempty string (defaults to the filename); optional
+`notes` is a string. Field values and defaults are not permitted. Definitions
+must be directly inside `connections/`, use `.yaml`, and follow the same file,
+path and symlink restrictions as other content. Single-resource imports include
+only their chart/data dependencies; use a complete workspace import to obtain
+these optional forms. Configure actual values in the device's connection library.

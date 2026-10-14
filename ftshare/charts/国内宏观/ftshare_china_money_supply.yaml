@@ -1,0 +1,89 @@
+params:
+- name: periods
+  label: 显示期数（月）
+  type: integer
+  default: 60
+  minimum: 1
+  maximum: 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-money-supply
+    format: json
+    recordsPath:
+    - data
+    - items
+    params:
+      page: 1
+      page_size: '{{ params.periods }}'
+dataset:
+  id: money_supply_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(m0_yoy AS DOUBLE) AS m0_yoy,
+             TRY_CAST(m1_yoy AS DOUBLE) AS m1_yoy,
+             TRY_CAST(m2_yoy AS DOUBLE) AS m2_yoy
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
+chart:
+  id: ftshare_china_money_supply
+  title: 货币供应 · M0/M1/M2 同比
+  dataset: money_supply_data
+  renderer: echarts
+  notes: |-
+    FTShare 国内宏观：货币供应 · M0/M1/M2 同比。单位：%。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/twl6t7h1
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 16
+      top: 56
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      boundaryGap: false
+      data:
+        from: money_supply_data
+        field: period
+    yAxis:
+      type: value
+      name: '%'
+      scale: false
+    series:
+    - name: M0
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: money_supply_data
+        field: m0_yoy
+    - name: M1
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: money_supply_data
+        field: m1_yoy
+    - name: M2
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: money_supply_data
+        field: m2_yoy

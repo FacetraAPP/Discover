@@ -1,0 +1,81 @@
+params:
+- name: periods
+  label: 显示期数（月）
+  type: integer
+  default: 60
+  minimum: 1
+  maximum: 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-lpr
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: lpr_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH monthly AS (
+      SELECT substr(CAST(date AS VARCHAR), 1, 7) AS period,
+             TRY_CAST(lpr_1y AS DOUBLE) AS lpr_1y,
+             TRY_CAST(lpr_5y AS DOUBLE) AS lpr_5y,
+             row_number() OVER (PARTITION BY substr(CAST(date AS VARCHAR), 1, 7) ORDER BY date DESC) AS rank
+      FROM raw
+    ), recent AS (
+      SELECT period, lpr_1y, lpr_5y FROM monthly
+      WHERE rank = 1
+      ORDER BY period DESC
+      LIMIT $periods
+    )
+    SELECT * FROM recent ORDER BY period
+chart:
+  id: ftshare_china_lpr
+  title: LPR · 贷款市场报价利率
+  dataset: lpr_data
+  renderer: echarts
+  notes: |-
+    FTShare 国内宏观：LPR · 贷款市场报价利率。单位：%。按月保留最后一条报价；5 年期在 2019-08-20 前缺失，不补零。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/wg95club
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 16
+      top: 56
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      boundaryGap: false
+      data:
+        from: lpr_data
+        field: period
+    yAxis:
+      type: value
+      name: '%'
+      scale: false
+    series:
+    - name: 1 年期
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: lpr_data
+        field: lpr_1y
+      step: end
+    - name: 5 年期
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: lpr_data
+        field: lpr_5y
+      step: end

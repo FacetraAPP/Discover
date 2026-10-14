@@ -8,9 +8,9 @@ import re
 import shutil
 
 if __package__:
-    from .validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_dashboard, validate_workspace
+    from .validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 else:
-    from validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_dashboard, validate_workspace
+    from validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
@@ -181,6 +181,17 @@ def build_workspace(root):
         required.update(resource_connections)
 
     paths = {manifest_path} | {item["path"] for item in resources}
+    connection_root = root / "connections"
+    if connection_root.is_symlink():
+        raise ValueError(f"{topic}: connections/ cannot be a symbolic link")
+    for path in sorted(connection_root.rglob("*.yml")):
+        raise ValueError(f"{topic}/{path.relative_to(root)}: use the .yaml extension; .yml is not loaded by Facetra")
+    for path in sorted(connection_root.rglob("*.yaml")):
+        relative = path.relative_to(root).as_posix()
+        if path.parent != connection_root or not ID.fullmatch(path.stem):
+            raise ValueError(f"{topic}/{relative}: connection types must be connections/<type-id>.yaml")
+        validate_connection_type(load_yaml(read_file(root, relative), f"{topic}/{relative}"), f"{topic}/{relative}")
+        paths.add(relative)
     names = {path.name for path in root.iterdir()}
     readmes = [name for name in ["README.md", "readme.md"] if name in names]
     if len(readmes) > 1:

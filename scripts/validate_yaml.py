@@ -156,6 +156,19 @@ def validate_bindings(value, caller, target, context, inherit=False):
         require(not parameter.get("required", True) or parameter.get("default") is not None or name in value or (inherit and name in caller), context, f"missing required target parameter {name}")
 
 
+def validate_connection_type(document, context):
+    mapping(document, context, {"name", "notes", "fields"}, {"fields"})
+    for field in ("name", "notes"):
+        if document.get(field) is not None:
+            text(document[field], context + "." + field, nonempty=field == "name")
+    keys = []
+    for index, field in enumerate(sequence(document["fields"], context + ".fields")):
+        location = f"{context}.fields[{index}]"
+        mapping(field, location, {"key"}, {"key"})
+        keys.append(identifier(field["key"], location + ".key"))
+    unique(keys, context + ".fields")
+
+
 def validate_workspace(document, context):
     mapping(document, context, {"id", "title", "kind", "description", "license", "isPersonal", "requiredConnections"}, {"id", "title", "kind"})
     identifier(document["id"], context + ".id")

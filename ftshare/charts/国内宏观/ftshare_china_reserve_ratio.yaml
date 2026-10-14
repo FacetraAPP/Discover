@@ -1,0 +1,79 @@
+params:
+- name: periods
+  label: 显示期数（月）
+  type: integer
+  default: 60
+  minimum: 1
+  maximum: 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-reserve-ratio
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: reserve_ratio_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(date, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(date, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(reserve_ratio_small_medium AS DOUBLE) AS reserve_ratio_small_medium,
+             TRY_CAST(reserve_ratio_large AS DOUBLE) AS reserve_ratio_large
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
+chart:
+  id: ftshare_china_reserve_ratio
+  title: 存款准备金率
+  dataset: reserve_ratio_data
+  renderer: echarts
+  notes: |-
+    FTShare 国内宏观：存款准备金率。单位：%。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 16
+      top: 56
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      boundaryGap: false
+      data:
+        from: reserve_ratio_data
+        field: period
+    yAxis:
+      type: value
+      name: '%'
+      scale: false
+    series:
+    - name: 中小型金融机构
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: reserve_ratio_data
+        field: reserve_ratio_small_medium
+      step: end
+    - name: 大型金融机构
+      type: line
+      showSymbol: false
+      connectNulls: false
+      data:
+        from: reserve_ratio_data
+        field: reserve_ratio_large
+      step: end

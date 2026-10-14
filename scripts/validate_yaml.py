@@ -193,8 +193,10 @@ def validate_workspace(document, context):
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
     connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")
     for connection in connections:
-        identifier(connection, context + ".requiredConnections")
-    unique(connections, context + ".requiredConnections")
+        mapping(connection, context + ".requiredConnections", {"alias", "type"}, {"alias"})
+        identifier(connection["alias"], context + ".requiredConnections.alias")
+        identifier(connection.get("type", "key-value"), context + ".requiredConnections.type")
+    unique([connection["alias"] for connection in connections], context + ".requiredConnections")
 
 
 def reference(value, context, kind):

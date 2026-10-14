@@ -39,17 +39,20 @@ backslashes, absolute paths or .. traversal are allowed. Files may be at most
 
 | Field | Type / requirement | Meaning |
 | --- | --- | --- |
-| id | Required ID string | Portable workspace identity |
 | title | Required nonempty string | Workspace card and detail title |
-| kind | Required, localPath | Portable local workspace |
 | description | Optional string | Workspace card/detail description |
 | license | Optional string, defaults to Apache-2.0 | License for redistributed content |
-| isPersonal | Optional boolean | Personal-space marker; normally false for public topics |
 | requiredConnections | Optional list of unique alias/type maps, defaults to [] | Local connection IDs or aliases needed by this workspace |
 
-For new topics, use workspace.yaml. Legacy workspace.json accepts the same
-fields, but a topic must have exactly one manifest. To migrate, preserve the ID
-and metadata, write YAML and remove the old JSON manifest. Device paths,
+Workspace names identify workspaces inside Facetra. The catalog's topic key comes
+from the directory name under `workspaces/`; it is independent of the display title.
+Do not publish `id`, `kind` or `isPersonal` in workspace.yaml. Storage kind is
+device-local Facetra metadata, and workspaces have no special personal role.
+
+For new topics, use workspace.yaml. Legacy workspace.json may still contain
+`id`, `kind: localPath` and `isPersonal` for compatibility, but a topic must have
+exactly one manifest. To migrate, retain the portable fields in the table above,
+write YAML and remove the old JSON manifest. Device paths,
 connection values and imported discoverOrigin metadata do not belong in a
 public manifest. Optional description/license may be null to use their defaults.
 

@@ -1,5 +1,6 @@
 """Offline validation of portable Facetra documents; never executes sources or SQL."""
 import math
+from datetime import datetime
 import re
 from urllib.parse import urlsplit
 
@@ -91,12 +92,19 @@ def unique(values, context):
 def parameter_value(parameter, value, context):
     scalar(value, context)
     kind = parameter["type"]
-    matches = {"string": isinstance(value, str), "boolean": type(value) is bool,
+    matches = {"string": isinstance(value, str), "date": isinstance(value, str), "boolean": type(value) is bool,
                "integer": type(value) in (int, float) and int(value) == value,
                "number": type(value) in (int, float)}
     require(matches[kind], context, f"expected parameter type {kind}")
     if isinstance(value, str) and parameter.get("required", True):
         text(value, context)
+    if parameter["type"] == "date" and (value != "" or parameter.get("required", True)):
+        pattern = "%Y-%m-%d"
+        try:
+            valid = datetime.strptime(value, pattern).strftime(pattern) == value
+        except ValueError:
+            valid = False
+        require(valid, context, "expected a valid ISO calendar date (YYYY-MM-DD)")
     if type(value) in (int, float):
         number(value, context, parameter.get("minimum"), parameter.get("maximum"))
     if parameter.get("options") is not None:
@@ -110,7 +118,10 @@ def parameters(values, context):
         mapping(parameter, location, {"name", "label", "type", "default", "required", "minimum", "maximum", "options", "advanced"}, {"name", "type"})
         name = identifier(parameter["name"], location + ".name")
         require(name not in result, location, "duplicate parameter name")
-        require(parameter["type"] in ("string", "integer", "number", "boolean"), location, "unsupported parameter type")
+        require(parameter["type"] in ("string", "integer", "number", "boolean", "date"), location, "unsupported parameter type")
+        if parameter["type"] == "date":
+            require(all(parameter.get(field) is None for field in ("minimum", "maximum")),
+                    location, "date parameters cannot have numeric bounds")
         if "label" in parameter:
             text(parameter["label"], location + ".label")
         for field in ("required", "advanced"):
@@ -154,6 +165,19 @@ def validate_bindings(value, caller, target, context, inherit=False):
             parameter_value(target[name], binding, context + "." + name)
     for name, parameter in target.items():
         require(not parameter.get("required", True) or parameter.get("default") is not None or name in value or (inherit and name in caller), context, f"missing required target parameter {name}")
+
+
+def validate_connection_type(document, context):
+    mapping(document, context, {"name", "notes", "fields"}, {"fields"})
+    for field in ("name", "notes"):
+        if document.get(field) is not None:
+            text(document[field], context + "." + field, nonempty=field == "name")
+    keys = []
+    for index, field in enumerate(sequence(document["fields"], context + ".fields")):
+        location = f"{context}.fields[{index}]"
+        mapping(field, location, {"key"}, {"key"})
+        keys.append(identifier(field["key"], location + ".key"))
+    unique(keys, context + ".fields")
 
 
 def validate_workspace(document, context):

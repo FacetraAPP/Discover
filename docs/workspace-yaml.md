@@ -83,18 +83,23 @@ params:
 | Field | Rule |
 | --- | --- |
 | name | Required ID; unique in this document |
-| type | Required: string, integer, number or boolean |
+| type | Required: string, integer, number, boolean or date |
 | label | Optional nonempty string; defaults to name |
 | default | Optional scalar of the declared type |
 | required | Optional boolean, defaults to true |
-| minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum |
+| minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum; unsupported for date |
 | options | Optional list of typed permitted scalar values |
 | advanced | Optional boolean, defaults to false |
 
 All defaults and options must satisfy the type/range rules; a default with options
 must be one of them. number accepts integers and decimals; integer accepts
 integral numbers. Boolean values are not integers. Required string values cannot
-be empty. Give charts useful defaults so a single-chart import works independently.
+be empty. Date values are quoted ISO calendar dates (`YYYY-MM-DD`), validated as
+real dates, and remain strings in SQL and request parameters. Facetra presents
+them with a native date picker. Optional date parameters may use an empty string.
+Dates do not accept numeric bounds. API-specific date formatting belongs in the
+HTTP source template, not in a compact-date default. Give charts useful defaults so a single-chart
+import works independently.
 A required parameter without a default must receive a value before execution;
 dashboard panels and external references must bind it.
 
@@ -124,3 +129,26 @@ also discovers dependencies from chart source definitions and referenced charts.
 The topic README must explain what each connection means and which local fields
 are needed. Do not commit tokens, API keys, private data, personal health records
 or machine-specific paths. Offline validation does not need real connections.
+
+### Optional connection type definitions
+
+A workspace may include `connections/<type-id>.yaml` to offer a Key-Value
+connection form in Facetra. Definitions are included in complete workspace
+imports; they do not create a connection or store values. A definition alone
+does not make the workspace require a connection. For example:
+
+~~~yaml
+name: FTShare
+notes: Optional credentials for FTShare hosted APIs.
+fields:
+  - key: endpoint
+  - key: api_key
+~~~
+
+`fields` is required and contains objects with only `key`. Keys must be unique
+IDs. Optional `name` is a nonempty string (defaults to the filename); optional
+`notes` is a string. Field values and defaults are not permitted. Definitions
+must be directly inside `connections/`, use `.yaml`, and follow the same file,
+path and symlink restrictions as other content. Single-resource imports include
+only their chart/data dependencies; use a complete workspace import to obtain
+these optional forms. Configure actual values in the device's connection library.

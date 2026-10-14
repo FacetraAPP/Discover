@@ -51,6 +51,52 @@ class CatalogTests(unittest.TestCase):
         files = {file["path"] for file in self.build()["workspaces"][0]["files"]}
         self.assertTrue({"workspace.json", "readme.md"}.issubset(files))
 
+    def test_connection_type_is_included_in_complete_workspace_without_credentials(self):
+        folder = self.topic / "connections"
+        folder.mkdir()
+        definition = folder / "ftshare.yaml"
+        definition.write_text("name: FTShare\nfields: [{key: endpoint}, {key: api_key}]\n")
+        workspace = self.build()["workspaces"][0]
+        files = {file["path"]: file for file in workspace["files"]}
+        self.assertEqual(files["connections/ftshare.yaml"], catalog.file_record(self.topic, "connections/ftshare.yaml"))
+        self.assertEqual(workspace["requiredConnections"], [])
+        self.assertNotIn("connections/ftshare.yaml", workspace["resources"][0]["files"])
+
+    def test_invalid_connection_types_are_rejected(self):
+        folder = self.topic / "connections"
+        folder.mkdir()
+        definition = folder / "ftshare.yaml"
+        for text in ["fields: [{key: api_key, value: secret}]", "fields: [{key: bad.key}]",
+                     "fields: [{key: api_key}, {key: api_key}]", "fields: token",
+                     "name: ''\nfields: []", "fields: [{key: token}]\napi_key: secret"]:
+            with self.subTest(text=text):
+                definition.write_text(text)
+                with self.assertRaisesRegex(ValueError, "example/connections/ftshare.yaml"):
+                    self.build()
+        definition.unlink()
+        (folder / "nested").mkdir()
+        (folder / "nested/ftshare.yaml").write_text("fields: []")
+        with self.assertRaisesRegex(ValueError, "connections/<type-id>.yaml"):
+            self.build()
+
+    def test_connection_type_symlinks_and_yml_are_rejected(self):
+        folder = self.topic / "connections"
+        folder.mkdir()
+        (self.root / "outside.yaml").write_text("fields: []")
+        definition = folder / "ftshare.yaml"
+        definition.symlink_to(self.root / "outside.yaml")
+        with self.assertRaisesRegex(ValueError, "Symbolic links"):
+            self.build()
+        definition.unlink()
+        (folder / "ftshare.yml").write_text("fields: []")
+        with self.assertRaisesRegex(ValueError, "use the .yaml extension"):
+            self.build()
+        (folder / "ftshare.yml").unlink()
+        folder.rmdir()
+        folder.symlink_to(self.root)
+        with self.assertRaisesRegex(ValueError, "connections/ cannot be a symbolic link"):
+            self.build()
+
     def test_multiple_manifests_invalid_yaml_and_readme_links_are_rejected(self):
         manifest = self.topic / "workspace.yaml"
         manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")

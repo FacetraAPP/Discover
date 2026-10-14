@@ -46,6 +46,11 @@ self-contained specifications for [workspaces and parameters](docs/workspace-yam
 [charts](docs/chart-yaml.md) and [dashboards](docs/dashboard-yaml.md).
 No Facetra source checkout or private documentation is required.
 
+The [FTShare workspace](ftshare/README.md) includes 18 online charts covering
+Chinese macroeconomic indicators and interest rates, plus an optional FTShare
+connection type. Its public macro endpoints and GitHub import can be used
+without a connection.
+
 Repository skills are available at
 [create-chart-yaml](.agents/skills/create-chart-yaml/SKILL.md) and
 [create-dashboard-yaml](.agents/skills/create-dashboard-yaml/SKILL.md).

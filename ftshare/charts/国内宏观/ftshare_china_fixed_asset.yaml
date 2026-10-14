@@ -1,0 +1,95 @@
+params:
+- name: periods
+  label: 显示最近（期数）
+  type: integer
+  default: 24
+  minimum: 1
+  maximum: 200
+  options:
+  - 6
+  - 12
+  - 24
+  - 36
+  - 60
+  - 120
+  - 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-fixed-asset-investment
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: fixed_asset_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(yoy AS DOUBLE) AS yoy,
+             TRY_CAST(mom AS DOUBLE) AS mom
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
+chart:
+  id: ftshare_china_fixed_asset
+  title: 固定资产投资 · 同比与环比
+  dataset: fixed_asset_data
+  renderer: echarts
+  notes: |-
+    观察固定资产投资当月同比和环比。增速可能受低基数影响。单位：%。
+
+    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/vp2bmxs5
+  option:
+    tooltip:
+      trigger: axis
+      formatter: 'js:(items) => { const rows = Array.isArray(items) ? items : [items]; if (!rows.length) return ''''; const d = new Date(rows[0].axisValue); const month = d.getFullYear() + ''-'' + String(d.getMonth() + 1).padStart(2, ''0''); return month + ''<br/>'' + rows.map(p => p.marker + p.seriesName + '': '' + (p.value[1] == null ? ''—'' : Number(p.value[1]).toFixed(2) + ''%'')).join(''<br/>''); }'
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 52
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: false
+      min: dataMin
+      max: dataMax
+      axisLabel:
+        formatter: '{yyyy}-{MM}'
+    yAxis:
+      type: value
+      name: '%'
+      scale: false
+    series:
+    - name: 同比
+      type: line
+      showSymbol: true
+      connectNulls: false
+      data:
+        from: fixed_asset_data
+        x: period
+        y: yoy
+      symbolSize: 4
+      showAllSymbol: auto
+    - name: 环比
+      type: line
+      showSymbol: true
+      connectNulls: false
+      data:
+        from: fixed_asset_data
+        x: period
+        y: mom
+      symbolSize: 4
+      showAllSymbol: auto

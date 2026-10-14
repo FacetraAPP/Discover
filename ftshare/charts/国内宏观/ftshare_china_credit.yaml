@@ -1,0 +1,137 @@
+params:
+- name: periods
+  label: 显示最近（期数）
+  type: integer
+  default: 24
+  minimum: 1
+  maximum: 200
+  options:
+  - 6
+  - 12
+  - 24
+  - 36
+  - 60
+  - 120
+  - 200
+sources:
+  macro:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-credit-loans
+    format: json
+    recordsPath:
+    - data
+    - items
+    params:
+      page: 1
+      page_size: '{{ params.periods }}'
+dataset:
+  id: credit_data
+  sources:
+  - id: raw
+    ref: '#/sources/macro'
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(yoy AS DOUBLE) AS yoy,
+             TRY_CAST(cumulative_yoy AS DOUBLE) AS cumulative_yoy
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
+chart:
+  id: ftshare_china_credit
+  title: 新增信贷 · 同比
+  dataset: credit_data
+  renderer: echarts
+  notes: |-
+    上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
+
+    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值；上下两图使用相同的日期位置，缺失数据不补零。
+    这是新增信贷，不是社会融资规模总量。当月同比可能因负值或低基数出现超过 ±100% 的变化，两幅图的纵轴范围各自标明。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2) + ''%'''
+    legend:
+      type: scroll
+      top: 0
+      show: false
+    grid:
+    - left: 46
+      right: 24
+      top: 36
+      height: 34%
+      containLabel: false
+    - left: 46
+      right: 24
+      top: 60%
+      bottom: 30
+      containLabel: false
+    xAxis:
+    - type: category
+      boundaryGap: false
+      data:
+        from: credit_data
+        field: period
+      axisLabel:
+        show: false
+      gridIndex: 0
+      axisTick:
+        show: false
+      axisLine:
+        onZero: false
+    - type: category
+      boundaryGap: false
+      data:
+        from: credit_data
+        field: period
+      gridIndex: 1
+      axisLine:
+        onZero: false
+    yAxis:
+    - type: value
+      scale: false
+      gridIndex: 0
+    - type: value
+      scale: false
+      gridIndex: 1
+    series:
+    - name: 当月同比
+      type: line
+      showSymbol: true
+      connectNulls: false
+      data:
+        from: credit_data
+        field: yoy
+      symbolSize: 4
+      showAllSymbol: auto
+    - name: 累计同比
+      type: line
+      showSymbol: true
+      connectNulls: false
+      data:
+        from: credit_data
+        field: cumulative_yoy
+      symbolSize: 4
+      showAllSymbol: auto
+      xAxisIndex: 1
+      yAxisIndex: 1
+    title:
+    - text: 当月同比（%）
+      left: 12
+      top: 8
+      textStyle:
+        fontSize: 12
+    - text: 累计同比（%）
+      left: 12
+      top: 51%
+      textStyle:
+        fontSize: 12
+    axisPointer:
+      link:
+      - xAxisIndex: all

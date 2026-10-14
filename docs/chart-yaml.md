@@ -77,7 +77,12 @@ is a complete chart whose connection setup is in [the example README](../example
 GET has no json/data body. JSON can be one object or an object array; for a nested
 record collection supply recordsPath. CSV responses become tabular data directly.
 For POST, add method: post and either a json body or data form fields.
-Templates support only "{{ params.name }}" and "{{ connections.id.field }}".
+Templates support "{{ params.name }}" and "{{ connections.id.field }}".
+To format an ISO date parameter for an API, explicitly use
+"{{ params.start_date | date_format('yyyyMMdd') }}". The supported output formats
+are `yyyyMMdd` and `yyyy-MM-dd`; the input must be a valid ISO date string.
+Unfiltered date parameters retain `YYYY-MM-DD`, and the filter does not change
+the saved parameter value. Filters apply only to parameter references.
 An entire JSON value consisting of a parameter template preserves its scalar
 type; a template embedded in other text produces a string. Template syntax and
 resolved response fields still need runtime verification.

@@ -102,7 +102,7 @@ class YAMLValidationTests(unittest.TestCase):
         from scripts.validate_yaml import parameters
         valid = {"name": "day", "type": "date", "default": "2024-02-29"}
         self.assertEqual(parameters([valid], "dates")["day"]["default"], "2024-02-29")
-        for value in ["20240229", "2026-02-29", "2026-2-01", "2026-13-01"]:
+        for value in ["20240229", "2026-02-29", "2026-2-01", "2026-13-01", "0000-01-01", "+2026-01-01"]:
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, "ISO calendar date"):
                 parameters([dict(valid, default=value)], "dates")
         with self.assertRaisesRegex(ValueError, "numeric bounds"):

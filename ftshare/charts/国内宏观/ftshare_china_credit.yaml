@@ -1,6 +1,6 @@
 params:
 - name: periods
-  label: 显示最近（月数）
+  label: 显示最近（期数）
   type: integer
   default: 24
   minimum: 1
@@ -30,20 +30,29 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/macro'
-  sql: "WITH normalized AS (\n  SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,\n         TRY_CAST(yoy AS DOUBLE) AS yoy,\n         TRY_CAST(cumulative_yoy AS DOUBLE) AS cumulative_yoy\n  FROM raw\n)\nSELECT * FROM (\n  SELECT * FROM normalized WHERE period <> ''\n  ORDER BY period DESC\n  LIMIT $periods\n) AS recent ORDER BY period"
+  sql: |-
+    WITH normalized AS (
+      SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月', 1), 2, '0') AS period,
+             TRY_CAST(yoy AS DOUBLE) AS yoy,
+             TRY_CAST(cumulative_yoy AS DOUBLE) AS cumulative_yoy
+      FROM raw
+    )
+    SELECT * FROM (
+      SELECT * FROM normalized WHERE period <> ''
+      ORDER BY period DESC
+      LIMIT $periods
+    ) AS recent ORDER BY period
 chart:
   id: ftshare_china_credit
   title: 新增信贷 · 同比
   dataset: credit_data
   renderer: echarts
-  notes: '上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
-
+  notes: |-
+    上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值；上下两图使用相同的日期位置，缺失数据不补零。
-
     这是新增信贷，不是社会融资规模总量。当月同比可能因负值或低基数出现超过 ±100% 的变化，两幅图的纵轴范围各自标明。
-
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b'
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b
   option:
     tooltip:
       trigger: axis
@@ -66,7 +75,7 @@ chart:
     xAxis:
     - type: category
       boundaryGap: false
-      data: &id001
+      data:
         from: credit_data
         field: period
       axisLabel:
@@ -78,12 +87,9 @@ chart:
         onZero: false
     - type: category
       boundaryGap: false
-      data: *id001
-      axisLabel:
-        showMinLabel: true
-        showMaxLabel: true
-        alignMinLabel: left
-        alignMaxLabel: right
+      data:
+        from: credit_data
+        field: period
       gridIndex: 1
       axisLine:
         onZero: false

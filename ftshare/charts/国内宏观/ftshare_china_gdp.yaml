@@ -69,11 +69,6 @@ chart:
       data:
         from: gdp_data
         field: period
-      axisLabel:
-        showMinLabel: true
-        showMaxLabel: true
-        alignMinLabel: left
-        alignMaxLabel: right
     yAxis:
       type: value
       name: '%'

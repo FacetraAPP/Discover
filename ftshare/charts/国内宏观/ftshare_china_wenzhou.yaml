@@ -69,8 +69,6 @@ chart:
       type: time
       boundaryGap: false
       axisLabel:
-        alignMinLabel: left
-        alignMaxLabel: right
         formatter: '{MM}-{dd}'
       min: dataMin
       max: dataMax

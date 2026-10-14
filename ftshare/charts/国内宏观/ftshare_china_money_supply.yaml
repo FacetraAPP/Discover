@@ -1,6 +1,6 @@
 params:
 - name: periods
-  label: 显示最近（月数）
+  label: 显示最近（期数）
   type: integer
   default: 24
   minimum: 1
@@ -72,11 +72,6 @@ chart:
       data:
         from: money_supply_data
         field: period
-      axisLabel:
-        showMinLabel: true
-        showMaxLabel: true
-        alignMinLabel: left
-        alignMaxLabel: right
     yAxis:
       type: value
       name: '%'

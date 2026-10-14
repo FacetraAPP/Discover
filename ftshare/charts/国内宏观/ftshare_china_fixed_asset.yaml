@@ -1,6 +1,6 @@
 params:
 - name: periods
-  label: 显示最近（月数）
+  label: 显示最近（期数）
   type: integer
   default: 24
   minimum: 1
@@ -46,12 +46,12 @@ chart:
   notes: |-
     观察固定资产投资当月同比和环比。增速可能受低基数影响。单位：%。
 
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/vp2bmxs5
   option:
     tooltip:
       trigger: axis
-      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2) + ''%'''
+      formatter: 'js:(items) => { const rows = Array.isArray(items) ? items : [items]; if (!rows.length) return ''''; const d = new Date(rows[0].axisValue); const month = d.getFullYear() + ''-'' + String(d.getMonth() + 1).padStart(2, ''0''); return month + ''<br/>'' + rows.map(p => p.marker + p.seriesName + '': '' + (p.value[1] == null ? ''—'' : Number(p.value[1]).toFixed(2) + ''%'')).join(''<br/>''); }'
     legend:
       type: scroll
       top: 0
@@ -62,16 +62,12 @@ chart:
       bottom: 30
       containLabel: true
     xAxis:
-      type: category
+      type: time
       boundaryGap: false
-      data:
-        from: fixed_asset_data
-        field: period
+      min: dataMin
+      max: dataMax
       axisLabel:
-        showMinLabel: true
-        showMaxLabel: true
-        alignMinLabel: left
-        alignMaxLabel: right
+        formatter: '{yyyy}-{MM}'
     yAxis:
       type: value
       name: '%'
@@ -83,7 +79,8 @@ chart:
       connectNulls: false
       data:
         from: fixed_asset_data
-        field: yoy
+        x: period
+        y: yoy
       symbolSize: 4
       showAllSymbol: auto
     - name: 环比
@@ -92,6 +89,7 @@ chart:
       connectNulls: false
       data:
         from: fixed_asset_data
-        field: mom
+        x: period
+        y: mom
       symbolSize: 4
       showAllSymbol: auto

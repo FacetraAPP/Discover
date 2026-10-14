@@ -2,7 +2,7 @@
 
 A chart file describes acquisition, transformation and rendering in one document:
 params → sources → dataset → chart. Save it as
-<topic>/charts/<optional-folders>/<chart.id>.yaml.
+workspaces/<topic>/charts/<optional-folders>/<chart.id>.yaml.
 Read [workspace paths and parameters](workspace-yaml.md) first.
 
 The [complete starter chart](starter/charts/sales.yaml), together with its
@@ -60,8 +60,8 @@ sources:
 This is a source fragment. It requires a declared symbol chart parameter and
 a locally configured market connection with endpoint/token fields. The public
 endpoint must return the expected response; this repository cannot provide or
-test that service. [The HTTP example](../example/charts/Example/HTTP/example_http_ip_pie.yaml)
-is a complete chart whose connection setup is in [the example README](../example/README.md).
+test that service. [The HTTP example](../workspaces/example/charts/Example/HTTP/example_http_ip_pie.yaml)
+is a complete chart whose connection setup is in [the example README](../workspaces/example/README.md).
 
 | Field | Rule |
 | --- | --- |
@@ -279,9 +279,9 @@ scripts:
 Use {from: script, name: formatter} at the intended option property. Scripts are
 restored as expressions by Facetra; ordinary data strings do not become scripts.
 Do not add native plot/x/y/average or value fields to an ECharts chart.
-The [business](../example/charts/Example/ECharts/example_echarts_business.yaml),
-[candlestick](../example/charts/Example/ECharts/example_echarts_candlestick.yaml)
-and [heatmap](../example/charts/Example/ECharts/example_echarts_heatmap.yaml)
+The [business](../workspaces/example/charts/Example/ECharts/example_echarts_business.yaml),
+[candlestick](../workspaces/example/charts/Example/ECharts/example_echarts_candlestick.yaml)
+and [heatmap](../workspaces/example/charts/Example/ECharts/example_echarts_heatmap.yaml)
 examples show complete configurations.
 
 ## Validation

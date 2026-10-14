@@ -1,13 +1,18 @@
 # Facetra Discover
 
 Public, portable workspaces for [Facetra](https://github.com/FacetraAPP/Facetra).
-Each top-level topic directory **is a workspace**. Charts, dashboards and local
+Each topic directory under `workspaces/` **is a workspace**. Charts, dashboards and local
 data dependencies may reference only files in their own workspace. Required
 connections refer to values configured on the user's device; never commit tokens,
 API keys, private data or personal health records.
 
+Published content lives in `workspaces/`. Repository documentation and the
+non-published starter live in `docs/`; catalog tooling and regression tests live
+in `scripts/` and `tests/`. Only direct topic folders in `workspaces/` are
+discovered by the publisher.
+
 ```text
-example/
+workspaces/example/
   workspace.yaml       # Portable localPath manifest with title, description and license
   README.md            # Markdown overview shown in Facetra workspace details
   charts/**/*.yaml
@@ -46,7 +51,7 @@ self-contained specifications for [workspaces and parameters](docs/workspace-yam
 [charts](docs/chart-yaml.md) and [dashboards](docs/dashboard-yaml.md).
 No Facetra source checkout or private documentation is required.
 
-The [FTShare workspace](ftshare/README.md) includes 18 online charts covering
+The [FTShare workspace](workspaces/ftshare/README.md) includes 18 online charts covering
 Chinese macroeconomic indicators and interest rates, plus an optional FTShare
 connection type. Its public macro endpoints and GitHub import can be used
 without a connection.
@@ -78,14 +83,22 @@ https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@catalog/discover.json
 Content URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@<sourceRevision>/<workspace>/<path>
+https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@<sourceRevision>/<workspace.path>/<file.path>
 ```
+
+Workspace entries keep stable topic IDs such as `ftshare` and publish a separate
+repository-relative `path`, such as `workspaces/ftshare`. File and resource paths
+remain relative to that workspace. Resource IDs and references do not change
+when a topic moves. Clients must use the workspace `path` for downloads, source
+links and the GitHub checkout prefix; older catalogs without it use the topic ID.
 
 The app falls back to the corresponding `raw.githubusercontent.com` URL when
 the CDN times out, returns an error, or serves invalid content. Both origins use
 the same source commit. Branch URLs can remain cached for hours; a cached index
-still resolves to a consistent, immutable content snapshot. App imports create
-editable copies and do not overwrite them automatically.
+still resolves to a consistent, immutable content snapshot. Chart/dashboard
+imports create local editable copies. Full workspace imports clone/load this
+GitHub repository on `main` and register the workspace's `path` as its prefix;
+subsequent workspace updates use the app's ordinary Git workflow.
 
 ## Local validation
 
@@ -100,7 +113,7 @@ python3 -m venv .venv
 ```
 
 Individual files are limited to 20 MiB; an installed workspace is limited to
-100 MiB. The complete exported built-in [example workspace](example/README.md)
+100 MiB. The complete exported built-in [example workspace](workspaces/example/README.md)
 contains 8 charts, 3 dashboards and four fictional-data CSV files.
 CI uses the same tests and --validate-only command on every PR and main push.
 It checks YAML structure/types, parameters, references and dashboard layouts in

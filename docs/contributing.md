@@ -1,7 +1,7 @@
 # Authoring public Discover content
 
 Discover contains portable configuration and data, not application source code.
-Each top-level topic becomes a workspace card in Facetra. Users can import the
+Each topic under `workspaces/` becomes a workspace card in Facetra. Users can import the
 whole workspace, one chart or one dashboard together with its dependencies.
 All instructions and examples needed to contribute are in this repository.
 
@@ -22,11 +22,11 @@ environment, substitute its Python executable in these commands.
 
 ## Start a workspace
 
-Choose a unique topic directory containing only letters, digits, underscores and
+Choose a unique topic directory under `workspaces/` containing only letters, digits, underscores and
 hyphens. The following starter is a complete fictional sales workspace:
 
 ~~~sh
-cp -R docs/starter sales
+cp -R docs/starter workspaces/sales
 .venv/bin/python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --validate-only
 ~~~
 

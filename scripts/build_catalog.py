@@ -219,14 +219,23 @@ def build_catalog(root, revision):
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("sourceRevision must be a complete Git commit SHA")
     workspaces = []
-    for path in sorted(root.iterdir()):
-        if not path.is_dir() or path.name.startswith("."):
+    content_root = root / "workspaces"
+    if content_root.is_symlink():
+        raise ValueError("workspaces/ cannot be a symbolic link")
+    if not content_root.is_dir():
+        raise ValueError("No publishable workspaces found in workspaces/")
+    for path in sorted(content_root.iterdir()):
+        if path.name.startswith("."):
             continue
-        if any((path / name).exists() or (path / name).is_symlink()
-               for name in ["workspace.yaml", "workspace.yml", "workspace.json", "charts", "dashboards"]):
-            if (path / "workspace.yml").exists() or (path / "workspace.yml").is_symlink():
-                raise ValueError(f"{path.name}/workspace.yml: use workspace.yaml")
-            workspaces.append(build_workspace(path))
+        if path.is_symlink():
+            raise ValueError("Workspace directories cannot be symbolic links")
+        if not path.is_dir():
+            continue
+        if (path / "workspace.yml").exists() or (path / "workspace.yml").is_symlink():
+            raise ValueError(f"{path.name}/workspace.yml: use workspace.yaml")
+        workspace = build_workspace(path)
+        workspace["path"] = path.relative_to(root).as_posix()
+        workspaces.append(workspace)
     if not workspaces:
         raise ValueError("No publishable workspaces found")
     return {"schemaVersion": 1, "sourceRevision": revision, "workspaces": workspaces}

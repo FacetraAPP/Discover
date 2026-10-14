@@ -2,10 +2,10 @@
 
 ## Directory layout
 
-Every top-level content directory is one independent workspace:
+Every topic directory under `workspaces/` is one independent workspace:
 
 ~~~text
-sales/
+workspaces/sales/
   workspace.yaml
   README.md
   charts/sales.yaml
@@ -21,6 +21,12 @@ The filename without its extension equals chart.id or dashboard.id. IDs use
 1–80 ASCII letters, digits, underscores or hyphens and are unique across charts
 and dashboards in the workspace. Do not use the reserved builtin_example_ prefix.
 Different topics may reuse resource IDs.
+
+The catalog identifies a topic by its directory name, for example `sales`, and
+exports its repository-relative location separately as `path: workspaces/sales`.
+Catalog file paths stay workspace-relative. GitHub workspace imports use the
+catalog path as their checkout prefix. Root-level `docs/`, `scripts/`, `tests/`
+and `docs/starter/` are not publishable content.
 
 Local references resolve by chart ID within the topic, regardless of folders.
 No cross-topic references, symlinks, hidden path segments, empty segments,

@@ -7,7 +7,7 @@
 在 Facetra 的「创建 / 加载工作区」选择 GitHub，填写：
 
 - 仓库：`https://github.com/FacetraAPP/Discover`
-- Prefix：`ftshare`
+- Prefix：`workspaces/ftshare`
 - 分支：`main`
 - GitHub connection：不选择，公开仓库支持匿名读取。
 

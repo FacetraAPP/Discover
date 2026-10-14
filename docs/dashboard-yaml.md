@@ -2,7 +2,7 @@
 
 Dashboards compose chart instances from one workspace. A panel references
 chart.id, not a path or a dataset. Save as
-<topic>/dashboards/<optional-folders>/<id>.yaml.
+workspaces/<topic>/dashboards/<optional-folders>/<id>.yaml.
 Read the [workspace/parameter guide](workspace-yaml.md) and inspect the charts
 before binding them. [The starter dashboard](starter/dashboards/overview.yaml)
 is a complete file, paired with [its chart](starter/charts/sales.yaml).
@@ -142,7 +142,7 @@ Grid-only fields are never valid on a tab without layout.
 The grid places panels in declaration order, supports row/column spans and does
 not rearrange earlier gaps; arbitrary spans can leave holes. Preserve a useful
 reading order for narrow screens. The
-[Mosaic example](../example/dashboards/example_mosaic_dashboard.yaml) demonstrates
+[Mosaic example](../workspaces/example/dashboards/example_mosaic_dashboard.yaml) demonstrates
 a larger dashboard with both native and ECharts charts.
 
 ## Validation

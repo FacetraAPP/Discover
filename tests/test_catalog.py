@@ -14,7 +14,7 @@ class CatalogTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.topic = self.root / "example"
+        self.topic = self.root / "workspaces/example"
         (self.topic / "charts").mkdir(parents=True)
         (self.topic / "dashboards").mkdir()
         (self.topic / "data").mkdir()
@@ -30,6 +30,28 @@ class CatalogTests(unittest.TestCase):
 
     def build(self):
         return catalog.build_catalog(self.root, "a" * 40)
+
+    def test_only_workspaces_content_is_discovered_and_ids_remain_stable(self):
+        for name in ["docs/starter", "scripts", "tests", "legacy-topic"]:
+            folder = self.root / name
+            folder.mkdir(parents=True)
+            (folder / "workspace.yaml").write_text("invalid: repository tooling is not content\n")
+        workspace = self.build()["workspaces"][0]
+        self.assertEqual(workspace["id"], "example")
+        self.assertEqual(workspace["path"], "workspaces/example")
+        self.assertTrue(all(resource["id"].startswith("example/") for resource in workspace["resources"]))
+        self.assertTrue(all(not file["path"].startswith("workspaces/") for file in workspace["files"]))
+
+    def test_content_root_and_workspace_symlinks_are_rejected(self):
+        content_root = self.root / "workspaces"
+        (content_root / "linked").symlink_to(self.topic, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "Workspace directories cannot be symbolic links"):
+            self.build()
+        (content_root / "linked").unlink()
+        content_root.rename(self.root / "outside")
+        content_root.symlink_to(self.root / "outside", target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "workspaces/ cannot be a symbolic link"):
+            self.build()
 
     def test_yaml_manifest_and_readme_are_published_with_digests(self):
         manifest = {"id": "example", "title": "YAML workspace", "kind": "localPath"}
@@ -219,6 +241,7 @@ class PublishedExampleTests(unittest.TestCase):
     def test_published_example_has_no_health_sources_or_dangling_references(self):
         root = Path(__file__).resolve().parents[1]
         result = catalog.build_catalog(root, "0" * 40)
+        self.assertEqual({workspace["path"] for workspace in result["workspaces"]}, {"workspaces/example", "workspaces/ftshare"})
         example = next(w for w in result["workspaces"] if w["id"] == "example")
         self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 8)
         self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 3)

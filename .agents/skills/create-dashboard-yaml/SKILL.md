@@ -16,8 +16,8 @@ chart is missing, author it using the repository chart guide or chart skill.
    Panel chart values use IDs, not file paths. Keep every chart dependency in
    this workspace. Repeated chart instances are allowed with distinct panel IDs.
 3. Start from [the minimal dashboard](../../../docs/starter/dashboards/overview.yaml)
-   or [the grid example](../../../example/dashboards/example_mosaic_dashboard.yaml).
-   Save to <topic>/dashboards/<optional-folders>/<dashboard-id>.yaml, matching its
+   or [the grid example](../../../workspaces/example/dashboards/example_mosaic_dashboard.yaml).
+   Save to workspaces/<topic>/dashboards/<optional-folders>/<dashboard-id>.yaml, matching its
    filename to id. Include version: 1, kind: Dashboard, title, notes, params and tabs.
    Tab IDs are unique; panel IDs are unique across all tabs.
 4. Define shared dashboard parameters deliberately. A matching chart parameter

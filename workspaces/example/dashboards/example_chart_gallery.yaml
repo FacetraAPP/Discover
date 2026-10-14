@@ -1,0 +1,134 @@
+version: 1
+kind: Dashboard
+id: example_chart_gallery
+title: 图表原型 · Chart Gallery
+notes: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
+tags:
+- 图表原型
+- Swift Charts
+- ECharts
+params: []
+tabs:
+- id: swift
+  title: Swift Charts
+  panels:
+  - id: example_gallery_swift_line
+    chart: example_gallery_swift_line
+    height: 320
+  - id: example_gallery_swift_area
+    chart: example_gallery_swift_area
+    height: 320
+  - id: example_gallery_swift_bar
+    chart: example_gallery_swift_bar
+    height: 320
+  - id: example_gallery_swift_pie
+    chart: example_gallery_swift_pie
+    height: 320
+  - id: example_gallery_swift_scatter
+    chart: example_gallery_swift_scatter
+    height: 320
+  - id: example_gallery_swift_heatmap
+    chart: example_gallery_swift_heatmap
+    height: 320
+  - id: example_gallery_swift_rule
+    chart: example_gallery_swift_rule
+    height: 320
+  - id: example_gallery_swift_value
+    chart: example_gallery_swift_value
+    height: 320
+- id: basic
+  title: ECharts · 基础
+  panels:
+  - id: example_gallery_echarts_line
+    chart: example_gallery_echarts_line
+    height: 320
+  - id: example_gallery_echarts_bar
+    chart: example_gallery_echarts_bar
+    height: 320
+  - id: example_gallery_echarts_area
+    chart: example_gallery_echarts_area
+    height: 320
+  - id: example_gallery_echarts_pie
+    chart: example_gallery_echarts_pie
+    height: 320
+  - id: example_gallery_echarts_doughnut
+    chart: example_gallery_echarts_doughnut
+    height: 320
+  - id: example_gallery_echarts_mixed
+    chart: example_gallery_echarts_mixed
+    height: 320
+  - id: example_gallery_echarts_scatter
+    chart: example_gallery_echarts_scatter
+    height: 320
+  - id: example_gallery_echarts_effectScatter
+    chart: example_gallery_echarts_effectScatter
+    height: 320
+- id: structure
+  title: ECharts · 结构
+  panels:
+  - id: example_gallery_echarts_tree
+    chart: example_gallery_echarts_tree
+    height: 320
+  - id: example_gallery_echarts_treemap
+    chart: example_gallery_echarts_treemap
+    height: 320
+  - id: example_gallery_echarts_sunburst
+    chart: example_gallery_echarts_sunburst
+    height: 320
+  - id: example_gallery_echarts_graph
+    chart: example_gallery_echarts_graph
+    height: 320
+  - id: example_gallery_echarts_sankey
+    chart: example_gallery_echarts_sankey
+    height: 320
+  - id: example_gallery_echarts_chord
+    chart: example_gallery_echarts_chord
+    height: 320
+- id: more
+  title: ECharts · 更多
+  panels:
+  - id: example_gallery_echarts_radar
+    chart: example_gallery_echarts_radar
+    height: 320
+  - id: example_gallery_echarts_boxplot
+    chart: example_gallery_echarts_boxplot
+    height: 320
+  - id: example_gallery_echarts_candlestick
+    chart: example_gallery_echarts_candlestick
+    height: 320
+  - id: example_gallery_echarts_heatmap
+    chart: example_gallery_echarts_heatmap
+    height: 320
+  - id: example_gallery_echarts_map
+    chart: example_gallery_echarts_map
+    height: 320
+  - id: example_gallery_echarts_lines
+    chart: example_gallery_echarts_lines
+    height: 320
+  - id: example_gallery_echarts_parallel
+    chart: example_gallery_echarts_parallel
+    height: 320
+  - id: example_gallery_echarts_funnel
+    chart: example_gallery_echarts_funnel
+    height: 320
+  - id: example_gallery_echarts_gauge
+    chart: example_gallery_echarts_gauge
+    height: 320
+  - id: example_gallery_echarts_pictorialBar
+    chart: example_gallery_echarts_pictorialBar
+    height: 320
+  - id: example_gallery_echarts_themeRiver
+    chart: example_gallery_echarts_themeRiver
+    height: 320
+  - id: example_gallery_echarts_custom
+    chart: example_gallery_echarts_custom
+    height: 320
+  - id: example_gallery_echarts_polar
+    chart: example_gallery_echarts_polar
+    height: 320
+  - id: example_gallery_echarts_calendar
+    chart: example_gallery_echarts_calendar
+    height: 320
+  - id: example_gallery_echarts_matrix
+    chart: example_gallery_echarts_matrix
+    height: 320

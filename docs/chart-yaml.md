@@ -208,9 +208,21 @@ chart:
   notes: Fictional revenue in thousands of currency units.
 ~~~
 
-plot is line, area, bar or pie. x/y are required nonempty result-column names.
+plot is line, area, bar, pie, scatter, heatmap or rule. x/y are required nonempty result-column names.
 For pie, x is the category and y its numeric value. An optional average names an
 SQL-generated overlay column; pie cannot use it. Do not add value, option or scripts.
+
+Coordinate marks require the Facetra version that adds these YAML plots:
+
+| plot | Mark / bindings |
+| --- | --- |
+| scatter | PointMark; x and y are numeric columns, with true numeric X spacing |
+| heatmap | RectangleMark; x/y are categories; required color names a numeric intensity column |
+| rule | RuleMark; x and required x_end are numeric start/end; y is a category; end must be at least start |
+
+`color` belongs only to heatmap, `x_end` only to rule. These three plots do not accept
+`average`. Missing/null/nonnumeric coordinate values fail execution instead of
+becoming zero. See the [seven native prototypes](../workspaces/example/charts/Example/Gallery/SwiftCharts/).
 
 ### Value card
 
@@ -283,6 +295,11 @@ The [business](../workspaces/example/charts/Example/ECharts/example_echarts_busi
 [candlestick](../workspaces/example/charts/Example/ECharts/example_echarts_candlestick.yaml)
 and [heatmap](../workspaces/example/charts/Example/ECharts/example_echarts_heatmap.yaml)
 examples show complete configurations.
+
+The [chart gallery](../workspaces/example/README.md#图表原型库) covers all 23 ECharts
+6.1.0 core series. Chord and matrix need ECharts 6+; GL extensions are separate.
+The app's bundled SVG renderer loads no remote assets. Offline maps can register
+inline fictional GeoJSON in a `js:` expression before the option is applied.
 
 ## Validation
 

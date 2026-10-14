@@ -1,0 +1,60 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_calendar
+  title: ECharts · 日历热力图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - calendar
+  notes: 日历坐标系中展示 4 条虚构 ISO 日期记录；缺失日期保留为空白，不补零。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    calendar:
+      range:
+      - '2026-01-01'
+      - '2026-01-14'
+      left: 45
+      right: 15
+      top: 35
+      bottom: 65
+      cellSize:
+      - auto
+      - auto
+      yearLabel:
+        show: false
+      monthLabel:
+        show: false
+      dayLabel:
+        firstDay: 1
+    visualMap:
+      min: 0
+      max: 10
+      orient: horizontal
+      left: center
+      bottom: 0
+    series:
+    - type: heatmap
+      coordinateSystem: calendar
+      data:
+      - - '2026-01-01'
+        - 3
+      - - '2026-01-04'
+        - 8
+      - - '2026-01-08'
+        - 5
+      - - '2026-01-12'
+        - 9

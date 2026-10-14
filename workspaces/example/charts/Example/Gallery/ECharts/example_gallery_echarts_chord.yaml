@@ -1,0 +1,46 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_chord
+  title: ECharts · 弦图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - chord
+  notes: ECharts 6+ 弦图：3 个虚构节点与 3 条带权重的连接，宽度表达流量。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    series:
+    - type: chord
+      radius:
+      - 65%
+      - 72%
+      label:
+        show: true
+      data:
+      - name: A
+      - name: B
+      - name: C
+      links:
+      - source: A
+        target: B
+        value: 5
+      - source: B
+        target: C
+        value: 3
+      - source: C
+        target: A
+        value: 2

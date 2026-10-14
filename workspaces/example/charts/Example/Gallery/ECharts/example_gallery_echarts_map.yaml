@@ -1,0 +1,41 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_map
+  title: ECharts · 离线地图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - map
+  notes: 两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    visualMap:
+      min: 0
+      max: 20
+      orient: horizontal
+      left: center
+      bottom: 0
+    series:
+    - type: map
+      map: gallery-islands
+      roam: false
+      top: 10%
+      bottom: 24%
+      label:
+        show: true
+      data: 'js: (() => { echarts.registerMap("gallery-islands", {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"West"},"geometry":{"type":"Polygon","coordinates":[[[0,0],[2,0],[2,2],[0,2],[0,0]]]}},{"type":"Feature","properties":{"name":"East"},"geometry":{"type":"Polygon","coordinates":[[[3,0],[5,0],[5,2],[3,2],[3,0]]]}}]});
+        return [{name:"West",value:8},{name:"East",value:16}]; })()'

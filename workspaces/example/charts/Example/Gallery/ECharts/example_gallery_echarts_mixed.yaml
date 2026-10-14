@@ -1,0 +1,51 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_mixed
+  title: ECharts · 柱线组合
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - mixed
+  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: axis
+    grid:
+      top: 44
+      bottom: 24
+      left: 12
+      right: 12
+      containLabel: true
+    xAxis:
+      type: category
+      data:
+        from: sample
+        field: label
+    yAxis:
+      type: value
+      min: 0
+    legend:
+      top: 0
+    series:
+    - type: bar
+      name: 数量
+      data:
+        from: sample
+        field: value
+    - type: line
+      name: 参照
+      data:
+        from: sample
+        field: other

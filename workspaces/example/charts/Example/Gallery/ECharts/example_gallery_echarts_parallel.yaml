@@ -1,0 +1,57 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_parallel
+  title: ECharts · 平行坐标
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - parallel
+  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    parallel:
+      left: 12%
+      right: 12%
+      top: 18%
+      bottom: 15%
+    parallelAxis:
+    - dim: 0
+      name: Speed
+      min: 0
+      max: 10
+    - dim: 1
+      name: Cost
+      min: 0
+      max: 10
+    - dim: 2
+      name: Quality
+      min: 0
+      max: 10
+    series:
+    - type: parallel
+      lineStyle:
+        width: 3
+      data:
+      - - 2
+        - 8
+        - 6
+      - - 5
+        - 3
+        - 9
+      - - 8
+        - 6
+        - 4

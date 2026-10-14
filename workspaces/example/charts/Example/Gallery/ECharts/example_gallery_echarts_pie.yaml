@@ -1,0 +1,38 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+  sql: |
+    SELECT label AS name, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
+chart:
+  id: example_gallery_echarts_pie
+  title: ECharts · 饼图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - pie
+  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    series:
+    - type: pie
+      radius: 65%
+      center:
+      - 50%
+      - 45%
+      label:
+        formatter: '{b}: {c}'
+      data:
+        from: sample
+        rows: true

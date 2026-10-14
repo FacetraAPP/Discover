@@ -1,0 +1,54 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_treemap
+  title: ECharts · 矩形树图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - treemap
+  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    series:
+    - type: treemap
+      data:
+      - name: Products
+        children:
+        - name: Tools
+          value: 12
+        - name: Books
+          value: 8
+      - name: Services
+        children:
+        - name: Design
+          value: 9
+        - name: Support
+          value: 6
+      roam: false
+      nodeClick: false
+      breadcrumb:
+        show: false
+      upperLabel:
+        show: true
+        height: 22
+      label:
+        show: true
+      levels:
+      - {}
+      - itemStyle:
+          borderWidth: 3
+          gapWidth: 3

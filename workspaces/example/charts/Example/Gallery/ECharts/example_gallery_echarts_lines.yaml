@@ -1,0 +1,55 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_lines
+  title: ECharts · 路径图
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - lines
+  notes: 2 条虚构路线使用二维数值坐标，无需在线地图或底图。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    xAxis:
+      type: value
+      min: 0
+      max: 10
+    yAxis:
+      type: value
+      min: 0
+      max: 10
+    series:
+    - type: lines
+      coordinateSystem: cartesian2d
+      symbol:
+      - circle
+      - arrow
+      symbolSize: 8
+      lineStyle:
+        width: 3
+        opacity: 0.8
+        curveness: 0.15
+      data:
+      - coords:
+        - - 1
+          - 2
+        - - 4
+          - 8
+      - coords:
+        - - 4
+          - 8
+        - - 9
+          - 3

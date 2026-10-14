@@ -1,0 +1,47 @@
+params: []
+sources:
+  sample:
+    source: duckdb
+    file: data/example/gallery-categories.csv
+dataset:
+  id: sample
+  sources:
+  - id: raw
+    ref: '#/sources/sample'
+chart:
+  id: example_gallery_echarts_radar
+  title: ECharts · 雷达
+  dataset: sample
+  renderer: echarts
+  tags:
+  - 图表原型
+  - ECharts
+  - radar
+  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  option:
+    animation: false
+    tooltip:
+      trigger: item
+      confine: true
+    radar:
+      radius: 60%
+      indicator:
+      - name: Speed
+        max: 10
+      - name: Cost
+        max: 10
+      - name: Quality
+        max: 10
+      - name: Reach
+        max: 10
+    series:
+    - type: radar
+      areaStyle:
+        opacity: 0.15
+      data:
+      - name: Prototype
+        value:
+        - 8
+        - 5
+        - 9
+        - 6

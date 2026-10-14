@@ -335,7 +335,7 @@ def validate_chart(document, context):
             text(dataset["sql"], context + ".dataset.sql")
     chart = mapping(document["chart"], context + ".chart")
     renderer = chart.get("renderer", "default")
-    fields = {"default": {"plot", "x", "y", "average"}, "value": {"value"}, "echarts": {"option", "scripts"}}
+    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
     mapping(chart, context + ".chart", {"id", "title", "dataset", "renderer", "notes", "tags"} | fields[renderer], {"id", "title", "dataset"})
     identifier(chart["id"], context + ".chart.id")
@@ -345,7 +345,15 @@ def validate_chart(document, context):
         text(chart["notes"], context + ".chart.notes", nonempty=False)
     validate_tags(chart.get("tags", []), context + ".chart.tags")
     if renderer == "default":
-        require(chart.get("plot") in ("line", "area", "bar", "pie"), context, "unsupported native plot")
+        require(chart.get("plot") in ("line", "area", "bar", "pie", "scatter", "heatmap", "rule"), context, "unsupported native plot")
+        plot = chart["plot"]
+        require("color" not in chart or plot == "heatmap", context, "color requires heatmap")
+        require("x_end" not in chart or plot == "rule", context, "x_end requires rule")
+        require(plot not in ("scatter", "heatmap", "rule") or "average" not in chart, context, "coordinate marks do not support average")
+        if plot == "heatmap":
+            text(chart.get("color"), context + ".chart.color")
+        if plot == "rule":
+            text(chart.get("x_end"), context + ".chart.x_end")
         for field in ("x", "y"):
             text(chart.get(field), context + ".chart." + field)
         if "average" in chart:

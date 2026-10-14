@@ -4,5 +4,6 @@ kind: localPath
 description: Facetra 的完整示例工作区：股票行情、HTTP、ECharts 与 Mosaic 布局。股票和经营数据均为虚构示例。
 license: Apache-2.0
 requiredConnections:
-- http_example
+- alias: http_example
+  type: key-value
 title: 示例 · Examples

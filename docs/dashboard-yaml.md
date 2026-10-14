@@ -151,3 +151,26 @@ Run the [contributor commands](contributing.md#verify-and-submit). They verify
 chart existence, bindings, ID uniqueness and layout dimensions without executing
 charts. When Facetra is available, apply shared parameters and preview wide and
 compact layouts. Document any required local connections in the workspace README.
+
+## Tags
+
+Charts accept optional `chart.tags: [股票, 行情]`; dashboards accept optional
+`tags: [股票, 分析]` at the document root. Omission means no tags, and old YAML
+and cached catalogs remain readable. Tags must be strings of 1–64 characters
+after trimming, without control characters. Display spelling and order are
+preserved; duplicates are merged ignoring case and accents. Quote numeric or
+boolean-looking names (`"2026"`, `"on"`).
+
+Discover publishes resource tags in its generated catalog. Workspace cards and
+filters use the union of their resources' tags. Cards display one compact line
+with overflow counts, and details show all tags. Search matches words across
+names, descriptions and tags, including `#tag` queries. The tag picker supports
+search and multiple selections, matching **any** selected tag; search, resource
+type, folders and favorites combine with that selection. Counts in the picker
+reflect the current search and other filters, before the tag selection. Active
+tags remain visible and removable even if another filter yields no results.
+
+Local chart/dashboard action menus offer **Edit Tags**, including existing tag
+suggestions. Saving uses the regular revision/conflict and read-only checks;
+block YAML keeps its other fields, comments and formatting. Flow-style YAML
+may be reserialized. Tags are retained when duplicating or importing resources.

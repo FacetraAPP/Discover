@@ -43,6 +43,7 @@ dataset:
     )
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
 chart:
+  tags: ["国内宏观", "利率", "民间融资"]
   id: ftshare_china_wenzhou
   title: 温州民间融资 · 综合与分项利率
   dataset: wenzhou_data

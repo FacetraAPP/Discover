@@ -141,7 +141,7 @@ class YAMLValidationTests(unittest.TestCase):
                 workspace = self.build()["workspaces"][0]
                 resource = next(item for item in workspace["resources"] if item["type"] == "chart")
                 self.assertEqual(resource["sourceKinds"], [definition["source"]])
-                self.assertEqual(resource["requiredConnections"], {"http": ["market"], "database": ["business"], "sqlite": []}[definition["source"]])
+                self.assertEqual(resource["requiredConnections"], {"http": [{"alias": "market", "type": "key-value"}], "database": [{"alias": "business", "type": "key-value"}], "sqlite": []}[definition["source"]])
 
     def test_request_json_keys_do_not_become_catalog_dependencies(self):
         self.chart["sources"]["sales"] = {"source": "http", "url": "https://example.org",
@@ -338,6 +338,37 @@ class YAMLValidationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads((output / "discover.json").read_text()), self.build())
         self.assertEqual((output / "LICENSE").read_bytes(), (ROOT / "LICENSE").read_bytes())
+
+
+    def test_typed_requirements_reach_catalog_and_legacy_strings_are_rejected(self):
+        manifest_path = self.topic / "workspace.yaml"
+        manifest = validation.load_yaml(manifest_path.read_bytes(), str(manifest_path))
+        manifest["requiredConnections"] = [{"alias": "market", "type": "ftshare"}, {"alias": "business"}]
+        self.write(manifest_path, manifest)
+        self.assertEqual(self.build()["workspaces"][0]["requiredConnections"], [
+            {"alias": "business", "type": "key-value"}, {"alias": "market", "type": "ftshare"}])
+        for requirements in [["market"], [{"alias": "market"}, {"alias": "market"}], [{"alias": "market", "type": True}]]:
+            manifest["requiredConnections"] = requirements
+            self.write(manifest_path, manifest)
+            with self.assertRaisesRegex(ValueError, "requiredConnections"):
+                self.build()
+
+    def test_tags_are_published_and_normalized_for_both_resource_types(self):
+        self.chart["chart"]["tags"] = [" 股票 ", "Macro", "macro", "Café", "cafe"]
+        self.dashboard["tags"] = ["股票", "分析"]
+        self.write(self.chart_path, self.chart)
+        self.write(self.dashboard_path, self.dashboard)
+        resources = self.build()["workspaces"][0]["resources"]
+        self.assertEqual(next(r for r in resources if r["type"] == "chart")["tags"], ["股票", "Macro", "Café"])
+        self.assertEqual(next(r for r in resources if r["type"] == "dashboard")["tags"], ["股票", "分析"])
+
+    def test_malformed_tags_are_rejected_with_file_context(self):
+        for value in ["macro", None, [True], [42], [""], [" "], ["a" * 65], ["a\nb"]]:
+            with self.subTest(value=value):
+                self.chart["chart"]["tags"] = value
+                self.write(self.chart_path, self.chart)
+                with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml.*tags"):
+                    self.build()
 
 
 if __name__ == "__main__":

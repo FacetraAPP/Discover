@@ -158,7 +158,7 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(item["files"], ["charts/derived.yaml", "charts/price.yaml", "dashboards/overview.yaml", "data/prices.csv"])
         self.assertEqual(item["sourceKinds"], ["duckdb"])
         self.assertNotIn("tags", result["workspaces"][0])
-        self.assertTrue(all("tags" not in resource for resource in result["workspaces"][0]["resources"]))
+        self.assertTrue(all(resource["tags"] == [] for resource in result["workspaces"][0]["resources"]))
 
     def test_cross_workspace_refs_and_missing_files_are_rejected(self):
         for ref in ["../other/charts/price.yaml#/dataset", "other/price.yaml#/dataset", "missing.yaml#/dataset"]:

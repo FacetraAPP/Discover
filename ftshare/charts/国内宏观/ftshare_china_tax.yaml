@@ -39,6 +39,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "财政", "税收"]
   id: ftshare_china_tax
   title: 税收收入 · 同比
   dataset: tax_data

@@ -40,6 +40,7 @@ dataset:
            round(100 * (online + retail - cost) / (online + retail), 1) AS margin
     FROM recent ORDER BY month
 chart:
+  tags: ["经营", "收入", "利润率", "ECharts"]
   id: example_echarts_business
   title: ECharts · 收入与利润率
   dataset: sales

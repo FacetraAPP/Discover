@@ -35,6 +35,7 @@ dataset:
     ), recent AS (SELECT * FROM history ORDER BY trade_date DESC LIMIT $days)
     SELECT * FROM recent ORDER BY trade_date
 chart:
+  tags: ["股票", "行情", "K线", "ECharts"]
   id: example_echarts_candlestick
   title: ECharts · K 线与成交量
   dataset: candles

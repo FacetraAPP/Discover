@@ -52,6 +52,7 @@ dataset:
     )
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
 chart:
+  tags: ["国内宏观", "债券", "利率", "收益率曲线"]
   id: ftshare_china_chinabond
   title: 中债收益率 · 期限比较
   dataset: chinabond_data

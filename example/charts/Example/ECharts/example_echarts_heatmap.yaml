@@ -29,6 +29,7 @@ dataset:
            CASE WHEN $metric = 'profit' THEN round(retail - cost * retail / (online + retail), 1) ELSE retail END
     FROM sales ORDER BY channel_index, month_index
 chart:
+  tags: ["经营", "渠道", "热力图", "ECharts"]
   id: example_echarts_heatmap
   title: ECharts · 渠道月度热力图
   dataset: cells

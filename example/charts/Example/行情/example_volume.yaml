@@ -39,6 +39,7 @@ dataset:
     )
     SELECT * FROM recent ORDER BY trade_date
 chart:
+  tags: ["股票", "行情", "成交量"]
   id: example_volume
   title: 成交量
   dataset: volume

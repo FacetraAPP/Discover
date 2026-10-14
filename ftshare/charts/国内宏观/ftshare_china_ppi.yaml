@@ -43,6 +43,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "物价", "工业", "PPI"]
   id: ftshare_china_ppi
   title: PPI · 同比与环比
   dataset: ppi_data

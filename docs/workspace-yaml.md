@@ -39,7 +39,7 @@ backslashes, absolute paths or .. traversal are allowed. Files may be at most
 | description | Optional string | Workspace card/detail description |
 | license | Optional string, defaults to Apache-2.0 | License for redistributed content |
 | isPersonal | Optional boolean | Personal-space marker; normally false for public topics |
-| requiredConnections | Optional list of unique IDs, defaults to [] | Local connection IDs or aliases needed by this workspace |
+| requiredConnections | Optional list of unique alias/type maps, defaults to [] | Local connection IDs or aliases needed by this workspace |
 
 For new topics, use workspace.yaml. Legacy workspace.json accepts the same
 fields, but a topic must have exactly one manifest. To migrate, preserve the ID
@@ -123,7 +123,9 @@ explicit with values plus that chart's defaults.
 Connections are configured on the user's device. A database source uses
 connection: business; an HTTP source can use templates such as
 "{{ connections.market.endpoint }}" and "{{ connections.market.token }}".
-requiredConnections lists these IDs/aliases without their values. The catalog
+requiredConnections lists typed requirements without their values, for example
+`[{alias: market, type: key-value}]`. `type` defaults to `key-value`; custom type
+IDs are supported. Aliases must be unique. String lists are not accepted. The catalog
 also discovers dependencies from chart source definitions and referenced charts.
 
 The topic README must explain what each connection means and which local fields

@@ -8,9 +8,9 @@ import re
 import shutil
 
 if __package__:
-    from .validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from .validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 else:
-    from validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
@@ -103,6 +103,7 @@ def build_workspace(root):
             if not isinstance(header.get("title"), str) or not header["title"].strip():
                 raise ValueError(f"{topic}/{relative}: title is required")
             item = {"id": f"{topic}/{kind}/{resource_id}", "resourceID": resource_id, "type": kind,
+                    "tags": normalized_tags(header.get("tags", [])),
                     "title": header["title"], "description": header.get("notes", ""), "path": relative,
                     "document": document}
             if kind == "chart":
@@ -155,7 +156,7 @@ def build_workspace(root):
             result.update(closure(dependency, visiting | {resource_id}))
         return result
 
-    required = set(manifest.get("requiredConnections", []))
+    required = {c["alias"]: c.get("type", "key-value") for c in manifest.get("requiredConnections", [])}
     for item in resources:
         document = item.pop("document")
         if item["type"] == "chart":
@@ -177,8 +178,8 @@ def build_workspace(root):
             resource_connections.update(connections[chart])
         item["files"] = sorted(paths)
         item["sourceKinds"] = sorted(source_kinds)
-        item["requiredConnections"] = sorted(resource_connections)
-        required.update(resource_connections)
+        item["requiredConnections"] = [{"alias": alias, "type": required.get(alias, "key-value")} for alias in sorted(resource_connections)]
+        required.update({alias: required.get(alias, "key-value") for alias in resource_connections})
 
     paths = {manifest_path} | {item["path"] for item in resources}
     connection_root = root / "connections"
@@ -207,7 +208,7 @@ def build_workspace(root):
     if sum(file["size"] for file in files) > 100 * 1024 * 1024:
         raise ValueError(f"{topic}: workspace exceeds the 100 MB installation limit")
     result = {"id": topic, "title": title, "description": description,
-              "license": license, "requiredConnections": sorted(required),
+              "license": license, "requiredConnections": [{"alias": alias, "type": required[alias]} for alias in sorted(required)],
               "files": files, "resources": resources}
     if (root / "previews/workspace.png").exists():
         result["preview"] = file_record(root, "previews/workspace.png")

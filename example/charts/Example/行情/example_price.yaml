@@ -58,6 +58,7 @@ dataset:
     )
     SELECT * FROM recent ORDER BY trade_date
 chart:
+  tags: ["股票", "行情", "均线"]
   id: example_price
   title: 股价与均线
   dataset: prices

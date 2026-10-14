@@ -39,6 +39,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "投资", "固定资产"]
   id: ftshare_china_fixed_asset
   title: 固定资产投资 · 同比与环比
   dataset: fixed_asset_data

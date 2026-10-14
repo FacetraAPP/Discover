@@ -37,6 +37,7 @@ dataset:
     symbol:
       param: symbol
 chart:
+  tags: ["股票", "行情", "均线", "ECharts"]
   id: example_echarts_price
   title: ECharts · 股价与均线
   dataset: history

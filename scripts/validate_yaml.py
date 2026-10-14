@@ -1,5 +1,6 @@
 """Offline validation of portable Facetra documents; never executes sources or SQL."""
 import math
+import unicodedata
 from datetime import datetime
 import re
 from urllib.parse import urlsplit
@@ -192,8 +193,10 @@ def validate_workspace(document, context):
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
     connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")
     for connection in connections:
-        identifier(connection, context + ".requiredConnections")
-    unique(connections, context + ".requiredConnections")
+        mapping(connection, context + ".requiredConnections", {"alias", "type"}, {"alias"})
+        identifier(connection["alias"], context + ".requiredConnections.alias")
+        identifier(connection.get("type", "key-value"), context + ".requiredConnections.type")
+    unique([connection["alias"] for connection in connections], context + ".requiredConnections")
 
 
 def reference(value, context, kind):
@@ -329,12 +332,13 @@ def validate_chart(document, context):
     renderer = chart.get("renderer", "default")
     fields = {"default": {"plot", "x", "y", "average"}, "value": {"value"}, "echarts": {"option", "scripts"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
-    mapping(chart, context + ".chart", {"id", "title", "dataset", "renderer", "notes"} | fields[renderer], {"id", "title", "dataset"})
+    mapping(chart, context + ".chart", {"id", "title", "dataset", "renderer", "notes", "tags"} | fields[renderer], {"id", "title", "dataset"})
     identifier(chart["id"], context + ".chart.id")
     text(chart["title"], context + ".chart.title")
     require(chart["dataset"] == dataset["id"], context, "chart.dataset must equal dataset.id")
     if "notes" in chart:
         text(chart["notes"], context + ".chart.notes", nonempty=False)
+    validate_tags(chart.get("tags", []), context + ".chart.tags")
     if renderer == "default":
         require(chart.get("plot") in ("line", "area", "bar", "pie"), context, "unsupported native plot")
         for field in ("x", "y"):
@@ -394,11 +398,12 @@ def validate_chart_graph(charts, context, paths=None):
 
 
 def validate_dashboard(document, charts, context):
-    mapping(document, context, {"version", "kind", "id", "title", "notes", "params", "tabs"}, {"version", "kind", "id", "title", "notes", "params", "tabs"})
+    mapping(document, context, {"version", "kind", "id", "title", "notes", "params", "tabs", "tags"}, {"version", "kind", "id", "title", "notes", "params", "tabs"})
     require(type(document["version"]) is int and document["version"] == 1 and document["kind"] == "Dashboard", context, "expected version: 1 and kind: Dashboard")
     identifier(document["id"], context + ".id")
     text(document["title"], context + ".title")
     text(document["notes"], context + ".notes", nonempty=False)
+    validate_tags(document.get("tags", []), context + ".tags")
     params = parameters(document["params"], context + ".params")
     tab_ids, panel_ids = [], []
     for tab in sequence(document["tabs"], context + ".tabs", 1):
@@ -434,3 +439,22 @@ def validate_dashboard(document, charts, context):
             validate_bindings(panel.get("params", {}), params, target, context + ".panels.params")
     unique(tab_ids, context + ".tabs")
     unique(panel_ids, context + ".panels")
+
+
+def normalized_tags(tags):
+    result, seen = [], set()
+    for value in tags:
+        name = value.strip()
+        key = "".join(c for c in unicodedata.normalize("NFD", name) if unicodedata.category(c) != "Mn").lower()
+        if key not in seen:
+            seen.add(key)
+            result.append(name)
+    return result
+
+
+def validate_tags(tags, context):
+    require(isinstance(tags, list), context, "tags must be a list of strings")
+    for tag in tags:
+        require(isinstance(tag, str) and bool(tag.strip()), context, "tags must be nonempty strings")
+        require(len(tag.strip()) <= 64 and not any(unicodedata.category(c) == "Cc" for c in tag), context,
+                "tags must contain 1–64 characters without control characters")

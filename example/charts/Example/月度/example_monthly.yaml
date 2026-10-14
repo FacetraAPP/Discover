@@ -31,6 +31,7 @@ dataset:
     GROUP BY month, s.name
     ORDER BY month
 chart:
+  tags: ["股票", "月度", "聚合"]
   id: example_monthly
   title: 月度均价
   dataset: monthly

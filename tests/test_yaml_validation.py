@@ -21,7 +21,7 @@ class YAMLValidationTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.topic = self.root / "sales"
+        self.topic = self.root / "workspaces/sales"
         shutil.copytree(ROOT / "docs/starter", self.topic)
         self.chart_path = self.topic / "charts/sales.yaml"
         self.dashboard_path = self.topic / "dashboards/overview.yaml"

@@ -25,7 +25,7 @@
 
 ## License
 
-Apache-2.0，详见 [仓库许可证](../LICENSE)。
+Apache-2.0，详见 [仓库许可证](../../LICENSE)。
 
 ## 标签
 

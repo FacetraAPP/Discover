@@ -1,7 +1,7 @@
 # Contributing to Facetra Discover
 
 This is the public content repository for Facetra, a native chart and dashboard
-application. Each top-level topic is an independent, importable workspace.
+application. Each topic under `workspaces/` is an independent, importable workspace.
 Contributors need only this repository and Python 3.12+ to author and validate
 content; no application checkout, private documentation or credentials are needed.
 
@@ -18,9 +18,9 @@ content; no application checkout, private documentation or credentials are neede
   before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
-- [Working examples](example/README.md): eight charts and three dashboards.
+- [Working examples](workspaces/example/README.md): eight charts and three dashboards.
 - [Minimal starter](docs/starter/): a CSV, chart, dashboard and manifest that can
-  be copied together into a new top-level topic.
+  be copied together into a new topic under `workspaces/`.
 
 For chart authoring, use [.agents/skills/create-chart-yaml/SKILL.md](.agents/skills/create-chart-yaml/SKILL.md).
 For dashboard authoring, use [.agents/skills/create-dashboard-yaml/SKILL.md](.agents/skills/create-dashboard-yaml/SKILL.md).

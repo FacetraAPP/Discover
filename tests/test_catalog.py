@@ -54,7 +54,7 @@ class CatalogTests(unittest.TestCase):
             self.build()
 
     def test_yaml_manifest_and_readme_are_published_with_digests(self):
-        manifest = {"id": "example", "title": "YAML workspace", "kind": "localPath"}
+        manifest = {"title": "YAML workspace"}
         (self.topic / "workspace.json").unlink()
         (self.topic / "workspace.yaml").write_text(yaml.safe_dump(manifest))
         markdown = "# Guide\n\n## Setup\n\n- Configure **market**\n"
@@ -62,6 +62,9 @@ class CatalogTests(unittest.TestCase):
         workspace = self.build()["workspaces"][0]
         files = {file["path"]: file for file in workspace["files"]}
         self.assertEqual(workspace["title"], "YAML workspace")
+        self.assertEqual(workspace["id"], "example")
+        self.assertEqual(workspace["path"], "workspaces/example")
+        self.assertTrue(all(item["id"].startswith("example/") for item in workspace["resources"]))
         self.assertIn("workspace.yaml", files)
         self.assertNotIn("workspace.json", files)
         self.assertEqual(files["README.md"], catalog.file_record(self.topic, "README.md"))
@@ -121,7 +124,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_multiple_manifests_invalid_yaml_and_readme_links_are_rejected(self):
         manifest = self.topic / "workspace.yaml"
-        manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")
+        manifest.write_text("title: YAML\n")
         with self.assertRaises(ValueError):
             self.build()
         (self.topic / "workspace.json").unlink()
@@ -130,7 +133,7 @@ class CatalogTests(unittest.TestCase):
                 manifest.write_text(text)
                 with self.assertRaises((ValueError, yaml.YAMLError)):
                     self.build()
-        manifest.write_text("id: example\ntitle: YAML\nkind: localPath\n")
+        manifest.write_text("title: YAML\n")
         (self.root / "outside.md").write_text("private")
         (self.topic / "README.md").symlink_to(self.root / "outside.md")
         with self.assertRaises(ValueError):

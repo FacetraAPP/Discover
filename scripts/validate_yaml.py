@@ -181,15 +181,20 @@ def validate_connection_type(document, context):
     unique(keys, context + ".fields")
 
 
-def validate_workspace(document, context):
-    mapping(document, context, {"id", "title", "kind", "description", "license", "isPersonal", "requiredConnections"}, {"id", "title", "kind"})
-    identifier(document["id"], context + ".id")
+def validate_workspace(document, context, *, legacy=False):
+    fields = {"title", "description", "license", "requiredConnections"}
+    if legacy:
+        fields.update({"id", "kind", "isPersonal"})
+    mapping(document, context, fields, {"title"})
     text(document["title"], context + ".title")
-    require(document["kind"] == "localPath", context, "published workspaces require kind: localPath")
+    if legacy and "id" in document:
+        identifier(document["id"], context + ".id")
+    if legacy and "kind" in document:
+        require(document["kind"] == "localPath", context, "published workspaces require kind: localPath")
     for field in ("description", "license"):
         if document.get(field) is not None:
             text(document[field], context + "." + field, nonempty=False)
-    if "isPersonal" in document:
+    if legacy and "isPersonal" in document:
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
     connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")
     for connection in connections:

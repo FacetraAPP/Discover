@@ -67,7 +67,7 @@ class YAMLValidationTests(unittest.TestCase):
 
     def test_workspace_fields_types_and_connections_are_checked(self):
         original = yaml.safe_load((self.topic / "workspace.yaml").read_text())
-        for field, value in [("kind", "remoteSync"), ("title", []), ("isPersonal", "false"),
+        for field, value in [("id", "sales"), ("kind", "localPath"), ("title", []), ("isPersonal", False),
                              ("requiredConnections", "business"), ("requiredConnections", ["business", "business"]),
                              ("localDirectory", "/private/workspace")]:
             with self.subTest(field=field, value=value):

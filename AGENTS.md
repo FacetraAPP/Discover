@@ -31,7 +31,8 @@ other tools can read the same instructions directly.
 ## Content rules
 
 - Publish one manifest per topic: workspace.yaml for new content; workspace.json
-  remains readable for legacy content. Use kind: localPath.
+  remains readable for legacy content. Publish title, description, license and
+  requiredConnections only; workspace IDs, kind and personal roles are app metadata.
 - Use .yaml for charts and dashboards, including nested folders. Filenames match
   chart.id or dashboard.id. IDs contain 1–80 ASCII letters, digits, underscores
   or hyphens; chart and dashboard IDs share one namespace inside each workspace.

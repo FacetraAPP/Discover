@@ -69,7 +69,7 @@ def build_workspace(root):
         raise ValueError(f"{topic}: define exactly one workspace.yaml (or legacy workspace.json)")
     manifest_path = manifests[0]
     manifest = load_yaml(read_file(root, manifest_path), f"{topic}/{manifest_path}") if manifest_path.endswith(".yaml") else json.loads(read_file(root, manifest_path))
-    validate_workspace(manifest, f"{topic}/{manifest_path}")
+    validate_workspace(manifest, f"{topic}/{manifest_path}", legacy=manifest_path == "workspace.json")
     title = manifest["title"].strip()
     description = manifest.get("description", "")
     license = manifest.get("license", "Apache-2.0")

@@ -13,7 +13,7 @@ discovered by the publisher.
 
 ```text
 workspaces/example/
-  workspace.yaml       # Portable localPath manifest with title, description and license
+  workspace.yaml       # Portable title, description, license and required connections
   README.md            # Markdown overview shown in Facetra workspace details
   charts/**/*.yaml
   dashboards/**/*.yaml
@@ -32,6 +32,9 @@ Workspace metadata is defined in `workspace.yaml`: `title`, optional `descriptio
 and optional `license` (defaults to this repository's Apache-2.0 license). The
 catalog uses these directly. Chart and dashboard names and descriptions come from
 their own YAML `title` and `notes` fields.
+Workspace IDs, storage kind and personal-space flags are excluded from YAML.
+Catalog topic keys come from the workspace directory names; local workspace names
+and storage settings are managed by Facetra.
 
 Workspace documentation lives in `README.md` (legacy `readme.md` is also accepted).
 Describe the purpose, included charts and dashboards, required connections and setup
@@ -41,7 +44,8 @@ retains it in complete workspace imports. Individual resource imports do not cop
 README contents are not embedded in the index.
 
 Legacy `workspace.json` remains accepted; a topic must contain exactly one manifest.
-For migration, preserve the same metadata in `workspace.yaml` and remove the JSON file.
+For migration, retain the portable metadata, omit `id`, `kind` and `isPersonal`,
+and remove the JSON file.
 
 ## Contributing and agent skills
 

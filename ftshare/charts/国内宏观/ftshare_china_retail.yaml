@@ -39,6 +39,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "消费", "零售"]
   id: ftshare_china_retail
   title: 社会消费品零售 · 同比
   dataset: retail_data

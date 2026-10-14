@@ -43,6 +43,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "景气指数", "制造业", "PMI"]
   id: ftshare_china_pmi
   title: PMI · 制造业与非制造业
   dataset: pmi_data

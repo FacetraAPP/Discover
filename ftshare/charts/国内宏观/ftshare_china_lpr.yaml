@@ -41,6 +41,7 @@ dataset:
     )
     SELECT * FROM recent ORDER BY period
 chart:
+  tags: ["国内宏观", "利率", "贷款", "LPR"]
   id: ftshare_china_lpr
   title: LPR · 贷款市场报价利率
   dataset: lpr_data

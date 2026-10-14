@@ -39,6 +39,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "货币政策", "准备金率"]
   id: ftshare_china_reserve_ratio
   title: 存款准备金率
   dataset: reserve_ratio_data

@@ -67,6 +67,7 @@ dataset:
     )
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
 chart:
+  tags: ["国内宏观", "利率", "报价行", "SHIBOR"]
   id: ftshare_china_shibor_quote
   title: SHIBOR · 报价行利率
   dataset: shibor_quote_data

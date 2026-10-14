@@ -43,6 +43,7 @@ dataset:
     )
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
 chart:
+  tags: ["国内宏观", "利率", "货币市场", "SHIBOR"]
   id: ftshare_china_shibor
   title: SHIBOR · 期限比较
   dataset: shibor_data

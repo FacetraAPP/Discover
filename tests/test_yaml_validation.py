@@ -340,5 +340,23 @@ class YAMLValidationTests(unittest.TestCase):
         self.assertEqual((output / "LICENSE").read_bytes(), (ROOT / "LICENSE").read_bytes())
 
 
+    def test_tags_are_published_and_normalized_for_both_resource_types(self):
+        self.chart["chart"]["tags"] = [" 股票 ", "Macro", "macro", "Café", "cafe"]
+        self.dashboard["tags"] = ["股票", "分析"]
+        self.write(self.chart_path, self.chart)
+        self.write(self.dashboard_path, self.dashboard)
+        resources = self.build()["workspaces"][0]["resources"]
+        self.assertEqual(next(r for r in resources if r["type"] == "chart")["tags"], ["股票", "Macro", "Café"])
+        self.assertEqual(next(r for r in resources if r["type"] == "dashboard")["tags"], ["股票", "分析"])
+
+    def test_malformed_tags_are_rejected_with_file_context(self):
+        for value in ["macro", None, [True], [42], [""], [" "], ["a" * 65], ["a\nb"]]:
+            with self.subTest(value=value):
+                self.chart["chart"]["tags"] = value
+                self.write(self.chart_path, self.chart)
+                with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml.*tags"):
+                    self.build()
+
+
 if __name__ == "__main__":
     unittest.main()

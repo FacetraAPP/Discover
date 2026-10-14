@@ -43,6 +43,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "信贷", "金融"]
   id: ftshare_china_credit
   title: 新增信贷 · 同比
   dataset: credit_data

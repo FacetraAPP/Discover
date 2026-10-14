@@ -8,9 +8,9 @@ import re
 import shutil
 
 if __package__:
-    from .validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from .validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 else:
-    from validate_yaml import chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
@@ -103,6 +103,7 @@ def build_workspace(root):
             if not isinstance(header.get("title"), str) or not header["title"].strip():
                 raise ValueError(f"{topic}/{relative}: title is required")
             item = {"id": f"{topic}/{kind}/{resource_id}", "resourceID": resource_id, "type": kind,
+                    "tags": normalized_tags(header.get("tags", [])),
                     "title": header["title"], "description": header.get("notes", ""), "path": relative,
                     "document": document}
             if kind == "chart":

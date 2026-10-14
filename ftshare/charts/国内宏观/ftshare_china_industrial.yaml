@@ -39,6 +39,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "工业", "经济增长"]
   id: ftshare_china_industrial
   title: 工业增加值 · 同比
   dataset: industrial_data

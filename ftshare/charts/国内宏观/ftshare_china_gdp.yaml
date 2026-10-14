@@ -41,6 +41,7 @@ dataset:
       LIMIT $periods
     ) AS recent ORDER BY period
 chart:
+  tags: ["国内宏观", "经济增长", "GDP"]
   id: ftshare_china_gdp
   title: GDP · 累计同比
   dataset: gdp_data

@@ -23,6 +23,7 @@ dataset:
                 THEN octet ELSE error('HTTP example requires a valid IPv4 address.') END AS value
     FROM segments ORDER BY position
 chart:
+  tags: ["HTTP", "网络", "饼图"]
   id: example_http_ip_pie
   title: HTTP 示例 · IP 分段
   dataset: network

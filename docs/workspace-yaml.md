@@ -83,18 +83,23 @@ params:
 | Field | Rule |
 | --- | --- |
 | name | Required ID; unique in this document |
-| type | Required: string, integer, number or boolean |
+| type | Required: string, integer, number, boolean or date |
 | label | Optional nonempty string; defaults to name |
 | default | Optional scalar of the declared type |
 | required | Optional boolean, defaults to true |
-| minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum |
+| minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum; unsupported for date |
 | options | Optional list of typed permitted scalar values |
 | advanced | Optional boolean, defaults to false |
 
 All defaults and options must satisfy the type/range rules; a default with options
 must be one of them. number accepts integers and decimals; integer accepts
 integral numbers. Boolean values are not integers. Required string values cannot
-be empty. Give charts useful defaults so a single-chart import works independently.
+be empty. Date values are quoted ISO calendar dates (`YYYY-MM-DD`), validated as
+real dates, and remain strings in SQL and request parameters. Facetra presents
+them with a native date picker. Optional date parameters may use an empty string.
+Dates do not accept numeric bounds. API-specific date formatting belongs in the
+HTTP source template, not in a compact-date default. Give charts useful defaults so a single-chart
+import works independently.
 A required parameter without a default must receive a value before execution;
 dashboard panels and external references must bind it.
 

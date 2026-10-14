@@ -1,10 +1,18 @@
 params:
 - name: periods
-  label: 显示期数（月）
+  label: 显示最近（月数）
   type: integer
-  default: 60
+  default: 24
   minimum: 1
   maximum: 200
+  options:
+  - 6
+  - 12
+  - 24
+  - 36
+  - 60
+  - 120
+  - 200
 sources:
   macro:
     source: http
@@ -38,19 +46,23 @@ chart:
   dataset: lpr_data
   renderer: echarts
   notes: |-
-    FTShare 国内宏观：LPR · 贷款市场报价利率。单位：%。按月保留最后一条报价；5 年期在 2019-08-20 前缺失，不补零。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/wg95club
+    观察 1 年期与 5 年期贷款市场报价利率及调降节点。阶梯线表示报价沿用。单位：%。
+
+    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+    历史按月保留最后一条报价；5 年期在 2019-08-20 前缺失。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/wg95club
   option:
     tooltip:
       trigger: axis
-      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2) + ''%'''
     legend:
       type: scroll
       top: 0
     grid:
       left: 12
-      right: 16
-      top: 56
-      bottom: 24
+      right: 24
+      top: 52
+      bottom: 30
       containLabel: true
     xAxis:
       type: category
@@ -58,24 +70,37 @@ chart:
       data:
         from: lpr_data
         field: period
+      axisLabel:
+        showMinLabel: true
+        showMaxLabel: true
+        alignMinLabel: left
+        alignMaxLabel: right
     yAxis:
       type: value
       name: '%'
-      scale: false
+      scale: true
+      min: js:(e) => Math.floor((e.min - 0.05) * 100) / 100
+      max: js:(e) => Math.ceil((e.max + 0.05) * 100) / 100
+      axisLabel:
+        formatter: js:(value) => Number(value).toFixed(2)
     series:
     - name: 1 年期
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: lpr_data
         field: lpr_1y
       step: end
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 5 年期
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: lpr_data
         field: lpr_5y
       step: end
+      symbolSize: 4
+      showAllSymbol: auto

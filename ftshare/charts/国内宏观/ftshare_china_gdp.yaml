@@ -1,10 +1,18 @@
 params:
 - name: periods
-  label: 显示期数（季）
+  label: 显示最近（季度数）
   type: integer
   default: 20
   minimum: 1
   maximum: 200
+  options:
+  - 4
+  - 8
+  - 12
+  - 20
+  - 40
+  - 80
+  - 100
 sources:
   macro:
     source: http
@@ -38,19 +46,22 @@ chart:
   dataset: gdp_data
   renderer: echarts
   notes: |-
-    FTShare 国内宏观：GDP · 累计同比。单位：%。季度标签为年初至该季度的累计口径，不代表单季度增速。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/egodfcdg
+    观察 GDP 及三次产业的累计同比增速。Q2 指上半年、Q3 指前三季度，不是单季度增速。单位：%。
+
+    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/egodfcdg
   option:
     tooltip:
       trigger: axis
-      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2) + ''%'''
     legend:
       type: scroll
       top: 0
     grid:
       left: 12
-      right: 16
-      top: 56
-      bottom: 24
+      right: 24
+      top: 52
+      bottom: 30
       containLabel: true
     xAxis:
       type: category
@@ -58,6 +69,11 @@ chart:
       data:
         from: gdp_data
         field: period
+      axisLabel:
+        showMinLabel: true
+        showMaxLabel: true
+        alignMinLabel: left
+        alignMaxLabel: right
     yAxis:
       type: value
       name: '%'
@@ -65,29 +81,37 @@ chart:
     series:
     - name: GDP
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: gdp_data
         field: gdp_yoy
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 第一产业
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: gdp_data
         field: primary_cumulative_yoy
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 第二产业
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: gdp_data
         field: secondary_cumulative_yoy
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 第三产业
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: gdp_data
         field: tertiary_cumulative_yoy
+      symbolSize: 4
+      showAllSymbol: auto

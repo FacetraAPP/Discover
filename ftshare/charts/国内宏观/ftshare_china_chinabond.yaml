@@ -1,12 +1,12 @@
 params:
 - name: start_date
-  label: 开始日期（YYYYMMDD）
-  type: string
-  default: '20260801'
+  label: 开始日期
+  type: date
+  default: '2026-08-01'
 - name: end_date
-  label: 结束日期（YYYYMMDD）
-  type: string
-  default: '20260831'
+  label: 结束日期
+  type: date
+  default: '2026-08-31'
 - name: page
   label: 页码
   type: integer
@@ -14,9 +14,13 @@ params:
   minimum: 1
   advanced: true
 - name: curve_name
-  label: 收益率曲线（精确名称）
+  label: 收益率曲线
   type: string
   default: 中债国债收益率曲线
+  options:
+  - 中债中短期票据收益率曲线(AAA)
+  - 中债商业银行普通债收益率曲线(AAA)
+  - 中债国债收益率曲线
 sources:
   macro:
     source: http
@@ -27,8 +31,8 @@ sources:
     - data
     - records
     params:
-      start_date: '{{ params.start_date }}'
-      end_date: '{{ params.end_date }}'
+      start_date: '{{ params.start_date | date_format(''yyyyMMdd'') }}'
+      end_date: '{{ params.end_date | date_format(''yyyyMMdd'') }}'
       page: '{{ params.page }}'
       page_size: 1000
       curve_name: '{{ params.curve_name }}'
@@ -49,60 +53,84 @@ dataset:
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
 chart:
   id: ftshare_china_chinabond
-  title: 中债国债收益率 · 期限比较
+  title: 中债收益率 · 期限比较
   dataset: chinabond_data
   renderer: echarts
   notes: |-
-    FTShare 国内宏观：中债国债收益率 · 期限比较。单位：%。默认查询 2026 年 8 月；可调整日期和页码，每页最多 1000 条。缺报和非交易日不填充。 文档：https://market.ft.tech/gateway/doc/p/fubopatp
+    比较同一债券收益率曲线不同期限的日度收益率。缩放纵轴用于观察利差，曲线类别可选择。单位：%。
+
+    默认查看 2026 年 8 月。日期使用日历选择，按真实日历时间排列；周末和缺报不补点。高级参数可切换页码，每页最多 1000 条。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/fubopatp
   option:
     tooltip:
       trigger: axis
-      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+      formatter: 'js:(items) => { const rows = Array.isArray(items) ? items : [items]; if (!rows.length) return ''''; const d = new Date(rows[0].axisValue); const date = d.getFullYear() + ''-'' + String(d.getMonth() + 1).padStart(2, ''0'') + ''-'' + String(d.getDate()).padStart(2, ''0''); return date + ''<br/>'' + rows.map(p => p.marker + p.seriesName + '': '' + (p.value[1] == null ? ''—'' : Number(p.value[1]).toFixed(4) + ''%'')).join(''<br/>''); }'
     legend:
       type: scroll
       top: 0
     grid:
       left: 12
-      right: 16
-      top: 56
-      bottom: 24
+      right: 24
+      top: 52
+      bottom: 30
       containLabel: true
     xAxis:
-      type: category
+      type: time
       boundaryGap: false
-      data:
-        from: chinabond_data
-        field: period
+      axisLabel:
+        showMinLabel: true
+        showMaxLabel: true
+        alignMinLabel: left
+        alignMaxLabel: right
+        formatter: '{MM}-{dd}'
+      min: dataMin
+      max: dataMax
     yAxis:
       type: value
       name: '%'
-      scale: false
+      scale: true
+      min: js:(e) => Math.floor((e.min - 0.05) * 100) / 100
+      max: js:(e) => Math.ceil((e.max + 0.05) * 100) / 100
+      axisLabel:
+        formatter: js:(value) => Number(value).toFixed(2)
     series:
     - name: 1 年
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: chinabond_data
-        field: y_1y
+        x: period
+        y: y_1y
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 5 年
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: chinabond_data
-        field: y_5y
+        x: period
+        y: y_5y
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 10 年
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: chinabond_data
-        field: y_10y
+        x: period
+        y: y_10y
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 30 年
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: chinabond_data
-        field: y_30y
+        x: period
+        y: y_30y
+      symbolSize: 4
+      showAllSymbol: auto

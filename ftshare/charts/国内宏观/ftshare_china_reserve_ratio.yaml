@@ -1,10 +1,18 @@
 params:
 - name: periods
-  label: 显示期数（月）
+  label: 显示最近（月数）
   type: integer
-  default: 60
+  default: 24
   minimum: 1
   maximum: 200
+  options:
+  - 6
+  - 12
+  - 24
+  - 36
+  - 60
+  - 120
+  - 200
 sources:
   macro:
     source: http
@@ -36,19 +44,22 @@ chart:
   dataset: reserve_ratio_data
   renderer: echarts
   notes: |-
-    FTShare 国内宏观：存款准备金率。单位：%。展示最近指定期数，按时间升序排列；缺失值保留为 null。 文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
+    比较大型与中小型金融机构的存款准备金率，观察政策调整。单位：%。
+
+    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
   option:
     tooltip:
       trigger: axis
-      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2)'
+      valueFormatter: 'js:(value) => value == null ? ''—'' : Number(value).toFixed(2) + ''%'''
     legend:
       type: scroll
       top: 0
     grid:
       left: 12
-      right: 16
-      top: 56
-      bottom: 24
+      right: 24
+      top: 52
+      bottom: 30
       containLabel: true
     xAxis:
       type: category
@@ -56,24 +67,37 @@ chart:
       data:
         from: reserve_ratio_data
         field: period
+      axisLabel:
+        showMinLabel: true
+        showMaxLabel: true
+        alignMinLabel: left
+        alignMaxLabel: right
     yAxis:
       type: value
       name: '%'
-      scale: false
+      scale: true
+      min: js:(e) => Math.floor((e.min - 0.05) * 100) / 100
+      max: js:(e) => Math.ceil((e.max + 0.05) * 100) / 100
+      axisLabel:
+        formatter: js:(value) => Number(value).toFixed(2)
     series:
     - name: 中小型金融机构
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: reserve_ratio_data
         field: reserve_ratio_small_medium
       step: end
+      symbolSize: 4
+      showAllSymbol: auto
     - name: 大型金融机构
       type: line
-      showSymbol: false
+      showSymbol: true
       connectNulls: false
       data:
         from: reserve_ratio_data
         field: reserve_ratio_large
       step: end
+      symbolSize: 4
+      showAllSymbol: auto

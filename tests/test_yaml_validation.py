@@ -98,6 +98,16 @@ class YAMLValidationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "params"):
                     self.build()
 
+    def test_date_parameters_use_iso_and_validate_calendar_dates(self):
+        from scripts.validate_yaml import parameters
+        valid = {"name": "day", "type": "date", "default": "2024-02-29"}
+        self.assertEqual(parameters([valid], "dates")["day"]["default"], "2024-02-29")
+        for value in ["20240229", "2026-02-29", "2026-2-01", "2026-13-01"]:
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "ISO calendar date"):
+                parameters([dict(valid, default=value)], "dates")
+        with self.assertRaisesRegex(ValueError, "numeric bounds"):
+            parameters([dict(valid, minimum=1)], "dates")
+
     def test_source_variants_and_http_fields_are_checked(self):
         invalid = [{"source": "healthkit"}, {"source": "duckdb"},
                    {"source": "duckdb", "file": "data/sales.csv", "sql": "SELECT 1"},

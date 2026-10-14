@@ -11,9 +11,9 @@
 - 分支：`feat/ftshare-china-macro`（PR 合并后使用 `main`）
 - GitHub connection：不选择，公开仓库支持匿名读取。
 
-导入后打开「图表」并选择「国内宏观」文件夹。月度图表默认显示最近 60 期，GDP 默认显示最近 20 季；参数可调整至 1–200 期。LPR 原始历史包含按日填充记录，SQL 按月保留最后一次报价，避免重复月份。
+导入后打开「图表」并选择「国内宏观」文件夹。月度图表默认显示最近 24 个月，GDP 默认显示最近 20 季；使用下拉选项切换常用时间窗口，月度最多 200 个月、GDP 最多 100 季。LPR 原始历史包含按日填充记录，SQL 按月保留最后一次报价，避免重复月份。
 
-日度利率图默认使用已经发布数据的固定区间 `20260801`–`20260831`，不是自动滚动到今天。可以修改开始/结束日期（YYYYMMDD）、曲线名称或报价行；日期结束不能早于开始。每次加载一页，最多 1000 条；较长区间应缩短日期窗口或调整高级参数「页码」，本工作区不自动跨页合并。中债默认「中债国债收益率曲线」，SHIBOR 报价默认「中国银行」，名称必须精确匹配。
+日度利率图默认使用已经发布数据的固定区间 `2026-08-01`–`2026-08-31`，不是自动滚动到今天。开始/结束日期使用原生日历，参数始终保存 ISO 日期（`YYYY-MM-DD`）；YAML 在 HTTP 请求中显式使用 `date_format('yyyyMMdd')` 转换为接口要求的格式。结束日期不能早于开始日期。曲线和报价行使用下拉选项，其中 18 家报价行支持搜索。选项来自 2026-08-03 的接口记录；中债默认「中债国债收益率曲线」，SHIBOR 报价默认「中国银行」。每次加载一页，最多 1000 条；较长区间应缩短日期窗口或调整高级参数「页码」，本工作区不自动跨页合并。
 
 ## 图表与口径
 
@@ -33,12 +33,12 @@
 | `ftshare_china_fiscal` | [财政收入 · 同比](https://market.ft.tech/gateway/doc/p/w515ivba) | % |
 | `ftshare_china_money_supply` | [货币供应 · M0/M1/M2 同比](https://market.ft.tech/gateway/doc/p/twl6t7h1) | % |
 | `ftshare_china_trade` | [进出口 · 同比](https://market.ft.tech/gateway/doc/p/n6bu5izh) | % |
-| `ftshare_china_chinabond` | [中债国债收益率 · 期限比较](https://market.ft.tech/gateway/doc/p/fubopatp) | % |
+| `ftshare_china_chinabond` | [中债收益率 · 期限比较](https://market.ft.tech/gateway/doc/p/fubopatp) | % |
 | `ftshare_china_shibor` | [SHIBOR · 期限比较](https://market.ft.tech/gateway/doc/p/3jnxyzmy) | % |
 | `ftshare_china_shibor_quote` | [SHIBOR · 报价行利率](https://market.ft.tech/gateway/doc/p/optr82sd) | % |
 | `ftshare_china_wenzhou` | [温州民间融资 · 综合与分项利率](https://market.ft.tech/gateway/doc/p/e4w9tgm2) | % |
 
-增速、利率与价格指数的同比/环比均以百分比显示，PMI 为指数点。GDP 的 Q1/Q2/Q3/Q4 标签分别指年初至该季度的累计数据，不是单季度数据。信贷接口只提供新增信贷，不能视为社会融资规模总量。税收当月同比为服务端计算值。
+增速、利率与价格指数的同比/环比均以百分比显示，PMI 为指数点。点击图表查看日期和带单位的数值，点击图例可隐藏曲线。日度利率使用真实时间轴，周末与交易日间隔按日期显示；利率纵轴按数据范围缩放，比较变化时应同时查看刻度。PMI 始终显示 50 荣枯线且标签置于绘图区内。新增信贷的当月/累计同比使用上下两个独立纵轴，避免当月同比的极端值压平累计走势。GDP 的 Q1/Q2/Q3/Q4 标签分别指年初至该季度的累计数据，不是单季度数据。信贷接口只提供新增信贷，不能视为社会融资规模总量。税收当月同比为服务端计算值。
 
 金额单位、币种在不同接口中可能为空或与文档描述不同，因此这些图表选择同比增速，不擅自把金额当作人民币亿元或美元。`national_cpi`/`ppi` 指数值不混入增速曲线。所有字符串数值用 `TRY_CAST` 转为数值，缺失值保持 null，曲线不跨缺失值连接、不补零。中文月份转换为 YYYY-MM，季度转换为 YYYY-Qn，再按时间升序展示。
 

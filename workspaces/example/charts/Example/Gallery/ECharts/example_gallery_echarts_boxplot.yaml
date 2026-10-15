@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_boxplot
   title: ECharts · 箱线图
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - boxplot
   notes: 3 组虚构的 [最小值, Q1, 中位数, Q3, 最大值]，直接内嵌 chart.option。单位为演示单位。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

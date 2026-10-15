@@ -34,15 +34,16 @@ dataset:
       FROM typed WINDOW w AS (ORDER BY trade_date ROWS BETWEEN ($ma_window - 1) PRECEDING AND CURRENT ROW)
     ), recent AS (SELECT * FROM history ORDER BY trade_date DESC LIMIT $days)
     SELECT * FROM recent ORDER BY trade_date
-chart:
+metadata:
   tags: ["股票", "行情", "K线", "ECharts"]
   id: example_echarts_candlestick
   title: ECharts · K 线与成交量
-  dataset: candles
-  renderer: echarts
   notes: |-
     40 个交易日的离线虚构 OHLCV。K 线数据按 open、close、low、high 顺序绑定。
     上下两个 grid 共享缩放；均线由 SQL 计算；成交量用 color_by 跟随当日涨跌。
+chart:
+  dataset: candles
+  renderer: echarts
   option:
     grid:
     - height: 48%

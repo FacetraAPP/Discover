@@ -42,17 +42,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "景气指数", "制造业", "PMI"]
   id: ftshare_china_pmi
   title: PMI · 制造业与非制造业
-  dataset: pmi_data
-  renderer: echarts
   notes: |-
     50 是荣枯分界：高于 50 为扩张，低于 50 为收缩。比较制造业与非制造业景气。单位：指数点。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/s4xvqnu0
+chart:
+  dataset: pmi_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

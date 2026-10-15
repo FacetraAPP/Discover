@@ -1,7 +1,7 @@
 # Dashboard YAML
 
 Dashboards compose chart instances from one workspace. A panel references
-chart.id, not a path or a dataset. Save as
+metadata.id, not a path or a dataset. Save as
 workspaces/<topic>/dashboards/<optional-folders>/<id>.yaml.
 Read the [workspace/parameter guide](workspace-yaml.md) and inspect the charts
 before binding them. [The starter dashboard](starter/dashboards/overview.yaml)
@@ -13,11 +13,17 @@ is a complete file, paired with [its chart](starter/charts/sales.yaml).
 | --- | --- |
 | version | Required integer 1 |
 | kind | Required string Dashboard (case-sensitive) |
-| id | Required ID matching the filename |
-| title | Required nonempty string |
+| metadata | Required object with id/title and optional notes/tags |
+| metadata.id | Required ID matching the filename |
+| metadata.title | Required nonempty string |
 | params | Required parameter list; use [] when none |
 | tabs | Required nonempty list of tab objects |
-| notes | Required string describing this dashboard; use "" when empty |
+| metadata.notes | Optional string describing this dashboard; defaults to "" |
+| metadata.tags | Optional string list; defaults to [] |
+
+Metadata accepts only id, title, notes and tags. version/kind identify the document
+format and stay at the root. Resource fields at the root are rejected. Tab and
+panel IDs/titles describe layout elements and stay within those elements.
 
 A tab has required id, title and panels, with optional layout.
 Tab IDs are unique within the dashboard. Each panel has required id/chart,
@@ -26,13 +32,20 @@ Panel IDs are unique across every tab, including repeated instances of the same
 chart. All IDs follow the workspace ID rules; titles are nonempty strings.
 Unknown fields fail validation.
 
+For existing files, move the root id/title/notes/tags into metadata and remove
+their former keys. Keep version/kind/params/tabs at the root and retain all
+resource IDs, filenames and panel references. This is a breaking change paired
+with Facetra's metadata schema; old and mixed document structures are rejected.
+
 ## Explicit shared parameters
 
 ~~~yaml
 version: 1
 kind: Dashboard
-id: overview
-title: Sales overview
+metadata:
+  id: overview
+  title: Sales overview
+  notes: One shared threshold and one fixed comparison.
 params:
   - {name: threshold, label: Minimum revenue, type: number, default: 0, minimum: 0}
 tabs:
@@ -49,7 +62,6 @@ tabs:
         height: 240
         params:
           min_revenue: 100
-notes: One shared threshold and one fixed comparison.
 ~~~
 
 This is a complete dashboard for the starter sales chart. The first panel maps
@@ -80,9 +92,10 @@ This complete dashboard uses the starter chart twice:
 ~~~yaml
 version: 1
 kind: Dashboard
-id: sales_grid
-title: Sales comparison
-notes: Compare a shared threshold with a fixed revenue filter.
+metadata:
+  id: sales_grid
+  title: Sales comparison
+  notes: Compare a shared threshold with a fixed revenue filter.
 params:
   - {name: threshold, type: number, default: 0, minimum: 0}
 tabs:
@@ -154,9 +167,8 @@ compact layouts. Document any required local connections in the workspace README
 
 ## Tags
 
-Charts accept optional `chart.tags: [股票, 行情]`; dashboards accept optional
-`tags: [股票, 分析]` at the document root. Omission means no tags, and old YAML
-and cached catalogs remain readable. Tags must be strings of 1–64 characters
+Charts and dashboards accept optional `metadata.tags: [股票, 行情]`.
+Omission means no tags. Metadata fields at their former locations are rejected. Tags must be strings of 1–64 characters
 after trimming, without control characters. Display spelling and order are
 preserved; duplicates are merged ignoring case and accents. Quote numeric or
 boolean-looking names (`"2026"`, `"on"`).

@@ -44,17 +44,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "物价", "通胀", "CPI"]
   id: ftshare_china_cpi
   title: CPI · 同比与环比
-  dataset: cpi_data
-  renderer: echarts
   notes: |-
     观察居民消费价格的同比趋势与短期环比变化，比较全国、城市和农村。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/0v982m8z
+chart:
+  dataset: cpi_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

@@ -38,17 +38,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "财政", "税收"]
   id: ftshare_china_tax
   title: 税收收入 · 同比
-  dataset: tax_data
-  renderer: echarts
   notes: |-
     比较税收当月同比与累计同比。当月同比由服务端计算。单位：%。
 
     可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/ht6ox0mg
+chart:
+  dataset: tax_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

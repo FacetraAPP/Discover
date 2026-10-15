@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_chord
   title: ECharts · 弦图
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - chord
   notes: ECharts 6+ 弦图：3 个虚构节点与 3 条带权重的连接，宽度表达流量。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

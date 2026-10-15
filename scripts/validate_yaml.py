@@ -329,8 +329,19 @@ def vela_option(value, params, context):
                 scalar(value, location + ".inputs." + name)
 
 
+def validate_metadata(document, context):
+    metadata = mapping(document.get("metadata"), context + ".metadata",
+                       {"id", "title", "notes", "tags"}, {"id", "title"})
+    identifier(metadata["id"], context + ".metadata.id")
+    text(metadata["title"], context + ".metadata.title")
+    if "notes" in metadata:
+        text(metadata["notes"], context + ".metadata.notes", nonempty=False)
+    validate_tags(metadata.get("tags", []), context + ".metadata.tags")
+
+
 def validate_chart(document, context):
-    mapping(document, context, {"params", "sources", "dataset", "chart"}, {"dataset", "chart"})
+    mapping(document, context, {"metadata", "params", "sources", "dataset", "chart"}, {"metadata", "dataset", "chart"})
+    validate_metadata(document, context)
     params = parameters(document.get("params", []), context + ".params")
     sources = mapping(document.get("sources", {}), context + ".sources")
     require(len(sources) <= 32, context, "at most 32 sources per chart")
@@ -361,13 +372,8 @@ def validate_chart(document, context):
     renderer = chart.get("renderer", "default")
     fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
-    mapping(chart, context + ".chart", {"id", "title", "dataset", "renderer", "notes", "tags"} | fields[renderer], {"id", "title", "dataset"})
-    identifier(chart["id"], context + ".chart.id")
-    text(chart["title"], context + ".chart.title")
+    mapping(chart, context + ".chart", {"dataset", "renderer"} | fields[renderer], {"dataset"})
     require(chart["dataset"] == dataset["id"], context, "chart.dataset must equal dataset.id")
-    if "notes" in chart:
-        text(chart["notes"], context + ".chart.notes", nonempty=False)
-    validate_tags(chart.get("tags", []), context + ".chart.tags")
     if renderer == "default":
         require(chart.get("plot") in ("line", "area", "bar", "pie", "scatter", "heatmap", "rule"), context, "unsupported native plot")
         plot = chart["plot"]
@@ -437,12 +443,9 @@ def validate_chart_graph(charts, context, paths=None):
 
 
 def validate_dashboard(document, charts, context):
-    mapping(document, context, {"version", "kind", "id", "title", "notes", "params", "tabs", "tags"}, {"version", "kind", "id", "title", "notes", "params", "tabs"})
+    mapping(document, context, {"version", "kind", "metadata", "params", "tabs"}, {"version", "kind", "metadata", "params", "tabs"})
+    validate_metadata(document, context)
     require(type(document["version"]) is int and document["version"] == 1 and document["kind"] == "Dashboard", context, "expected version: 1 and kind: Dashboard")
-    identifier(document["id"], context + ".id")
-    text(document["title"], context + ".title")
-    text(document["notes"], context + ".notes", nonempty=False)
-    validate_tags(document.get("tags", []), context + ".tags")
     params = parameters(document["params"], context + ".params")
     tab_ids, panel_ids = [], []
     for tab in sequence(document["tabs"], context + ".tabs", 1):

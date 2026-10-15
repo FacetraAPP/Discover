@@ -10,16 +10,17 @@ dataset:
     ref: '#/sources/sample'
   sql: |
     SELECT day, channel, CAST(value AS DOUBLE) AS value FROM raw
-chart:
+metadata:
   id: example_gallery_swift_heatmap
   title: Swift Charts · 热力图 · RectangleMark
-  dataset: sample
-  renderer: default
   tags:
   - 图表原型
   - Swift Charts
   - heatmap
   notes: 3 天 × 2 个渠道的 6 个虚构单元格；chart.color 绑定数值颜色，X/Y 为分类轴。
+chart:
+  dataset: sample
+  renderer: default
   plot: heatmap
   x: day
   y: channel

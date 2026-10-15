@@ -57,13 +57,14 @@ dataset:
       SELECT * FROM history ORDER BY trade_date DESC LIMIT $days
     )
     SELECT * FROM recent ORDER BY trade_date
-chart:
+metadata:
   tags: ["股票", "行情", "均线"]
   id: example_price
   title: 股价与均线
+  notes: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
+chart:
   dataset: prices
   renderer: default
-  notes: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
   plot: line
   x: trade_date
   y: close

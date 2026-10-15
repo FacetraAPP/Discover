@@ -38,17 +38,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "投资", "固定资产"]
   id: ftshare_china_fixed_asset
   title: 固定资产投资 · 同比与环比
-  dataset: fixed_asset_data
-  renderer: echarts
   notes: |-
     观察固定资产投资当月同比和环比。增速可能受低基数影响。单位：%。
 
     可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/vp2bmxs5
+chart:
+  dataset: fixed_asset_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

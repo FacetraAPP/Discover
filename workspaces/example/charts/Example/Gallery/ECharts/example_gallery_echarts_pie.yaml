@@ -11,16 +11,17 @@ dataset:
   sql: 'SELECT label AS name, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
 
     '
-chart:
+metadata:
   id: example_gallery_echarts_pie
   title: ECharts · 饼图
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - pie
   notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

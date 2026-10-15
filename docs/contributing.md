@@ -32,7 +32,7 @@ cp -R docs/starter workspaces/sales
 
 Use an unused destination; do not copy into an existing topic. Rename the topic,
 workspace ID/title and resource IDs for your use case. If you rename sales.yaml
-or overview.yaml, update chart.id/dashboard.id and all references to those IDs.
+or overview.yaml, update metadata.id and all references to those IDs.
 The CSV contains month/revenue columns, the chart filters by min_revenue, and
 the dashboard explicitly binds that parameter.
 

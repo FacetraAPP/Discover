@@ -1,8 +1,10 @@
-tags: ["股票", "经营", "ECharts"]
+metadata:
+  tags: ["股票", "经营", "ECharts"]
+  id: example_echarts_dashboard
+  title: ECharts · 配置示例
+  notes: 四张图均由 YAML 配置，使用打包的虚构数据，可离线查看。打开图表的查看 YAML 可复制完整配方。
 version: 1
 kind: Dashboard
-id: example_echarts_dashboard
-title: ECharts · 配置示例
 params: []
 tabs:
 - id: market
@@ -27,4 +29,3 @@ tabs:
     chart: example_echarts_heatmap
     height: 3e+2
     params: {}
-notes: 四张图均由 YAML 配置，使用打包的虚构数据，可离线查看。打开图表的查看 YAML 可复制完整配方。

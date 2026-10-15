@@ -1,8 +1,9 @@
 version: 1
 kind: Dashboard
-id: overview
-title: Sales overview
-notes: Filter fictional sales with a shared revenue threshold.
+metadata:
+  id: overview
+  title: Sales overview
+  notes: Filter fictional sales with a shared revenue threshold.
 params:
   - name: threshold
     label: Minimum revenue

@@ -38,13 +38,14 @@ dataset:
       ORDER BY trade_date DESC LIMIT $days
     )
     SELECT * FROM recent ORDER BY trade_date
-chart:
+metadata:
   tags: ["股票", "行情", "成交量"]
   id: example_volume
   title: 成交量
+  notes: ''
+chart:
   dataset: volume
   renderer: default
-  notes: ''
   plot: bar
   x: trade_date
   y: volume

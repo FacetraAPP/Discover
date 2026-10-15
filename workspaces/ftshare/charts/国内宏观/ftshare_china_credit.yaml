@@ -42,18 +42,19 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "信贷", "金融"]
   id: ftshare_china_credit
   title: 新增信贷 · 同比
-  dataset: credit_data
-  renderer: echarts
   notes: |-
     上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值；上下两图使用相同的日期位置，缺失数据不补零。
     这是新增信贷，不是社会融资规模总量。当月同比可能因负值或低基数出现超过 ±100% 的变化，两幅图的纵轴范围各自标明。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b
+chart:
+  dataset: credit_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

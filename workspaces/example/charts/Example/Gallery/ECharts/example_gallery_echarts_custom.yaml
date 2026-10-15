@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_custom
   title: ECharts · 自定义区间
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - custom
   notes: 3 个虚构任务的区间，renderItem 使用 api.coord/api.size 转换坐标并裁剪矩形；单位为天。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

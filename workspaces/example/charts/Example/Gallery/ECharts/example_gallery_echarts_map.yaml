@@ -8,17 +8,18 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_map
   title: ECharts · 离线地图
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - map
   notes: '两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。 layoutCenter/layoutSize
     与 aspectScale: 1 保持虚构平面坐标的等比例形状。'
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

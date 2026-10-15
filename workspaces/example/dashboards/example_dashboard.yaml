@@ -1,8 +1,10 @@
-tags: ["股票", "行情", "分析"]
+metadata:
+  tags: ["股票", "行情", "分析"]
+  id: example_dashboard
+  title: 个股分析
+  notes: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。
 version: 1
 kind: Dashboard
-id: example_dashboard
-title: 个股分析
 params:
 - name: symbol
   label: 股票代码
@@ -67,4 +69,3 @@ tabs:
       symbol:
         param: symbol
       days: 30
-notes: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。

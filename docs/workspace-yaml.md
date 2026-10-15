@@ -17,7 +17,7 @@ workspaces/sales/
 ~~~
 
 charts/ and dashboards/ can contain nested folders. File extensions are .yaml.
-The filename without its extension equals chart.id or dashboard.id. IDs use
+The filename without its extension equals metadata.id. IDs use
 1–80 ASCII letters, digits, underscores or hyphens and are unique across charts
 and dashboards in the workspace. Do not use the reserved builtin_example_ prefix.
 Different topics may reuse resource IDs.

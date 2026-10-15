@@ -36,15 +36,16 @@ dataset:
       param: days
     symbol:
       param: symbol
-chart:
+metadata:
   tags: ["股票", "行情", "均线", "ECharts"]
   id: example_echarts_price
   title: ECharts · 股价与均线
-  dataset: history
-  renderer: echarts
   notes: |-
     虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
     点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。
+chart:
+  dataset: history
+  renderer: echarts
   option:
     media:
     - query:

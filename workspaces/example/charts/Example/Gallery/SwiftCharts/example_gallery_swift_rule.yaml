@@ -10,16 +10,17 @@ dataset:
     ref: '#/sources/sample'
   sql: |
     SELECT task, CAST(start AS DOUBLE) AS start, CAST("end" AS DOUBLE) AS "end" FROM raw ORDER BY start
-chart:
+metadata:
   id: example_gallery_swift_rule
   title: Swift Charts · 区间 · RuleMark
-  dataset: sample
-  renderer: default
   tags:
   - 图表原型
   - Swift Charts
   - rule
   notes: 3 个虚构任务的区间，单位为天。chart.x / x_end 为数值起止，chart.y 为任务分类。
+chart:
+  dataset: sample
+  renderer: default
   plot: rule
   x: start
   x_end: end

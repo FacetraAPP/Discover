@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_candlestick
   title: ECharts · K 线
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - candlestick
   notes: 4 根虚构 K 线，数据顺序为 [开盘, 收盘, 最低, 最高]，单位为演示价格。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

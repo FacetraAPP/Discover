@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_gauge
   title: ECharts · 仪表盘
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - gauge
   notes: 虚构完成率 72%；百分比范围固定为 0–100。数据内嵌 chart.option。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

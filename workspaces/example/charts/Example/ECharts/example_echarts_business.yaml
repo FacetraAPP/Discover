@@ -39,15 +39,16 @@ dataset:
     SELECT month, online, retail, online + retail - cost AS profit,
            round(100 * (online + retail - cost) / (online + retail), 1) AS margin
     FROM recent ORDER BY month
-chart:
+metadata:
   tags: ["经营", "收入", "利润率", "ECharts"]
   id: example_echarts_business
   title: ECharts · 收入与利润率
-  dataset: sales
-  renderer: echarts
   notes: |-
     12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
     months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。
+chart:
+  dataset: sales
+  renderer: echarts
   option:
     media:
     - query:

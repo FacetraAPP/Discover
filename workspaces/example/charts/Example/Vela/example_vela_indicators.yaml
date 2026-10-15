@@ -15,7 +15,7 @@ dataset:
     FROM raw
     ORDER BY time
 
-chart:
+metadata:
   id: example_vela_indicators
   title: Vela · K 线与技术指标
   tags: [股票, 行情, K线, 均线, Vela]
@@ -23,6 +23,7 @@ chart:
     40 个交易日的虚构行情；价格单位为虚构价格点，成交量为虚构成交单位。
     SMA、EMA 和布林带叠加主图，RSI 与 MACD 各用独立副图；均线周期可通过参数调整。
     指标基于全部 40 行计算，预热期保留空值；需要支持 renderer: vela 的 Facetra 版本。
+chart:
   dataset: candles
   renderer: vela
   option:

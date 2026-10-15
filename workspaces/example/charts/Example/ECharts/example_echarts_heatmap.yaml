@@ -28,15 +28,16 @@ dataset:
     SELECT CAST(substr(month, 6, 2) AS INTEGER) - 1, 1,
            CASE WHEN $metric = 'profit' THEN round(retail - cost * retail / (online + retail), 1) ELSE retail END
     FROM sales ORDER BY channel_index, month_index
-chart:
+metadata:
   tags: ["经营", "渠道", "热力图", "ECharts"]
   id: example_echarts_heatmap
   title: ECharts · 渠道月度热力图
-  dataset: cells
-  renderer: echarts
   notes: |-
     与收入图共享 CSV source，SQL 将宽表转换为 [月份索引, 渠道索引, 数值]。
     切换 revenue / profit 查看收入或分摊成本后的利润，单位为万元。色阶、标签和坐标轴均由 option 配置。
+chart:
+  dataset: cells
+  renderer: echarts
   option:
     yAxis:
       data:

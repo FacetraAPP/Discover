@@ -22,8 +22,9 @@ when the requested chart starts a new topic.
    For ECharts, consult the binding table in the chart guide and
    [the business example](../../../workspaces/example/charts/Example/ECharts/example_echarts_business.yaml).
    Adapt IDs, titles, SQL and fields to the request; do not overwrite existing resources.
-4. Save under workspaces/<topic>/charts/<optional-folders>/<chart-id>.yaml. Match chart.id
-   to the filename and chart.dataset to dataset.id. Keep data in that topic's
+4. Save under workspaces/<topic>/charts/<optional-folders>/<chart-id>.yaml. Match metadata.id
+   to the filename and chart.dataset to dataset.id. Put id/title/notes/tags in
+   top-level metadata, separate from rendering. Keep data in that topic's
    data/ directory and references within the same workspace. Bind SQL values as
    $parameter and external references through with; do not interpolate SQL.
    Give parameters useful defaults so imported charts can run independently.

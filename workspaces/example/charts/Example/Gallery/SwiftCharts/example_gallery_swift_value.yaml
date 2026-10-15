@@ -10,14 +10,15 @@ dataset:
     ref: '#/sources/sample'
   sql: |
     SELECT SUM(CAST(value AS DOUBLE)) AS total FROM raw
-chart:
+metadata:
   id: example_gallery_swift_value
   title: Facetra · 数值卡片
-  dataset: sample
-  renderer: value
   tags:
   - 图表原型
   - Swift Charts
   - value
   notes: 4 个虚构数值的总和 75。value 是 Facetra 数值渲染器，不属于 Swift Charts 的基础 Mark。
+chart:
+  dataset: sample
+  renderer: value
   value: total

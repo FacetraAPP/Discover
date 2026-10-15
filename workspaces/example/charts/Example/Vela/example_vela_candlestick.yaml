@@ -12,16 +12,17 @@ dataset:
     FROM raw
     ORDER BY time
 
-chart:
+metadata:
   id: example_vela_candlestick
   title: Vela · OHLCV 蜡烛图
-  dataset: candles
-  renderer: vela
   tags: [股票, 行情, K线, 成交量, Vela]
   notes: |-
     40 个交易日的离线虚构 OHLCV；价格单位为虚构价格点，成交量为虚构成交单位。
     每根蜡烛展示开高低收，底部成交量独立刻度；可拖动、缩放并使用十字光标查看。
     数据按交易日升序排列，不补周末；需要支持 renderer: vela 的 Facetra 版本。
+chart:
+  dataset: candles
+  renderer: vela
   option:
     time: time
     open: open

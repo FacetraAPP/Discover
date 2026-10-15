@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_lines
   title: ECharts · 路径图
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - lines
   notes: 2 条虚构路线使用二维数值坐标，无需在线地图或底图。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

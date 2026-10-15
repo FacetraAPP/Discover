@@ -30,13 +30,14 @@ dataset:
     WHERE p.symbol = $symbol
     GROUP BY month, s.name
     ORDER BY month
-chart:
+metadata:
   tags: ["股票", "月度", "聚合"]
   id: example_monthly
   title: 月度均价
+  notes: DuckDB SQL 关联两个 CSV，按月聚合。
+chart:
   dataset: monthly
   renderer: default
-  notes: DuckDB SQL 关联两个 CSV，按月聚合。
   plot: bar
   x: month
   y: average_close

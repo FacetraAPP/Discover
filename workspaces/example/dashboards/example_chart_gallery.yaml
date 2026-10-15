@@ -1,12 +1,13 @@
 version: 1
 kind: Dashboard
-id: example_chart_gallery
-title: 图表原型 · Chart Gallery
-notes: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
-tags:
-- 图表原型
-- Swift Charts
-- ECharts
+metadata:
+  id: example_chart_gallery
+  title: 图表原型 · Chart Gallery
+  notes: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
+  tags:
+  - 图表原型
+  - Swift Charts
+  - ECharts
 params: []
 tabs:
 - id: swift

@@ -2,7 +2,7 @@
 
 A chart file describes acquisition, transformation and rendering in one document:
 params → sources → dataset → chart. Save it as
-workspaces/<topic>/charts/<optional-folders>/<chart.id>.yaml.
+workspaces/<topic>/charts/<optional-folders>/<metadata.id>.yaml.
 Read [workspace paths and parameters](workspace-yaml.md) first.
 
 The [complete starter chart](starter/charts/sales.yaml), together with its
@@ -12,14 +12,23 @@ The [complete starter chart](starter/charts/sales.yaml), together with its
 
 | Field | Rule |
 | --- | --- |
+| metadata | Required resource identity and discovery information; see below |
 | params | Optional parameter list; defaults to [] |
 | sources | Optional mapping of source IDs to source definitions; defaults to {}; at most 32 |
 | dataset | Required object: one local dataset or a reference to another dataset |
-| chart | Required object: resource metadata and renderer configuration |
+| chart | Required object: dataset binding and renderer configuration |
 
-No other top-level fields are allowed. Metadata such as title, notes and renderer
-belongs inside chart. Source/dataset IDs follow the ID rules in the workspace
+No other top-level fields are allowed. Resource id, title, notes and tags belong
+inside metadata; renderer belongs inside chart. Source/dataset IDs follow the ID rules in the workspace
 guide; dataset input IDs must be unique without regard to case.
+
+This is a breaking format change coordinated with Facetra's resource metadata
+schema. Move former chart.id/title/notes/tags into the top-level metadata object
+and remove them from chart. Keep filenames, resource IDs and reference values.
+Documents without metadata or with fields at their former locations fail
+validation; there is no compatibility reader or automatic migration. Update
+the application and published content together. Catalog cards still expose
+title/description/tags, extracted from metadata, and chartType from chart.
 
 ## Acquisition sources
 
@@ -190,22 +199,25 @@ both same-file and cross-file cycles fail validation.
 
 ## Resource metadata and renderers
 
-Every chart block needs id, title and dataset. notes is an optional string
-describing data provenance, units or interpretation. renderer defaults to default.
+Every document requires metadata.id and metadata.title. Optional metadata.notes
+describes data provenance, units or interpretation and defaults to an empty string;
+metadata.tags defaults to an empty list. The metadata object permits only these
+four fields. Every chart block needs dataset; renderer defaults to default.
 Renderer variants cannot mix each other's fields, even when a field is null.
 
 ### Native renderer
 
 ~~~yaml
-chart:
+metadata:
   id: sales
   title: Monthly revenue
+  notes: Fictional revenue in thousands of currency units.
+chart:
   dataset: monthly_sales
   renderer: default
   plot: bar
   x: month
   y: revenue
-  notes: Fictional revenue in thousands of currency units.
 ~~~
 
 plot is line, area, bar, pie, scatter, heatmap or rule. x/y are required nonempty result-column names.
@@ -227,9 +239,10 @@ becoming zero. See the [seven native prototypes](../workspaces/example/charts/Ex
 ### Value card
 
 ~~~yaml
-chart:
+metadata:
   id: total_revenue
   title: Total revenue
+chart:
   dataset: total
   renderer: value
   value: total_revenue
@@ -244,12 +257,13 @@ Do not add native plot/x/y fields, ECharts option or scripts.
 Requires a Facetra version supporting `renderer: vela` (application integration:
 [Facetra #51](https://github.com/FacetraAPP/Facetra/pull/51)). Vela is bundled in
 the app and receives the SQL result offline; no provider or scripting engine is
-loaded. Only metadata, `renderer` and `option` belong in this chart block.
+loaded. Only `dataset`, `renderer` and `option` belong in this chart block.
 
 ~~~yaml
-chart:
+metadata:
   id: prices
   title: Daily candles
+chart:
   dataset: candles
   renderer: vela
   option:
@@ -300,9 +314,10 @@ Apache-2.0; the separately licensed PineTS addon is not part of this integration
 ### ECharts
 
 ~~~yaml
-chart:
+metadata:
   id: sales
   title: Monthly revenue
+chart:
   dataset: monthly_sales
   renderer: echarts
   option:
@@ -368,9 +383,8 @@ offline validation does not prove SQL or JavaScript correctness.
 
 ## Tags
 
-Charts accept optional `chart.tags: [股票, 行情]`; dashboards accept optional
-`tags: [股票, 分析]` at the document root. Omission means no tags, and old YAML
-and cached catalogs remain readable. Tags must be strings of 1–64 characters
+Charts and dashboards accept optional `metadata.tags: [股票, 行情]`.
+Omission means no tags. Metadata fields at their former locations are rejected. Tags must be strings of 1–64 characters
 after trimming, without control characters. Display spelling and order are
 preserved; duplicates are merged ignoring case and accents. Quote numeric or
 boolean-looking names (`"2026"`, `"on"`).

@@ -22,13 +22,14 @@ dataset:
            CASE WHEN regexp_full_match(ip, '[0-9]{1,3}([.][0-9]{1,3}){3}') AND octet BETWEEN 0 AND 255
                 THEN octet ELSE error('HTTP example requires a valid IPv4 address.') END AS value
     FROM segments ORDER BY position
-chart:
+metadata:
   tags: ["HTTP", "网络", "饼图"]
   id: example_http_ip_pie
   title: HTTP 示例 · IP 分段
+  notes: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
+chart:
   dataset: network
   renderer: default
-  notes: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
   plot: pie
   x: segment
   y: value

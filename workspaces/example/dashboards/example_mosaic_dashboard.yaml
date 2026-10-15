@@ -1,8 +1,10 @@
-tags: ["股票", "经营", "布局", "ECharts"]
+metadata:
+  tags: ["股票", "经营", "布局", "ECharts"]
+  id: example_mosaic_dashboard
+  title: Mosaic · 组合示例
+  notes: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。
 version: 1
 kind: Dashboard
-id: example_mosaic_dashboard
-title: Mosaic · 组合示例
 params: []
 tabs:
 - id: mosaic
@@ -104,4 +106,3 @@ tabs:
     gap: 1.2e+1
     row_height: 4e+1
     min_width: 1.2e+3
-notes: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。

@@ -40,18 +40,19 @@ dataset:
       LIMIT $periods
     )
     SELECT * FROM recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "利率", "贷款", "LPR"]
   id: ftshare_china_lpr
   title: LPR · 贷款市场报价利率
-  dataset: lpr_data
-  renderer: echarts
   notes: |-
     观察 1 年期与 5 年期贷款市场报价利率及调降节点。阶梯线表示报价沿用。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     历史按月保留最后一条报价；5 年期在 2019-08-20 前缺失。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/wg95club
+chart:
+  dataset: lpr_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

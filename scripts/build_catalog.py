@@ -8,9 +8,9 @@ import re
 import shutil
 
 if __package__:
-    from .validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from .validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_metadata, validate_workspace
 else:
-    from validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_workspace
+    from validate_yaml import normalized_tags, chart_references, load_yaml, validate_chart, validate_chart_graph, validate_connection_type, validate_dashboard, validate_metadata, validate_workspace
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
@@ -91,7 +91,8 @@ def build_workspace(root):
                 raise ValueError(f"{topic}/{relative}: YAML must be an object")
             if kind == "chart":
                 validate_chart(document, f"{topic}/{relative}")
-            header = document.get("chart", {}) if kind == "chart" else document
+            validate_metadata(document, f"{topic}/{relative}")
+            header = document["metadata"]
             if kind == "dashboard" and document.get("kind") != "Dashboard":
                 raise ValueError(f"{topic}/{relative}: expected a Dashboard")
             resource_id = header.get("id", "")
@@ -107,7 +108,8 @@ def build_workspace(root):
                     "title": header["title"], "description": header.get("notes", ""), "path": relative,
                     "document": document}
             if kind == "chart":
-                item["chartType"] = header.get("plot", header.get("renderer", "chart"))
+                config = document["chart"]
+                item["chartType"] = config.get("plot", config.get("renderer", "chart"))
                 charts[resource_id] = item
             preview = f"previews/{resource_id}.png"
             if (root / preview).exists():

@@ -12,13 +12,14 @@ chart is missing, author it using the repository chart guide or chart skill.
    [workspace/parameter format](../../../docs/workspace-yaml.md) and
    [dashboard format](../../../docs/dashboard-yaml.md).
    Identify the topic, dashboard purpose, charts and tab arrangement.
-2. Inspect each selected chart's chart.id, params, defaults, ranges and options.
+2. Inspect each selected chart's metadata.id, params, defaults, ranges and options.
    Panel chart values use IDs, not file paths. Keep every chart dependency in
    this workspace. Repeated chart instances are allowed with distinct panel IDs.
 3. Start from [the minimal dashboard](../../../docs/starter/dashboards/overview.yaml)
    or [the grid example](../../../workspaces/example/dashboards/example_mosaic_dashboard.yaml).
    Save to workspaces/<topic>/dashboards/<optional-folders>/<dashboard-id>.yaml, matching its
-   filename to id. Include version: 1, kind: Dashboard, title, notes, params and tabs.
+   filename to metadata.id. Include version: 1, kind: Dashboard, metadata, params and tabs.
+   Put resource id/title/notes/tags in metadata; keep tab/panel IDs in their own blocks.
    Tab IDs are unique; panel IDs are unique across all tabs.
 4. Define shared dashboard parameters deliberately. A matching chart parameter
    name does not create a binding: map each panel's chart parameter to

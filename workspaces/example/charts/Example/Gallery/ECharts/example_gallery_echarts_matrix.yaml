@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_matrix
   title: ECharts · 矩阵坐标
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - matrix
   notes: ECharts 6+ matrix 坐标系：3 列 × 2 行，6 个虚构散点，颜色绑定第三维数值。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

@@ -8,16 +8,17 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sample'
-chart:
+metadata:
   id: example_gallery_echarts_bar
   title: ECharts · 柱状
-  dataset: sample
-  renderer: echarts
   tags:
   - 图表原型
   - ECharts
   - bar
   notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+chart:
+  dataset: sample
+  renderer: echarts
   option:
     animation: false
     tooltip:

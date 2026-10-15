@@ -1,12 +1,13 @@
 version: 1
 kind: Dashboard
-id: example_vela_dashboard
-title: Vela · OHLCV 与技术指标
-tags: [股票, 行情, K线, Vela]
-notes: |-
-  用同一份 40 日虚构行情比较基础蜡烛图与技术指标。价格单位为虚构价格点，成交量为虚构成交单位。
-  第一页查看 OHLCV 与成交量；第二页查看均线、布林带、RSI、MACD，可调整 SMA 周期后应用。
-  全部离线，无需连接；需要支持 renderer: vela 的 Facetra 版本。
+metadata:
+  id: example_vela_dashboard
+  title: Vela · OHLCV 与技术指标
+  tags: [股票, 行情, K线, Vela]
+  notes: |-
+    用同一份 40 日虚构行情比较基础蜡烛图与技术指标。价格单位为虚构价格点，成交量为虚构成交单位。
+    第一页查看 OHLCV 与成交量；第二页查看均线、布林带、RSI、MACD，可调整 SMA 周期后应用。
+    全部离线，无需连接；需要支持 renderer: vela 的 Facetra 版本。
 params:
   - {name: ma_length, label: 均线周期, type: integer, default: 10, minimum: 1, maximum: 5000}
 tabs:

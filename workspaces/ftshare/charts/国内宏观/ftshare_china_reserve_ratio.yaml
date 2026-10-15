@@ -38,17 +38,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "货币政策", "准备金率"]
   id: ftshare_china_reserve_ratio
   title: 存款准备金率
-  dataset: reserve_ratio_data
-  renderer: echarts
   notes: |-
     比较大型与中小型金融机构的存款准备金率，观察政策调整。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
+chart:
+  dataset: reserve_ratio_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

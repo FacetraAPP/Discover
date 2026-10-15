@@ -40,6 +40,47 @@ class YAMLValidationTests(unittest.TestCase):
         dashboard = next(item for item in workspace["resources"] if item["type"] == "dashboard")
         self.assertEqual(dashboard["files"], ["charts/sales.yaml", "dashboards/overview.yaml", "data/sales.csv"])
 
+    def test_metadata_boundary_rejects_old_mixed_and_malformed_documents(self):
+        for original, path in [(self.chart, self.chart_path), (self.dashboard, self.dashboard_path)]:
+            invalid = []
+            legacy = copy.deepcopy(original)
+            header = legacy.pop("metadata")
+            (legacy["chart"] if "chart" in legacy else legacy).update(header)
+            invalid.append(legacy)
+            for field in ("id", "title", "notes", "tags"):
+                document = copy.deepcopy(original)
+                document[field] = "misplaced"
+                invalid.append(document)
+                if "chart" in original:
+                    document = copy.deepcopy(original)
+                    document["chart"][field] = "misplaced"
+                    invalid.append(document)
+            for field in ("dataset", "renderer", "plot", "params", "tabs", "kind", "version", "folder"):
+                document = copy.deepcopy(original)
+                document["metadata"][field] = "misplaced"
+                invalid.append(document)
+            for value in (None, [], "metadata", {}, {"id": "sales"}, {"title": "Title"},
+                          {"id": 42, "title": "Title"}, {"id": "sales", "title": ""}):
+                document = copy.deepcopy(original)
+                document["metadata"] = value
+                invalid.append(document)
+            for document in invalid:
+                with self.subTest(path=path.name, document=document):
+                    self.write(path, document)
+                    with self.assertRaises(ValueError):
+                        self.build()
+            self.write(path, original)
+
+    def test_catalog_metadata_and_chart_type_come_from_separate_blocks(self):
+        original_config = copy.deepcopy(self.chart["chart"])
+        self.chart["metadata"].update(title="Resource title", notes="Resource notes", tags=["Revenue"])
+        self.write(self.chart_path, self.chart)
+        workspace = self.build()["workspaces"][0]
+        chart = next(item for item in workspace["resources"] if item["type"] == "chart")
+        self.assertEqual((chart["resourceID"], chart["title"], chart["description"], chart["tags"], chart["chartType"]),
+                         ("sales", "Resource title", "Resource notes", ["Revenue"], "bar"))
+        self.assertEqual(self.chart["chart"], original_config)
+
     def test_documented_complete_dashboards_are_valid(self):
         guide = (ROOT / "docs/dashboard-yaml.md").read_text()
         documents = re.findall(r"~~~yaml\n(.*?)\n~~~", guide, re.DOTALL)
@@ -204,7 +245,7 @@ class YAMLValidationTests(unittest.TestCase):
 
     def test_external_reference_bindings_and_dependency_closure(self):
         derived = copy.deepcopy(self.chart)
-        derived["chart"]["id"] = "derived"
+        derived["metadata"]["id"] = "derived"
         derived["sources"] = {}
         derived["dataset"] = {"id": "monthly_sales", "ref": "sales.yaml#/dataset", "with": {"min_revenue": {"param": "min_revenue"}}}
         path = self.topic / "charts/derived.yaml"
@@ -222,7 +263,7 @@ class YAMLValidationTests(unittest.TestCase):
     def test_vela_renderer_accepts_ohlcv_and_parameterized_native_indicators(self):
         option = {"time": "day", "open": "open", "high": "high", "low": "low", "close": "close", "volume": "volume",
                   "indicators": [{"type": "sma", "inputs": {"length": {"from": "params", "name": "min_revenue"}}}]}
-        self.chart["chart"] = {"id": "sales", "title": "Candles", "dataset": "monthly_sales", "renderer": "vela", "option": option}
+        self.chart["chart"] = {"dataset": "monthly_sales", "renderer": "vela", "option": option}
         self.write(self.chart_path, self.chart)
         resource = next(item for item in self.build()["workspaces"][0]["resources"] if item["resourceID"] == "sales")
         self.assertEqual(resource["chartType"], "vela")
@@ -249,10 +290,10 @@ class YAMLValidationTests(unittest.TestCase):
                 self.build()
 
     def test_value_renderer_and_echarts_bindings(self):
-        self.chart["chart"] = {"id": "sales", "title": "Sales", "dataset": "monthly_sales", "renderer": "value", "value": "revenue"}
+        self.chart["chart"] = {"dataset": "monthly_sales", "renderer": "value", "value": "revenue"}
         self.write(self.chart_path, self.chart)
         self.build()
-        self.chart["chart"] = {"id": "sales", "title": "Sales", "dataset": "monthly_sales", "renderer": "echarts",
+        self.chart["chart"] = {"dataset": "monthly_sales", "renderer": "echarts",
                                "scripts": {"format": "(v) => v"}, "option": {}}
         valid = [{"from": "monthly_sales", "field": "revenue"},
                  {"from": "monthly_sales", "fields": ["month", "revenue"], "color_by": ["revenue", "revenue"]},
@@ -316,12 +357,15 @@ class YAMLValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing required target parameter"):
             self.build()
 
-    def test_dashboard_requires_notes_even_when_empty(self):
-        self.dashboard.pop("notes")
+    def test_metadata_notes_are_optional_and_typed(self):
+        self.dashboard["metadata"].pop("notes")
         self.write(self.dashboard_path, self.dashboard)
-        with self.assertRaisesRegex(ValueError, "missing fields.*notes"):
+        self.build()
+        self.dashboard["metadata"]["notes"] = []
+        self.write(self.dashboard_path, self.dashboard)
+        with self.assertRaisesRegex(ValueError, "metadata.notes"):
             self.build()
-        self.dashboard["notes"] = ""
+        self.dashboard["metadata"]["notes"] = ""
         self.write(self.dashboard_path, self.dashboard)
         self.build()
 
@@ -399,8 +443,8 @@ class YAMLValidationTests(unittest.TestCase):
                 self.build()
 
     def test_tags_are_published_and_normalized_for_both_resource_types(self):
-        self.chart["chart"]["tags"] = [" 股票 ", "Macro", "macro", "Café", "cafe"]
-        self.dashboard["tags"] = ["股票", "分析"]
+        self.chart["metadata"]["tags"] = [" 股票 ", "Macro", "macro", "Café", "cafe"]
+        self.dashboard["metadata"]["tags"] = ["股票", "分析"]
         self.write(self.chart_path, self.chart)
         self.write(self.dashboard_path, self.dashboard)
         resources = self.build()["workspaces"][0]["resources"]
@@ -410,7 +454,7 @@ class YAMLValidationTests(unittest.TestCase):
     def test_malformed_tags_are_rejected_with_file_context(self):
         for value in ["macro", None, [True], [42], [""], [" "], ["a" * 65], ["a\nb"]]:
             with self.subTest(value=value):
-                self.chart["chart"]["tags"] = value
+                self.chart["metadata"]["tags"] = value
                 self.write(self.chart_path, self.chart)
                 with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml.*tags"):
                     self.build()

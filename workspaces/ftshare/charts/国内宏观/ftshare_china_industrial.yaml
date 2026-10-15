@@ -38,17 +38,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "工业", "经济增长"]
   id: ftshare_china_industrial
   title: 工业增加值 · 同比
-  dataset: industrial_data
-  renderer: echarts
   notes: |-
     比较工业增加值当月同比与年内累计同比。单位：%。
 
     可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/2tsc1z6m
+chart:
+  dataset: industrial_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

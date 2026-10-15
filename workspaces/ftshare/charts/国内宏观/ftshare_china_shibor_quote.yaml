@@ -66,17 +66,18 @@ dataset:
       FROM raw
     )
     SELECT * FROM normalized WHERE period <> '' ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "利率", "报价行", "SHIBOR"]
   id: ftshare_china_shibor_quote
   title: SHIBOR · 报价行利率
-  dataset: shibor_quote_data
-  renderer: echarts
   notes: |-
     选择报价行，比较该银行不同期限的日度报价。缩放纵轴用于观察细小变化。单位：%。
 
     默认查看 2026 年 8 月。日期使用日历选择，按真实日历时间排列；周末和缺报不补点。高级参数可切换页码，每页最多 1000 条。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/optr82sd
+chart:
+  dataset: shibor_quote_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

@@ -21,12 +21,13 @@ dataset:
     WHERE CAST(revenue AS DOUBLE) >= $min_revenue
     ORDER BY month
 
-chart:
+metadata:
   id: sales
   title: Monthly revenue
+  notes: Fictional monthly revenue in thousands of currency units.
+chart:
   dataset: monthly_sales
   renderer: default
   plot: bar
   x: month
   y: revenue
-  notes: Fictional monthly revenue in thousands of currency units.

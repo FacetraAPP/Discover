@@ -38,17 +38,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "财政", "财政收入"]
   id: ftshare_china_fiscal
   title: 财政收入 · 同比
-  dataset: fiscal_data
-  renderer: echarts
   notes: |-
     比较财政收入当月同比与累计同比，观察年内财政收入变化。单位：%。
 
     可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/w515ivba
+chart:
+  dataset: fiscal_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

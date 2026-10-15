@@ -40,17 +40,18 @@ dataset:
       ORDER BY period DESC
       LIMIT $periods
     ) AS recent ORDER BY period
-chart:
+metadata:
   tags: ["国内宏观", "经济增长", "GDP"]
   id: ftshare_china_gdp
   title: GDP · 累计同比
-  dataset: gdp_data
-  renderer: echarts
   notes: |-
     观察 GDP 及三次产业的累计同比增速。Q2 指上半年、Q3 指前三季度，不是单季度增速。单位：%。
 
     可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
     数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/egodfcdg
+chart:
+  dataset: gdp_data
+  renderer: echarts
   option:
     tooltip:
       trigger: axis

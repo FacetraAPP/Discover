@@ -34,7 +34,7 @@ other tools can read the same instructions directly.
   remains readable for legacy content. Publish title, description, license and
   requiredConnections only; workspace IDs, kind and personal roles are app metadata.
 - Use .yaml for charts and dashboards, including nested folders. Filenames match
-  chart.id or dashboard.id. IDs contain 1–80 ASCII letters, digits, underscores
+  metadata.id. IDs contain 1–80 ASCII letters, digits, underscores
   or hyphens; chart and dashboard IDs share one namespace inside each workspace.
 - Keep all dependencies in the same topic. References use chart IDs, for example
   price.yaml#/dataset, regardless of the chart's folder. Do not use relative
@@ -42,8 +42,10 @@ other tools can read the same instructions directly.
 - Put CSV/SQLite assets in data/. CSV file paths start with data/; SQLite
   file_path is relative to data/. Hidden paths, symlinks, traversal, missing
   files and reference cycles are rejected.
-- Chart titles/notes describe that chart; dashboard titles/notes describe that
-  dashboard. Workspace title/description/license belong in workspace.yaml.
+- Chart and dashboard YAML require a top-level metadata object with id/title and
+  optional notes/tags. The chart block contains only dataset binding and rendering.
+  Tab/panel IDs and titles stay in their layout blocks. Resource titles/notes
+  describe that chart or dashboard. Workspace title/description/license belong in workspace.yaml.
   Document purpose, data provenance, units and required connections in README.md.
 - Use fictional or redistributable public data. Store connection IDs/aliases and
   templates, never tokens, API keys or device paths. Explain local connection

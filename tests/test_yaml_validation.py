@@ -219,6 +219,35 @@ class YAMLValidationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "charts/derived.yaml.dataset.with"):
                     self.build()
 
+    def test_vela_renderer_accepts_ohlcv_and_parameterized_native_indicators(self):
+        option = {"time": "day", "open": "open", "high": "high", "low": "low", "close": "close", "volume": "volume",
+                  "indicators": [{"type": "sma", "inputs": {"length": {"from": "params", "name": "min_revenue"}}}]}
+        self.chart["chart"] = {"id": "sales", "title": "Candles", "dataset": "monthly_sales", "renderer": "vela", "option": option}
+        self.write(self.chart_path, self.chart)
+        resource = next(item for item in self.build()["workspaces"][0]["resources"] if item["resourceID"] == "sales")
+        self.assertEqual(resource["chartType"], "vela")
+        for unit in ["iso8601", "seconds", "milliseconds"]:
+            option["time_unit"] = unit
+            self.write(self.chart_path, self.chart)
+            self.build()
+        valid = copy.deepcopy(self.chart)
+        for key, value in [("time", None), ("typo", True), ("time_unit", "auto"), ("timeframe", "0d"),
+                           ("show_volume", 1), ("indicators", {}), ("indicators", [{"type": "sma", "inputs": {"length": None}}]),
+                           ("indicators", [{"type": "sma", "inputs": {"length": {"from": "params", "name": "missing"}}}]),
+                           ("indicators", [{"type": "sma", "typo": True}]), ("indicators", [{"type": "sma"}] * 17)]:
+            with self.subTest(key=key, value=value):
+                invalid = copy.deepcopy(valid)
+                invalid["chart"]["option"][key] = value
+                self.write(self.chart_path, invalid)
+                with self.assertRaisesRegex(ValueError, "chart.option"):
+                    self.build()
+        for field in ["plot", "scripts", "x", "value"]:
+            invalid = copy.deepcopy(valid)
+            invalid["chart"][field] = None
+            self.write(self.chart_path, invalid)
+            with self.assertRaisesRegex(ValueError, "unsupported fields"):
+                self.build()
+
     def test_value_renderer_and_echarts_bindings(self):
         self.chart["chart"] = {"id": "sales", "title": "Sales", "dataset": "monthly_sales", "renderer": "value", "value": "revenue"}
         self.write(self.chart_path, self.chart)

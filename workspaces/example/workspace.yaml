@@ -1,4 +1,4 @@
-description: 图表原型库：7 种 Swift Charts 基础 Mark、23 种 ECharts 核心 series 与常用变体，使用少量离线虚构数据；另保留行情、HTTP 和布局示例。
+description: 图表原型库：7 种 Swift Charts 基础 Mark、23 种 ECharts 核心 series 与常用变体，以及 Vela OHLCV 蜡烛图、均线与技术指标；使用少量离线虚构数据，另保留 HTTP 和布局示例。
 license: Apache-2.0
 requiredConnections: []
 title: 示例 · Examples

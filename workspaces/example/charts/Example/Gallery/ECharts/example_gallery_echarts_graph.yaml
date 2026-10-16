@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 关系图
+      en: ECharts · Graph
+    notes:
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
+        the executable dataset. No network, parameters or connections are required.
+
 params: []
 sources:
   sample:
@@ -10,12 +21,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_graph
-  title: ECharts · 关系图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - graph
-  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -25,7 +36,8 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: graph
+    - id: series_1
+      type: graph
       layout: circular
       roam: false
       symbolSize: 40

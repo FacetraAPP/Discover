@@ -1,3 +1,13 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 折线
+      en: ECharts · Line
+    notes:
+      zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
+      en: Fictional offline data in demonstration units. No parameters or connections are required.
+
 params: []
 sources:
   sample:
@@ -10,12 +20,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_line
-  title: ECharts · 折线
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - line
-  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -38,7 +48,8 @@ chart:
       type: value
       min: 0
     series:
-    - type: line
+    - id: series_1
+      type: line
       data:
         from: sample
         field: value

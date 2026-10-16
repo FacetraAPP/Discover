@@ -1,3 +1,28 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 雷达
+      en: ECharts · Radar
+    notes:
+      zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
+      en: Fictional offline data in demonstration units. No parameters or connections are required.
+    speed:
+      zh-Hans: 速度
+      en: Speed
+    cost:
+      zh-Hans: 成本
+      en: Cost
+    quality:
+      zh-Hans: 质量
+      en: Quality
+    reach:
+      zh-Hans: 覆盖
+      en: Reach
+    prototype:
+      zh-Hans: 样例
+      en: Prototype
+
 params: []
 sources:
   sample:
@@ -10,12 +35,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_radar
-  title: ECharts · 雷达
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - radar
-  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -27,20 +52,21 @@ chart:
     radar:
       radius: 60%
       indicator:
-      - name: Speed
+      - name: {i18n: speed}
         max: 10
-      - name: Cost
+      - name: {i18n: cost}
         max: 10
-      - name: Quality
+      - name: {i18n: quality}
         max: 10
-      - name: Reach
+      - name: {i18n: reach}
         max: 10
     series:
-    - type: radar
+    - id: series_1
+      type: radar
       areaStyle:
         opacity: 0.15
       data:
-      - name: Prototype
+      - name: {i18n: prototype}
         value:
         - 8
         - 5

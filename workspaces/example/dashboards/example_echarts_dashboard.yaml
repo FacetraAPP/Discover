@@ -1,14 +1,31 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 配置示例
+      en: ECharts · Configuration examples
+    notes:
+      zh-Hans: 四张图均由 YAML 配置，使用打包的虚构数据，可离线查看。打开图表的查看 YAML 可复制完整配方。
+      en: Four YAML-configured charts using bundled fictional data, available offline. Open each chart’s YAML
+        editor to copy its complete recipe.
+    market:
+      zh-Hans: 行情
+      en: Market
+    business:
+      zh-Hans: 经营
+      en: Business
+
 metadata:
   tags: ["股票", "经营", "ECharts"]
   id: example_echarts_dashboard
-  title: ECharts · 配置示例
-  notes: 四张图均由 YAML 配置，使用打包的虚构数据，可离线查看。打开图表的查看 YAML 可复制完整配方。
+  title: {i18n: title}
+  notes: {i18n: notes}
 version: 1
 kind: Dashboard
 params: []
 tabs:
 - id: market
-  title: 行情
+  title: {i18n: market}
   panels:
   - id: price
     chart: example_echarts_price
@@ -19,7 +36,7 @@ tabs:
     height: 3.6e+2
     params: {}
 - id: business
-  title: 经营
+  title: {i18n: business}
   panels:
   - id: revenue
     chart: example_echarts_business

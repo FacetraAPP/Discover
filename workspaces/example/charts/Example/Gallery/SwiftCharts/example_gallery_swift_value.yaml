@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: Facetra · 数值卡片
+      en: Facetra · Value card
+    notes:
+      zh-Hans: 4 个虚构数值的总和 75。value 是 Facetra 数值渲染器，不属于 Swift Charts 的基础 Mark。
+      en: The sum of four fictional values is 75. value is Facetra’s numeric renderer, not a basic Swift Charts
+        mark.
+
 params: []
 sources:
   sample:
@@ -12,12 +23,12 @@ dataset:
     SELECT SUM(CAST(value AS DOUBLE)) AS total FROM raw
 metadata:
   id: example_gallery_swift_value
-  title: Facetra · 数值卡片
+  title: {i18n: title}
   tags:
   - 图表原型
   - Swift Charts
   - value
-  notes: 4 个虚构数值的总和 75。value 是 Facetra 数值渲染器，不属于 Swift Charts 的基础 Mark。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: value

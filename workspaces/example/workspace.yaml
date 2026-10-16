@@ -1,4 +1,6 @@
-description: 图表原型库：7 种 Swift Charts 基础 Mark、23 种 ECharts 核心 series 与常用变体，以及 Vela OHLCV 蜡烛图、均线与技术指标；使用少量离线虚构数据，另保留 HTTP 和布局示例。
+title: 示例 · Examples
+description: |-
+  图表原型库：7 种 Swift Charts 基础 Mark、23 种 ECharts 核心 series 与常用变体，以及 Vela OHLCV 蜡烛图、均线与技术指标；使用少量离线虚构数据，另保留 HTTP 和布局示例。图表与看板文案支持中英切换。
+  Chart gallery with all seven Swift Charts marks, 23 core ECharts series and common variants, plus Vela OHLCV candles and technical indicators. Uses small fictional offline datasets, with HTTP and layout examples. Chart and dashboard text follows the app's Chinese or English language setting.
 license: Apache-2.0
 requiredConnections: []
-title: 示例 · Examples

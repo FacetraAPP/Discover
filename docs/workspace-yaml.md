@@ -93,7 +93,7 @@ params:
 | --- | --- |
 | name | Required ID; unique in this document |
 | type | Required: string, integer, number, boolean or date |
-| label | Optional nonempty string; defaults to name |
+| label | Optional fixed string or `{i18n: key}` display reference; defaults to name |
 | default | Optional scalar of the declared type |
 | required | Optional boolean, defaults to true |
 | minimum / maximum | Optional finite numeric bounds; minimum must not exceed maximum; unsupported for date |
@@ -163,3 +163,9 @@ must be directly inside `connections/`, use `.yaml`, and follow the same file,
 path and symlink restrictions as other content. Single-resource imports include
 only their chart/data dependencies; use a complete workspace import to obtain
 these optional forms. Configure actual values in the device's connection library.
+
+## Bilingual resources
+
+Charts and dashboards can include their own `i18n` message table. Titles, notes, parameter labels,
+tab titles and ECharts display text may reference its keys. Workspace manifest fields remain fixed
+strings. See [Chinese and English display text](localization.md) for syntax, fallback and catalog behavior.

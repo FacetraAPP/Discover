@@ -1,3 +1,16 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 离线地图
+      en: ECharts · Offline map
+    notes:
+      zh-Hans: '两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。 layoutCenter/layoutSize
+        与 aspectScale: 1 保持虚构平面坐标的等比例形状。'
+      en: 'GeoJSON for two fictional islands is embedded in the chart.option.series.data expression and registered
+        offline with registerMap; it does not represent real places. layoutCenter/layoutSize and aspectScale:
+        1 preserve equal scale in the fictional planar coordinates.'
+
 params: []
 sources:
   sample:
@@ -10,13 +23,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_map
-  title: ECharts · 离线地图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - map
-  notes: '两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。 layoutCenter/layoutSize
-    与 aspectScale: 1 保持虚构平面坐标的等比例形状。'
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -32,7 +44,8 @@ chart:
       left: center
       bottom: 0
     series:
-    - type: map
+    - id: series_1
+      type: map
       map: gallery-islands
       roam: false
       label:

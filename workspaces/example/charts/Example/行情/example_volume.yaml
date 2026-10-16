@@ -1,6 +1,19 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    symbol:
+      zh-Hans: 股票代码
+      en: Stock symbol
+    trading_days:
+      zh-Hans: 交易日数
+      en: Trading days
+    title:
+      zh-Hans: 成交量
+      en: Trading volume
+
 params:
 - name: symbol
-  label: 股票代码
+  label: {i18n: symbol}
   type: string
   required: true
   options:
@@ -10,7 +23,7 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: 交易日数
+  label: {i18n: trading_days}
   type: integer
   required: true
   minimum: 1e+0
@@ -41,7 +54,7 @@ dataset:
 metadata:
   tags: ["股票", "行情", "成交量"]
   id: example_volume
-  title: 成交量
+  title: {i18n: title}
   notes: ''
 chart:
   dataset: volume

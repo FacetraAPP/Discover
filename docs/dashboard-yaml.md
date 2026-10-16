@@ -13,12 +13,13 @@ is a complete file, paired with [its chart](starter/charts/sales.yaml).
 | --- | --- |
 | version | Required integer 1 |
 | kind | Required string Dashboard (case-sensitive) |
+| i18n | Optional resource-local message catalog; see [display text](localization.md) |
 | metadata | Required object with id/title and optional notes/tags |
 | metadata.id | Required ID matching the filename |
-| metadata.title | Required nonempty string |
+| metadata.title | Required nonempty fixed string or `{i18n: key}` reference |
 | params | Required parameter list; use [] when none |
 | tabs | Required nonempty list of tab objects |
-| metadata.notes | Optional string describing this dashboard; defaults to "" |
+| metadata.notes | Optional fixed string or display reference describing this dashboard; defaults to "" |
 | metadata.tags | Optional string list; defaults to [] |
 
 Metadata accepts only id, title, notes and tags. version/kind identify the document
@@ -29,7 +30,7 @@ A tab has required id, title and panels, with optional layout.
 Tab IDs are unique within the dashboard. Each panel has required id/chart,
 optional params and height, and grid-only width/row_span/responsive.
 Panel IDs are unique across every tab, including repeated instances of the same
-chart. All IDs follow the workspace ID rules; titles are nonempty strings.
+chart. All IDs follow the workspace ID rules; titles are nonempty fixed strings or display references.
 Unknown fields fail validation.
 
 For existing files, move the root id/title/notes/tags into metadata and remove
@@ -186,3 +187,9 @@ Local chart/dashboard action menus offer **Edit Tags**, including existing tag
 suggestions. Saving uses the regular revision/conflict and read-only checks;
 block YAML keeps its other fields, comments and formatting. Flow-style YAML
 may be reserialized. Tags are retained when duplicating or importing resources.
+
+## Bilingual dashboards
+
+Dashboard titles/notes, parameter labels and tab titles may use `{i18n: key}` references
+into the Dashboard’s own catalog. Panel charts resolve their own catalogs independently.
+See [Chinese and English display text](localization.md) for complete syntax and fallback rules.

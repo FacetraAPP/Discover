@@ -1,3 +1,13 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: Swift Charts · 折线 · LineMark
+      en: Swift Charts · Line · LineMark
+    notes:
+      zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
+      en: Fictional offline data in demonstration units. No parameters or connections are required.
+
 params: []
 sources:
   sample:
@@ -12,12 +22,12 @@ dataset:
     SELECT label, CAST(value AS DOUBLE) AS value FROM raw ORDER BY label
 metadata:
   id: example_gallery_swift_line
-  title: Swift Charts · 折线 · LineMark
+  title: {i18n: title}
   tags:
   - 图表原型
   - Swift Charts
   - line
-  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: default

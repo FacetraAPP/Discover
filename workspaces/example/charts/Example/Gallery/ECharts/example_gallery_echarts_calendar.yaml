@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 日历热力图
+      en: ECharts · Calendar heatmap
+    notes:
+      zh-Hans: 日历坐标系中展示 4 条虚构 ISO 日期记录；缺失日期保留为空白，不补零。
+      en: Four fictional ISO-date observations on calendar coordinates. Missing dates remain blank rather than
+        becoming zero.
+
 params: []
 sources:
   sample:
@@ -10,12 +21,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_calendar
-  title: ECharts · 日历热力图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - calendar
-  notes: 日历坐标系中展示 4 条虚构 ISO 日期记录；缺失日期保留为空白，不补零。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -48,7 +59,8 @@ chart:
       left: center
       bottom: 0
     series:
-    - type: heatmap
+    - id: series_1
+      type: heatmap
       coordinateSystem: calendar
       data:
       - - '2026-01-01'

@@ -4,6 +4,47 @@
 
 股票行情、销售与 OHLCV 数据均为虚构示例。工作区不包含任何凭据。
 
+All 47 charts and five dashboards include Chinese and English display text. Stock prices, sales and OHLCV
+values are fictional; no credentials are included.
+
+## 中英切换 · Chinese and English
+
+导入后，在 Facetra「设置 → 通用 → 应用语言」选择简体中文或 English，图表标题、说明、参数标签、
+看板分页及 ECharts 业务文案会随之切换。每份 YAML 自带 `i18n.messages` 文案表，显示位置使用
+`{i18n: key}`；缺少某种语言时回退到 `defaultLocale: zh-Hans`。资源 ID、SQL、数据列和参数值不参与翻译。
+
+After importing, choose **Settings → General → App Language → English / 简体中文**. Titles, notes,
+parameter labels, dashboard tabs and ECharts business labels follow that choice. Each resource carries
+its own translation catalog and falls back to Simplified Chinese. IDs, queries, data fields, ticker
+symbols, metric codes and fictional sample identifiers remain stable. Language changes reuse loaded data
+and preserve chart interactions and parameter drafts.
+
+需要包含 [Facetra PR #61](https://github.com/FacetraAPP/Facetra/pull/61) 多语言支持的应用版本。
+This content requires the application support in Facetra PR #61; older development builds cannot read
+the new references. See the [authoring guide](../../docs/localization.md) for complete YAML syntax.
+
+## English guide
+
+Import **Examples** from Discover, then open a chart or dashboard. The 37 prototypes in **Chart Gallery**
+are completely offline and require no parameters or connections. They cover seven Swift Charts marks,
+Facetra's value card, all 23 core ECharts 6.1.0 series and six additional variants or coordinate systems.
+The stock, business, OHLCV and gallery CSV files contain small fictional datasets licensed under Apache-2.0.
+
+**Stock analysis** demonstrates shared parameters and chart-to-chart source/dataset references.
+**ECharts · Configuration examples** combines prices, candlesticks, revenue/margin and a monthly channel
+heatmap. **Mosaic · Layout examples** demonstrates wide grid layouts and narrow stacked cards.
+**Vela · OHLCV and technical indicators** compares candles and volume with moving averages, Bollinger
+Bands, RSI and MACD using the same forty trading days. Prices and volume use fictional units; business
+amounts are in units of CNY 10,000. The same numeric values and units apply in both languages.
+
+Only **HTTP example · IPv4 segments** needs a local Key-Value connection: assign alias `http_example`,
+add an `endpoint` field and set it to `https://api.ipify.org`. This service must return an IPv4 address.
+Connection values stay on your device. All resource and local-data references remain within this workspace.
+
+Open a chart's YAML editor to copy or adapt its recipe. Files under `charts/` and `dashboards/` keep
+complete translations when copied; `data/` holds the CSV assets. Edit this README to customize the
+workspace guide shown in Facetra. Fixed data names and category codes are not automatically translated.
+
 ## 图表原型库
 
 [图表原型看板](dashboards/example_chart_gallery.yaml) 包含 **37 个新增原型**，全部无需参数、连接或网络。打开图表的「编辑 YAML」即可复制配置；重点是 `chart` 区块。

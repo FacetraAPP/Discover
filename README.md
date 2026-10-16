@@ -33,6 +33,9 @@ and optional `license` (defaults to this repository's Apache-2.0 license). The
 catalog uses these directly. Chart and dashboard names and descriptions come from
 their own YAML `title` and `notes` fields.
 Workspace IDs, storage kind and personal-space flags are excluded from YAML.
+For localized resources, catalog title/description use the declared default language; downloadable YAML
+retains all translations. The example workspace includes Chinese and English display text using
+[resource-local catalogs and explicit references](docs/localization.md).
 Catalog topic keys come from the workspace directory names; local workspace names
 and storage settings are managed by Facetra.
 

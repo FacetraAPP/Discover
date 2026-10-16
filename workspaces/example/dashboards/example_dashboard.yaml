@@ -1,13 +1,38 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 个股分析
+      en: Stock analysis
+    notes:
+      zh-Hans: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。
+      en: Choose shared parameters, then apply them. The recent-volume tab always shows thirty trading days.
+    symbol:
+      zh-Hans: 股票代码
+      en: Stock symbol
+    trading_days:
+      zh-Hans: 交易日数
+      en: Trading days
+    ma_window:
+      zh-Hans: 均线窗口
+      en: MA window
+    overview:
+      zh-Hans: 概览
+      en: Overview
+    recent_volume:
+      zh-Hans: 近期成交
+      en: Recent volume
+
 metadata:
   tags: ["股票", "行情", "分析"]
   id: example_dashboard
-  title: 个股分析
-  notes: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。
+  title: {i18n: title}
+  notes: {i18n: notes}
 version: 1
 kind: Dashboard
 params:
 - name: symbol
-  label: 股票代码
+  label: {i18n: symbol}
   type: string
   required: true
   options:
@@ -17,7 +42,7 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: 交易日数
+  label: {i18n: trading_days}
   type: integer
   required: true
   minimum: 1e+0
@@ -30,7 +55,7 @@ params:
   advanced: false
   default: 60
 - name: ma_window
-  label: 均线窗口
+  label: {i18n: ma_window}
   type: integer
   required: true
   minimum: 2e+0
@@ -39,7 +64,7 @@ params:
   default: 20
 tabs:
 - id: overview
-  title: 概览
+  title: {i18n: overview}
   panels:
   - id: price_main
     chart: example_price
@@ -60,7 +85,7 @@ tabs:
       days:
         param: days
 - id: detail
-  title: 近期成交
+  title: {i18n: recent_volume}
   panels:
   - id: volume_recent
     chart: example_volume

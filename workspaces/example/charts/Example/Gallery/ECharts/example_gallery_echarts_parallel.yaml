@@ -1,3 +1,23 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 平行坐标
+      en: ECharts · Parallel coordinates
+    notes:
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
+        the executable dataset. No network, parameters or connections are required.
+    speed:
+      zh-Hans: 速度
+      en: Speed
+    cost:
+      zh-Hans: 成本
+      en: Cost
+    quality:
+      zh-Hans: 质量
+      en: Quality
+
 params: []
 sources:
   sample:
@@ -10,12 +30,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_parallel
-  title: ECharts · 平行坐标
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - parallel
-  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -31,19 +51,20 @@ chart:
       bottom: 15%
     parallelAxis:
     - dim: 0
-      name: Speed
+      name: {i18n: speed}
       min: 0
       max: 10
     - dim: 1
-      name: Cost
+      name: {i18n: cost}
       min: 0
       max: 10
     - dim: 2
-      name: Quality
+      name: {i18n: quality}
       min: 0
       max: 10
     series:
-    - type: parallel
+    - id: series_1
+      type: parallel
       lineStyle:
         width: 3
       data:

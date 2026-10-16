@@ -1,3 +1,16 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 仪表盘
+      en: ECharts · Gauge
+    notes:
+      zh-Hans: 虚构完成率 72%；百分比范围固定为 0–100。数据内嵌 chart.option。
+      en: A fictional completion rate of 72%, on a fixed 0–100 percent scale. Data is embedded in chart.option.
+    completion:
+      zh-Hans: 完成率
+      en: Completion
+
 params: []
 sources:
   sample:
@@ -10,12 +23,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_gauge
-  title: ECharts · 仪表盘
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - gauge
-  notes: 虚构完成率 72%；百分比范围固定为 0–100。数据内嵌 chart.option。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -25,7 +38,8 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: gauge
+    - id: series_1
+      type: gauge
       radius: 80%
       min: 0
       max: 100
@@ -43,5 +57,5 @@ chart:
         formatter: '{value}%'
         fontSize: 26
       data:
-      - name: Complete
+      - name: {i18n: completion}
         value: 72

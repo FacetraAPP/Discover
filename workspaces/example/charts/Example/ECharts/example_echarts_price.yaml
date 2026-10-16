@@ -1,6 +1,35 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    symbol:
+      zh-Hans: 股票代码
+      en: Stock symbol
+    trading_days:
+      zh-Hans: 交易日数
+      en: Trading days
+    ma_window:
+      zh-Hans: 均线窗口
+      en: MA window
+    title:
+      zh-Hans: ECharts · 股价与均线
+      en: ECharts · Share price and moving average
+    notes:
+      zh-Hans: |-
+        虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
+        点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。
+      en: |-
+        Fictional market data. Shares the native price chart’s dataset; SQL calculates the moving average and retains initial NULL values as gaps.
+        Toggle series in the legend, zoom with mouse or touch, and hover or tap to inspect values.
+    close:
+      zh-Hans: 收盘价
+      en: Close
+    moving_average:
+      zh-Hans: 移动均线
+      en: Moving average
+
 params:
 - name: symbol
-  label: 股票代码
+  label: {i18n: symbol}
   type: string
   required: true
   options:
@@ -10,7 +39,7 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: 交易日数
+  label: {i18n: trading_days}
   type: integer
   required: true
   minimum: 1e+0
@@ -18,7 +47,7 @@ params:
   advanced: false
   default: 60
 - name: ma_window
-  label: 均线窗口
+  label: {i18n: ma_window}
   type: integer
   required: true
   minimum: 2e+0
@@ -39,10 +68,8 @@ dataset:
 metadata:
   tags: ["股票", "行情", "均线", "ECharts"]
   id: example_echarts_price
-  title: ECharts · 股价与均线
-  notes: |-
-    虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
-    点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: history
   renderer: echarts
@@ -86,7 +113,8 @@ chart:
       bottom: 24
       left: 12
     series:
-    - showSymbol: false
+    - id: series_1
+      showSymbol: false
       areaStyle:
         opacity: 8e-2
       data:
@@ -94,11 +122,12 @@ chart:
         from: history
         y: close
       type: line
-      name: 收盘价
-    - lineStyle:
+      name: {i18n: close}
+    - id: series_2
+      lineStyle:
         type: dashed
       type: line
-      name: 移动均线
+      name: {i18n: moving_average}
       showSymbol: false
       data:
         x: trade_date

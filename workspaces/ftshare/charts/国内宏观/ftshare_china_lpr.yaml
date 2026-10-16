@@ -1,3 +1,23 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: LPR · 贷款市场报价利率
+      en: LPR · Loan prime rates
+    notes:
+      zh-Hans: |-
+        观察 1 年期与 5 年期贷款市场报价利率及调降节点。阶梯线表示报价沿用。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        历史按月保留最后一条报价；5 年期在 2019-08-20 前缺失。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/wg95club
+      en: |-
+        Track one-year and five-year loan prime rates and rate cuts. Step lines indicate unchanged quotes. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        History retains the last quote each month; the five-year rate is unavailable before 2019-08-20.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/wg95club
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -43,13 +63,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "利率", "贷款", "LPR"]
   id: ftshare_china_lpr
-  title: LPR · 贷款市场报价利率
-  notes: |-
-    观察 1 年期与 5 年期贷款市场报价利率及调降节点。阶梯线表示报价沿用。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    历史按月保留最后一条报价；5 年期在 2019-08-20 前缺失。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/wg95club
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: lpr_data
   renderer: echarts

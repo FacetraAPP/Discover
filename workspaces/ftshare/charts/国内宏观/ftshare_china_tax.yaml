@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 税收收入 · 同比
+      en: Tax revenue · Year-on-year
+    notes:
+      zh-Hans: |-
+        比较税收当月同比与累计同比。当月同比由服务端计算。单位：%。
+
+        可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/ht6ox0mg
+      en: |-
+        Compare monthly and year-to-date growth in tax revenue. Monthly growth is calculated by the server. Unit: %.
+
+        Choose the number of observations. The time axis preserves actual month intervals, including unpublished months. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/ht6ox0mg
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "财政", "税收"]
   id: ftshare_china_tax
-  title: 税收收入 · 同比
-  notes: |-
-    比较税收当月同比与累计同比。当月同比由服务端计算。单位：%。
-
-    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/ht6ox0mg
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: tax_data
   renderer: echarts

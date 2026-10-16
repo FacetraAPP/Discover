@@ -58,6 +58,19 @@ def walk(value):
             yield from walk(child)
 
 
+def localized_summaries(document):
+    """Ship card translations together, without downloading every definition."""
+    metadata = document["metadata"]
+    messages = document.get("i18n", {}).get("messages", {})
+    locales = {locale for field in ("title", "notes") if isinstance(metadata.get(field), dict)
+               for locale in messages[metadata[field]["i18n"]]}
+    # Different messages may spell the same locale with different casing.
+    locales = {locale.lower(): locale for locale in sorted(locales, reverse=True)}
+    return {locale: {"title": resolve_text(metadata["title"], document, locale),
+                     "description": resolve_text(metadata.get("notes", ""), document, locale)}
+            for locale in sorted(locales.values())}
+
+
 def build_workspace(root):
     if root.is_symlink():
         raise ValueError("Workspace directories cannot be symbolic links")
@@ -109,6 +122,8 @@ def build_workspace(root):
                     "tags": normalized_tags(header.get("tags", [])),
                     "title": resource_title, "description": resource_notes, "path": relative,
                     "document": document}
+            if translations := localized_summaries(document):
+                item["localizations"] = translations
             if kind == "chart":
                 config = document["chart"]
                 item["chartType"] = config.get("plot", config.get("renderer", "chart"))
@@ -214,6 +229,8 @@ def build_workspace(root):
     result = {"id": topic, "title": title, "description": description,
               "license": license, "requiredConnections": [{"alias": alias, "type": required[alias]} for alias in sorted(required)],
               "files": files, "resources": resources}
+    if "localizations" in manifest:
+        result["localizations"] = manifest["localizations"]
     if (root / "previews/workspace.png").exists():
         result["preview"] = file_record(root, "previews/workspace.png")
     return result

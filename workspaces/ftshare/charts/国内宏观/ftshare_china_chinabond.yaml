@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 中债收益率 · 期限比较
+      en: ChinaBond yields · Maturity comparison
+    notes:
+      zh-Hans: |-
+        比较同一债券收益率曲线不同期限的日度收益率。缩放纵轴用于观察利差，曲线类别可选择。单位：%。
+
+        默认查看 2026 年 8 月。日期使用日历选择，按真实日历时间排列；周末和缺报不补点。高级参数可切换页码，每页最多 1000 条。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/fubopatp
+      en: |-
+        Compare daily yields across maturities on the same bond yield curve. The scaled vertical axis highlights spreads; the curve category is selectable. Unit: %.
+
+        The default window is August 2026. Choose dates with the calendar; the time axis preserves actual dates. Weekends and missing reports are not filled. The advanced page parameter selects one page of up to 1,000 records.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/fubopatp
+
 params:
 - name: start_date
   label: 开始日期
@@ -54,12 +72,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "债券", "利率", "收益率曲线"]
   id: ftshare_china_chinabond
-  title: 中债收益率 · 期限比较
-  notes: |-
-    比较同一债券收益率曲线不同期限的日度收益率。缩放纵轴用于观察利差，曲线类别可选择。单位：%。
-
-    默认查看 2026 年 8 月。日期使用日历选择，按真实日历时间排列；周末和缺报不补点。高级参数可切换页码，每页最多 1000 条。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/fubopatp
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: chinabond_data
   renderer: echarts

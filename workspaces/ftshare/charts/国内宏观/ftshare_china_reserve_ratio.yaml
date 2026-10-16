@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 存款准备金率
+      en: Reserve requirement ratios
+    notes:
+      zh-Hans: |-
+        比较大型与中小型金融机构的存款准备金率，观察政策调整。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
+      en: |-
+        Compare reserve requirement ratios for large and small/medium financial institutions to track policy changes. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/cl9tjf4p
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "货币政策", "准备金率"]
   id: ftshare_china_reserve_ratio
-  title: 存款准备金率
-  notes: |-
-    比较大型与中小型金融机构的存款准备金率，观察政策调整。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/cl9tjf4p
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: reserve_ratio_data
   renderer: echarts

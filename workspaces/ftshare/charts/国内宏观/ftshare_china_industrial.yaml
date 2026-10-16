@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 工业增加值 · 同比
+      en: Industrial value added · Year-on-year
+    notes:
+      zh-Hans: |-
+        比较工业增加值当月同比与年内累计同比。单位：%。
+
+        可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/2tsc1z6m
+      en: |-
+        Compare monthly and year-to-date growth in industrial value added. Unit: %.
+
+        Choose the number of observations. The time axis preserves actual month intervals, including unpublished months. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/2tsc1z6m
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "工业", "经济增长"]
   id: ftshare_china_industrial
-  title: 工业增加值 · 同比
-  notes: |-
-    比较工业增加值当月同比与年内累计同比。单位：%。
-
-    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/2tsc1z6m
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: industrial_data
   renderer: echarts

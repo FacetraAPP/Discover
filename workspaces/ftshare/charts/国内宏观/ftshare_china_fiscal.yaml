@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 财政收入 · 同比
+      en: Fiscal revenue · Year-on-year
+    notes:
+      zh-Hans: |-
+        比较财政收入当月同比与累计同比，观察年内财政收入变化。单位：%。
+
+        可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/w515ivba
+      en: |-
+        Compare monthly and year-to-date growth in fiscal revenue to track changes during the year. Unit: %.
+
+        Choose the number of observations. The time axis preserves actual month intervals, including unpublished months. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/w515ivba
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "财政", "财政收入"]
   id: ftshare_china_fiscal
-  title: 财政收入 · 同比
-  notes: |-
-    比较财政收入当月同比与累计同比，观察年内财政收入变化。单位：%。
-
-    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/w515ivba
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: fiscal_data
   renderer: echarts

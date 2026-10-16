@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: GDP · 累计同比
+      en: GDP · Year-to-date growth
+    notes:
+      zh-Hans: |-
+        观察 GDP 及三次产业的累计同比增速。Q2 指上半年、Q3 指前三季度，不是单季度增速。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/egodfcdg
+      en: |-
+        Track year-to-date GDP growth and growth in the primary, secondary and tertiary sectors. Q2 covers the first half and Q3 the first three quarters; these are not single-quarter growth rates. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/egodfcdg
+
 params:
 - name: periods
   label: 显示最近（季度数）
@@ -43,12 +61,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "经济增长", "GDP"]
   id: ftshare_china_gdp
-  title: GDP · 累计同比
-  notes: |-
-    观察 GDP 及三次产业的累计同比增速。Q2 指上半年、Q3 指前三季度，不是单季度增速。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/egodfcdg
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: gdp_data
   renderer: echarts

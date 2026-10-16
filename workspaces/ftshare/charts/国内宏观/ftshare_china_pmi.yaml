@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: PMI · 制造业与非制造业
+      en: PMI · Manufacturing and non-manufacturing
+    notes:
+      zh-Hans: |-
+        50 是荣枯分界：高于 50 为扩张，低于 50 为收缩。比较制造业与非制造业景气。单位：指数点。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/s4xvqnu0
+      en: |-
+        Compare manufacturing and non-manufacturing activity. The threshold is 50: values above it indicate expansion and values below it indicate contraction. Unit: index points.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/s4xvqnu0
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -45,12 +63,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "景气指数", "制造业", "PMI"]
   id: ftshare_china_pmi
-  title: PMI · 制造业与非制造业
-  notes: |-
-    50 是荣枯分界：高于 50 为扩张，低于 50 为收缩。比较制造业与非制造业景气。单位：指数点。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/s4xvqnu0
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: pmi_data
   renderer: echarts

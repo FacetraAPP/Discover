@@ -132,12 +132,18 @@ def validate_localization(document, context):
         option(chart.get("option"), context + ".chart.option")
 
 
-def resolve_text(value, document):
+def resolve_text(value, document, locale=None):
     """Catalog metadata stays a string; downloadable YAML retains every locale."""
     if isinstance(value, str):
         return value
     catalog = document["i18n"]
     translations = catalog["messages"][value["i18n"]]
+    candidate = (locale or "").lower()
+    while candidate:
+        for language, translation in translations.items():
+            if language.lower() == candidate:
+                return translation
+        candidate = candidate.rsplit("-", 1)[0] if "-" in candidate else ""
     return next(text for locale, text in translations.items() if locale.lower() == catalog["defaultLocale"].lower())
 
 
@@ -259,7 +265,7 @@ def validate_connection_type(document, context):
 
 
 def validate_workspace(document, context, *, legacy=False):
-    fields = {"title", "description", "license", "requiredConnections"}
+    fields = {"title", "description", "license", "requiredConnections", "localizations"}
     if legacy:
         fields.update({"id", "kind", "isPersonal"})
     mapping(document, context, fields, {"title"})
@@ -271,6 +277,19 @@ def validate_workspace(document, context, *, legacy=False):
     for field in ("description", "license"):
         if document.get(field) is not None:
             text(document[field], context + "." + field, nonempty=False)
+    if "localizations" in document:
+        translations = mapping(document["localizations"], context + ".localizations")
+        require(bool(translations), context + ".localizations", "expected at least one locale")
+        seen = set()
+        for locale, summary in translations.items():
+            location = context + ".localizations." + locale
+            require(LOCALE.fullmatch(locale), location, "invalid locale tag")
+            require(locale.lower() not in seen, location, "duplicate locale tag ignoring case")
+            seen.add(locale.lower())
+            mapping(summary, location, {"title", "description"}, {"title"})
+            text(summary["title"], location + ".title")
+            if "description" in summary:
+                text(summary["description"], location + ".description", nonempty=False)
     if legacy and "isPersonal" in document:
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
     connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")

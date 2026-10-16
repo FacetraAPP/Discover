@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 社会消费品零售 · 同比
+      en: Retail sales · Year-on-year
+    notes:
+      zh-Hans: |-
+        比较社会消费品零售总额当月同比与累计同比，观察消费趋势。单位：%。
+
+        可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/hped3tpp
+      en: |-
+        Compare monthly and year-to-date growth in total retail sales of consumer goods to track consumption trends. Unit: %.
+
+        Choose the number of observations. The time axis preserves actual month intervals, including unpublished months. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/hped3tpp
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "消费", "零售"]
   id: ftshare_china_retail
-  title: 社会消费品零售 · 同比
-  notes: |-
-    比较社会消费品零售总额当月同比与累计同比，观察消费趋势。单位：%。
-
-    可选择显示期数；横轴按真实月份间隔排列，未发布月份不压缩。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/hped3tpp
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: retail_data
   renderer: echarts

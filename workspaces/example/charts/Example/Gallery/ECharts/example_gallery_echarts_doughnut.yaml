@@ -1,3 +1,13 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 环形
+      en: ECharts · Doughnut
+    notes:
+      zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
+      en: Fictional offline data in demonstration units. No parameters or connections are required.
+
 params: []
 sources:
   sample:
@@ -13,12 +23,12 @@ dataset:
     '
 metadata:
   id: example_gallery_echarts_doughnut
-  title: ECharts · 环形
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - doughnut
-  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -28,7 +38,8 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: pie
+    - id: series_1
+      type: pie
       radius:
       - 35%
       - 55%

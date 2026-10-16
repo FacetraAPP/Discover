@@ -1,3 +1,13 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 路径图
+      en: ECharts · Routes
+    notes:
+      zh-Hans: 2 条虚构路线使用二维数值坐标，无需在线地图或底图。
+      en: Two fictional routes in numeric two-dimensional coordinates. No online map or base layer is required.
+
 params: []
 sources:
   sample:
@@ -10,12 +20,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_lines
-  title: ECharts · 路径图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - lines
-  notes: 2 条虚构路线使用二维数值坐标，无需在线地图或底图。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -33,7 +43,8 @@ chart:
       min: 0
       max: 10
     series:
-    - type: lines
+    - id: series_1
+      type: lines
       coordinateSystem: cartesian2d
       symbol:
       - circle

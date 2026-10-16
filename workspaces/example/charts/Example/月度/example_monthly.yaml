@@ -1,6 +1,19 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    symbol:
+      zh-Hans: 股票代码
+      en: Stock symbol
+    title:
+      zh-Hans: 月度均价
+      en: Monthly average price
+    notes:
+      zh-Hans: DuckDB SQL 关联两个 CSV，按月聚合。
+      en: DuckDB SQL joins two CSV files and aggregates by month.
+
 params:
 - name: symbol
-  label: 股票代码
+  label: {i18n: symbol}
   type: string
   required: true
   options:
@@ -33,8 +46,8 @@ dataset:
 metadata:
   tags: ["股票", "月度", "聚合"]
   id: example_monthly
-  title: 月度均价
-  notes: DuckDB SQL 关联两个 CSV，按月聚合。
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: monthly
   renderer: default

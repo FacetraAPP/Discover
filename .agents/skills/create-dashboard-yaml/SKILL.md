@@ -37,3 +37,7 @@ chart is missing, author it using the repository chart guide or chart skill.
 
 Report the dashboard path/ID, chart IDs, parameter bindings and validation result.
 Creating content does not itself authorize publishing a catalog or merging a PR.
+
+For bilingual resources, follow [the localization guide](../../../docs/localization.md).
+Use a resource-local catalog and explicit display references; keep IDs, parameter values,
+SQL and bindings stable. Validate both languages and declare the required application support.

@@ -1,3 +1,26 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 漏斗
+      en: ECharts · Funnel
+    notes:
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
+        the executable dataset. No network, parameters or connections are required.
+    visit:
+      zh-Hans: 访问
+      en: Visits
+    browse:
+      zh-Hans: 浏览
+      en: Browsing
+    cart:
+      zh-Hans: 购物车
+      en: Cart
+    buy:
+      zh-Hans: 购买
+      en: Purchases
+
 params: []
 sources:
   sample:
@@ -10,12 +33,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_funnel
-  title: ECharts · 漏斗
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - funnel
-  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -25,7 +48,8 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: funnel
+    - id: series_1
+      type: funnel
       left: 12%
       width: 76%
       top: 10%
@@ -38,11 +62,11 @@ chart:
         position: inside
         formatter: '{b}: {c}'
       data:
-      - name: Visit
+      - name: {i18n: visit}
         value: 100
-      - name: Browse
+      - name: {i18n: browse}
         value: 70
-      - name: Cart
+      - name: {i18n: cart}
         value: 40
-      - name: Buy
+      - name: {i18n: buy}
         value: 20

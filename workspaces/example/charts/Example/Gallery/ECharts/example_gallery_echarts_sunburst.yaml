@@ -1,3 +1,32 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 旭日图
+      en: ECharts · Sunburst
+    notes:
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
+        the executable dataset. No network, parameters or connections are required.
+    products:
+      zh-Hans: 产品
+      en: Products
+    tools:
+      zh-Hans: 工具
+      en: Tools
+    books:
+      zh-Hans: 书籍
+      en: Books
+    services:
+      zh-Hans: 服务
+      en: Services
+    design:
+      zh-Hans: 设计
+      en: Design
+    support:
+      zh-Hans: 支持
+      en: Support
+
 params: []
 sources:
   sample:
@@ -10,12 +39,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_sunburst
-  title: ECharts · 旭日图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - sunburst
-  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -25,19 +54,20 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: sunburst
+    - id: series_1
+      type: sunburst
       data:
-      - name: Products
+      - name: {i18n: products}
         children:
-        - name: Tools
+        - name: {i18n: tools}
           value: 12
-        - name: Books
+        - name: {i18n: books}
           value: 8
-      - name: Services
+      - name: {i18n: services}
         children:
-        - name: Design
+        - name: {i18n: design}
           value: 9
-        - name: Support
+        - name: {i18n: support}
           value: 6
       radius:
       - 0

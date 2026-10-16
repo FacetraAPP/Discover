@@ -1,6 +1,73 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    metric:
+      zh-Hans: 指标
+      en: Metric
+    title:
+      zh-Hans: ECharts · 渠道月度热力图
+      en: ECharts · Monthly channel heatmap
+    notes:
+      zh-Hans: |-
+        与收入图共享 CSV source，SQL 将宽表转换为 [月份索引, 渠道索引, 数值]。
+        切换 revenue / profit 查看收入或分摊成本后的利润，单位为万元。色阶、标签和坐标轴均由 option 配置。
+        ECharts dataset 按渠道过滤为两组系列，让提示框同时显示月份、渠道与金额单位。
+      en: |-
+        Shares the revenue chart’s CSV source. SQL unpivots the data into [month index, channel index, value].
+        Choose revenue or profit after allocated costs, in units of CNY 10,000. The option defines the color scale, labels and axes.
+        ECharts dataset filters each channel into its own series so tooltips retain the month, channel and amount unit.
+    online:
+      zh-Hans: 线上
+      en: Online
+    store:
+      zh-Hans: 门店
+      en: Store
+    month_1:
+      zh-Hans: 1月
+      en: Jan
+    month_2:
+      zh-Hans: 2月
+      en: Feb
+    month_3:
+      zh-Hans: 3月
+      en: Mar
+    month_4:
+      zh-Hans: 4月
+      en: Apr
+    month_5:
+      zh-Hans: 5月
+      en: May
+    month_6:
+      zh-Hans: 6月
+      en: Jun
+    month_7:
+      zh-Hans: 7月
+      en: Jul
+    month_8:
+      zh-Hans: 8月
+      en: Aug
+    month_9:
+      zh-Hans: 9月
+      en: Sep
+    month_10:
+      zh-Hans: 10月
+      en: Oct
+    month_11:
+      zh-Hans: 11月
+      en: Nov
+    month_12:
+      zh-Hans: 12月
+      en: Dec
+    online_amount:
+      zh-Hans: 线上（万元）
+      en: Online (CNY 10,000)
+    store_amount:
+      zh-Hans: 门店（万元）
+      en: Store (CNY 10,000)
 params:
 - name: metric
-  label: 指标
+  label:
+    i18n: metric
   type: string
   required: true
   options:
@@ -29,20 +96,24 @@ dataset:
            CASE WHEN $metric = 'profit' THEN round(retail - cost * retail / (online + retail), 1) ELSE retail END
     FROM sales ORDER BY channel_index, month_index
 metadata:
-  tags: ["经营", "渠道", "热力图", "ECharts"]
+  tags:
+  - 经营
+  - 渠道
+  - 热力图
+  - ECharts
   id: example_echarts_heatmap
-  title: ECharts · 渠道月度热力图
-  notes: |-
-    与收入图共享 CSV source，SQL 将宽表转换为 [月份索引, 渠道索引, 数值]。
-    切换 revenue / profit 查看收入或分摊成本后的利润，单位为万元。色阶、标签和坐标轴均由 option 配置。
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 chart:
   dataset: cells
   renderer: echarts
   option:
     yAxis:
       data:
-      - 线上
-      - 门店
+      - i18n: online
+      - i18n: store
       splitArea:
         show: true
       type: category
@@ -51,22 +122,20 @@ chart:
       splitArea:
         show: true
       data:
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
+      - i18n: month_1
+      - i18n: month_2
+      - i18n: month_3
+      - i18n: month_4
+      - i18n: month_5
+      - i18n: month_6
+      - i18n: month_7
+      - i18n: month_8
+      - i18n: month_9
+      - i18n: month_10
+      - i18n: month_11
+      - i18n: month_12
     tooltip:
       position: top
-      formatter: 'js: (p) => (p.value[0] + 1) + ''月 · '' + [''线上'', ''门店''][p.value[1]]
-        + '': '' + p.value[2] + ''万元'''
     grid:
       top: 30
       bottom: 80
@@ -80,6 +149,10 @@ chart:
         series:
         - label:
             show: true
+          id: online
+        - label:
+            show: true
+          id: store
     - option:
         visualMap:
           calculable: false
@@ -90,6 +163,10 @@ chart:
         series:
         - label:
             show: false
+          id: online
+        - label:
+            show: false
+          id: store
         xAxis:
           axisLabel:
             interval: 1
@@ -110,10 +187,17 @@ chart:
         series:
         - label:
             show: false
+          id: online
+        - label:
+            show: false
+          id: store
         visualMap:
           show: false
     series:
-    - label:
+    - id: online
+      name:
+        i18n: online_amount
+      label:
         fontSize: 10
         show: true
       type: heatmap
@@ -121,12 +205,31 @@ chart:
         itemStyle:
           borderColor: '#f59e0b'
           borderWidth: 2
-      data:
-        fields:
-        - month_index
-        - channel_index
+      datasetId: online_cells
+      encode:
+        x: month_index
+        y: channel_index
+        value: value
+        tooltip:
         - value
-        from: cells
+    - id: store
+      name:
+        i18n: store_amount
+      label:
+        fontSize: 10
+        show: true
+      type: heatmap
+      emphasis:
+        itemStyle:
+          borderColor: '#f59e0b'
+          borderWidth: 2
+      datasetId: store_cells
+      encode:
+        x: month_index
+        y: channel_index
+        value: value
+        tooltip:
+        - value
     visualMap:
       max: 150
       orient: horizontal
@@ -139,3 +242,26 @@ chart:
         - '#e0f2fe'
         - '#38bdf8'
         - '#0369a1'
+    dataset:
+    - id: raw_cells
+      dimensions:
+      - month_index
+      - channel_index
+      - value
+      source:
+        from: cells
+        rows: true
+    - id: online_cells
+      fromDatasetId: raw_cells
+      transform:
+        type: filter
+        config:
+          dimension: channel_index
+          '=': 0
+    - id: store_cells
+      fromDatasetId: raw_cells
+      transform:
+        type: filter
+        config:
+          dimension: channel_index
+          '=': 1

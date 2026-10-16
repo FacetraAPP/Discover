@@ -38,3 +38,7 @@ when the requested chart starts a new topic.
 
 Report the chart path/ID, dependencies, connection requirements and validation
 result. Creating content does not itself authorize publishing a catalog or merging a PR.
+
+For bilingual resources, follow [the localization guide](../../../docs/localization.md).
+Use a resource-local catalog and explicit display references; keep IDs, parameter values,
+SQL and bindings stable. Validate both languages and declare the required application support.

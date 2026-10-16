@@ -1,6 +1,25 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    symbol:
+      zh-Hans: 股票代码
+      en: Stock symbol
+    trading_days:
+      zh-Hans: 交易日数
+      en: Trading days
+    ma_window:
+      zh-Hans: 均线窗口
+      en: MA window
+    title:
+      zh-Hans: 股价与均线
+      en: Share price and moving average
+    notes:
+      zh-Hans: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
+      en: Fictional historical prices and stock information, read from CSV with DuckDB.
+
 params:
 - name: symbol
-  label: 股票代码
+  label: {i18n: symbol}
   type: string
   required: true
   options:
@@ -10,7 +29,7 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: 交易日数
+  label: {i18n: trading_days}
   type: integer
   required: true
   minimum: 1e+0
@@ -23,7 +42,7 @@ params:
   advanced: false
   default: 60
 - name: ma_window
-  label: 均线窗口
+  label: {i18n: ma_window}
   type: integer
   required: true
   minimum: 2e+0
@@ -60,8 +79,8 @@ dataset:
 metadata:
   tags: ["股票", "行情", "均线"]
   id: example_price
-  title: 股价与均线
-  notes: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: prices
   renderer: default

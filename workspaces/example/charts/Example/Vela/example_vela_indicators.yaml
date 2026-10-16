@@ -1,5 +1,24 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    ma_period:
+      zh-Hans: 均线周期
+      en: MA period
+    title:
+      zh-Hans: Vela · K 线与技术指标
+      en: Vela · Candlesticks and technical indicators
+    notes:
+      zh-Hans: |-
+        40 个交易日的虚构行情；价格单位为虚构价格点，成交量为虚构成交单位。
+        SMA、EMA 和布林带叠加主图，RSI 与 MACD 各用独立副图；均线周期可通过参数调整。
+        指标基于全部 40 行计算，预热期保留空值；需要支持 renderer: vela 的 Facetra 版本。
+      en: |-
+        Forty trading days of fictional market data, in fictional price and trading units.
+        SMA, EMA and Bollinger Bands overlay the main chart; RSI and MACD have separate panes. Parameters control the moving-average periods.
+        Indicators use all forty rows and retain warmup gaps. Requires Facetra with renderer: vela support.
+
 params:
-  - {name: ma_length, label: 均线周期, type: integer, default: 10, minimum: 1, maximum: 5000}
+  - {name: ma_length, label: {i18n: ma_period}, type: integer, default: 10, minimum: 1, maximum: 5000}
 
 sources:
   prices: {source: duckdb, file: data/example/echarts-ohlcv.csv}
@@ -17,12 +36,9 @@ dataset:
 
 metadata:
   id: example_vela_indicators
-  title: Vela · K 线与技术指标
+  title: {i18n: title}
   tags: [股票, 行情, K线, 均线, Vela]
-  notes: |-
-    40 个交易日的虚构行情；价格单位为虚构价格点，成交量为虚构成交单位。
-    SMA、EMA 和布林带叠加主图，RSI 与 MACD 各用独立副图；均线周期可通过参数调整。
-    指标基于全部 40 行计算，预热期保留空值；需要支持 renderer: vela 的 Facetra 版本。
+  notes: {i18n: notes}
 chart:
   dataset: candles
   renderer: vela

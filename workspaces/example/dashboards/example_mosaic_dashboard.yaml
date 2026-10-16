@@ -1,14 +1,28 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: Mosaic · 组合示例
+      en: Mosaic · Layout examples
+    notes:
+      zh-Hans: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。
+      en: Ten offline chart instances demonstrate different column widths and row spans. Wide layouts form
+        a rectangle; narrow screens stack cards in order. Open the YAML editor to copy the layout.
+    tab_0:
+      zh-Hans: Mosaic
+      en: Mosaic
+
 metadata:
   tags: ["股票", "经营", "布局", "ECharts"]
   id: example_mosaic_dashboard
-  title: Mosaic · 组合示例
-  notes: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。
+  title: {i18n: title}
+  notes: {i18n: notes}
 version: 1
 kind: Dashboard
 params: []
 tabs:
 - id: mosaic
-  title: Mosaic
+  title: {i18n: tab_0}
   panels:
   - id: mosaic_price
     chart: example_echarts_price

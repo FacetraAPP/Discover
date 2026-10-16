@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 自定义区间
+      en: ECharts · Custom intervals
+    notes:
+      zh-Hans: 3 个虚构任务的区间，renderItem 使用 api.coord/api.size 转换坐标并裁剪矩形；单位为天。
+      en: Intervals for three fictional tasks. renderItem uses api.coord/api.size to transform coordinates
+        and clip rectangles. Units are days.
+
 params: []
 sources:
   sample:
@@ -10,12 +21,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_custom
-  title: ECharts · 自定义区间
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - custom
-  notes: 3 个虚构任务的区间，renderItem 使用 api.coord/api.size 转换坐标并裁剪矩形；单位为天。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -35,7 +46,8 @@ chart:
       - Build
       - Test
     series:
-    - type: custom
+    - id: series_1
+      type: custom
       renderItem: |-
         js: (params, api) => {
           const start = api.coord([api.value(0), api.value(2)]);

@@ -1,9 +1,32 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 图表原型
+      en: Chart Gallery
+    notes:
+      zh-Hans: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
+      en: Seven basic Swift Charts marks, a Facetra value card, 23 core ECharts 6.1 series and six common variants
+        or coordinate examples. Everything runs offline, without parameters or connections.
+    swift_charts:
+      zh-Hans: Swift Charts
+      en: Swift Charts
+    echarts_basics:
+      zh-Hans: ECharts · 基础
+      en: ECharts · Basics
+    echarts_structures:
+      zh-Hans: ECharts · 结构
+      en: ECharts · Structures
+    echarts_more:
+      zh-Hans: ECharts · 更多
+      en: ECharts · More
+
 version: 1
 kind: Dashboard
 metadata:
   id: example_chart_gallery
-  title: 图表原型 · Chart Gallery
-  notes: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
+  title: {i18n: title}
+  notes: {i18n: notes}
   tags:
   - 图表原型
   - Swift Charts
@@ -11,7 +34,7 @@ metadata:
 params: []
 tabs:
 - id: swift
-  title: Swift Charts
+  title: {i18n: swift_charts}
   panels:
   - id: example_gallery_swift_line
     chart: example_gallery_swift_line
@@ -38,7 +61,7 @@ tabs:
     chart: example_gallery_swift_value
     height: 320
 - id: basic
-  title: ECharts · 基础
+  title: {i18n: echarts_basics}
   panels:
   - id: example_gallery_echarts_line
     chart: example_gallery_echarts_line
@@ -65,7 +88,7 @@ tabs:
     chart: example_gallery_echarts_effectScatter
     height: 320
 - id: structure
-  title: ECharts · 结构
+  title: {i18n: echarts_structures}
   panels:
   - id: example_gallery_echarts_tree
     chart: example_gallery_echarts_tree
@@ -86,7 +109,7 @@ tabs:
     chart: example_gallery_echarts_chord
     height: 320
 - id: more
-  title: ECharts · 更多
+  title: {i18n: echarts_more}
   panels:
   - id: example_gallery_echarts_radar
     chart: example_gallery_echarts_radar

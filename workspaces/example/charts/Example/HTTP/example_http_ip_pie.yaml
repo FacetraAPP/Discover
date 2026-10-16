@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: HTTP 示例 · IP 分段
+      en: HTTP example · IPv4 segments
+    notes:
+      zh-Hans: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
+      en: Fetches the public IPv4 address over HTTP and turns its four numeric segments into pie sectors. Each
+        sector shows that segment’s share of the sum.
+
 params: []
 sources:
   connection:
@@ -25,8 +36,8 @@ dataset:
 metadata:
   tags: ["HTTP", "网络", "饼图"]
   id: example_http_ip_pie
-  title: HTTP 示例 · IP 分段
-  notes: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: network
   renderer: default

@@ -1,3 +1,19 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 柱线组合
+      en: ECharts · Bar and line
+    notes:
+      zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
+      en: Fictional offline data in demonstration units. No parameters or connections are required.
+    quantity:
+      zh-Hans: 数量
+      en: Quantity
+    reference:
+      zh-Hans: 参照
+      en: Reference
+
 params: []
 sources:
   sample:
@@ -10,12 +26,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_mixed
-  title: ECharts · 柱线组合
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - mixed
-  notes: 离线虚构数据，数值为演示单位；无需参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -40,13 +56,15 @@ chart:
     legend:
       top: 0
     series:
-    - type: bar
-      name: 数量
+    - id: series_1
+      type: bar
+      name: {i18n: quantity}
       data:
         from: sample
         field: value
-    - type: line
-      name: 参照
+    - id: series_2
+      type: line
+      name: {i18n: reference}
       data:
         from: sample
         field: other

@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: Swift Charts · 热力图 · RectangleMark
+      en: Swift Charts · Heatmap · RectangleMark
+    notes:
+      zh-Hans: 3 天 × 2 个渠道的 6 个虚构单元格；chart.color 绑定数值颜色，X/Y 为分类轴。
+      en: Six fictional cells covering three days and two channels. chart.color binds the numeric color value;
+        X and Y are categorical axes.
+
 params: []
 sources:
   sample:
@@ -12,12 +23,12 @@ dataset:
     SELECT day, channel, CAST(value AS DOUBLE) AS value FROM raw
 metadata:
   id: example_gallery_swift_heatmap
-  title: Swift Charts · 热力图 · RectangleMark
+  title: {i18n: title}
   tags:
   - 图表原型
   - Swift Charts
   - heatmap
-  notes: 3 天 × 2 个渠道的 6 个虚构单元格；chart.color 绑定数值颜色，X/Y 为分类轴。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: default

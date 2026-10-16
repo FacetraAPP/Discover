@@ -1,6 +1,44 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    months:
+      zh-Hans: 月数
+      en: Months
+    revenue_target:
+      zh-Hans: 收入目标
+      en: Revenue target
+    show_labels:
+      zh-Hans: 显示标签
+      en: Show labels
+    title:
+      zh-Hans: ECharts · 收入与利润率
+      en: ECharts · Revenue and profit margin
+    notes:
+      zh-Hans: |-
+        12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
+        months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。
+      en: |-
+        Twelve months of fictional business data, in units of CNY 10,000. Bars stack online and store revenue; the right axis shows profit margin.
+        SQL controls months; target sets the target line; show_labels binds directly to ECharts label.show.
+    target:
+      zh-Hans: 目标
+      en: Target
+    online:
+      zh-Hans: 线上
+      en: Online
+    store:
+      zh-Hans: 门店
+      en: Store
+    margin:
+      zh-Hans: 利润率
+      en: Profit margin
+    amount_unit:
+      zh-Hans: 万元
+      en: CNY 10,000
+
 params:
 - name: months
-  label: 月数
+  label: {i18n: months}
   type: integer
   required: true
   minimum: 3e+0
@@ -8,7 +46,7 @@ params:
   advanced: false
   default: 12
 - name: target
-  label: 收入目标
+  label: {i18n: revenue_target}
   type: number
   required: true
   minimum: 0e+0
@@ -16,7 +54,7 @@ params:
   advanced: false
   default: 170
 - name: show_labels
-  label: 显示标签
+  label: {i18n: show_labels}
   type: boolean
   required: true
   advanced: false
@@ -42,10 +80,8 @@ dataset:
 metadata:
   tags: ["经营", "收入", "利润率", "ECharts"]
   id: example_echarts_business
-  title: ECharts · 收入与利润率
-  notes: |-
-    12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
-    months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: sales
   renderer: echarts
@@ -92,15 +128,16 @@ chart:
       bottom: 16
       right: 10
     series:
-    - markLine:
+    - id: series_1
+      markLine:
         data:
         - yAxis:
             from: params
             name: target
         symbol: none
         label:
-          formatter: 目标
-      name: 线上
+          formatter: {i18n: target}
+      name: {i18n: online}
       stack: revenue
       data:
         from: sales
@@ -110,7 +147,8 @@ chart:
           from: params
           name: show_labels
       type: bar
-    - name: 门店
+    - id: series_2
+      name: {i18n: store}
       data:
         field: retail
         from: sales
@@ -120,10 +158,11 @@ chart:
           from: params
       stack: revenue
       type: bar
-    - type: line
+    - id: series_3
+      type: line
       tooltip:
         valueFormatter: 'js: (v) => Number(v).toFixed(1) + ''%'''
-      name: 利润率
+      name: {i18n: margin}
       smooth: true
       data:
         field: margin
@@ -137,14 +176,14 @@ chart:
     - '#f59e0b'
     yAxis:
     - type: value
-      name: 万元
+      name: {i18n: amount_unit}
     - axisLabel:
         formatter: '{value}%'
-      name: 利润率
+      name: {i18n: margin}
       type: value
     xAxis:
       axisLabel:
-        formatter: 'js: (v) => v.slice(5) + "月"'
+        formatter: 'js: (v) => v.slice(5)'
       type: category
       data:
         field: month

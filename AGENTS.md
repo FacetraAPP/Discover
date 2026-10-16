@@ -18,6 +18,7 @@ content; no application checkout, private documentation or credentials are neede
   before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
+- [Bilingual display text](docs/localization.md): resource-local catalogs, explicit references, fallback and catalog metadata.
 - [Working examples](workspaces/example/README.md): 47 charts and five dashboards, including an offline chart prototype gallery and Vela OHLCV studies.
 - [Minimal starter](docs/starter/): a CSV, chart, dashboard and manifest that can
   be copied together into a new topic under `workspaces/`.

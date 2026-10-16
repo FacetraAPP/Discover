@@ -1,3 +1,20 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 热力图
+      en: ECharts · Heatmap
+    notes:
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
+        the executable dataset. No network, parameters or connections are required.
+    web:
+      zh-Hans: 线上
+      en: Web
+    store:
+      zh-Hans: 门店
+      en: Store
+
 params: []
 sources:
   sample:
@@ -10,12 +27,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_heatmap
-  title: ECharts · 热力图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - heatmap
-  notes: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -39,8 +56,8 @@ chart:
     yAxis:
       type: category
       data:
-      - Web
-      - Store
+      - {i18n: web}
+      - {i18n: store}
     visualMap:
       min: 0
       max: 6
@@ -49,7 +66,8 @@ chart:
       bottom: 0
       calculable: false
     series:
-    - type: heatmap
+    - id: series_1
+      type: heatmap
       data:
       - - 0
         - 0

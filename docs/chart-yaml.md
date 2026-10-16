@@ -12,6 +12,7 @@ The [complete starter chart](starter/charts/sales.yaml), together with its
 
 | Field | Rule |
 | --- | --- |
+| i18n | Optional resource-local message catalog; see [display text](localization.md) |
 | metadata | Required resource identity and discovery information; see below |
 | params | Optional parameter list; defaults to [] |
 | sources | Optional mapping of source IDs to source definitions; defaults to {}; at most 32 |
@@ -402,3 +403,10 @@ Local chart/dashboard action menus offer **Edit Tags**, including existing tag
 suggestions. Saving uses the regular revision/conflict and read-only checks;
 block YAML keeps its other fields, comments and formatting. Flow-style YAML
 may be reserialized. Tags are retained when duplicating or importing resources.
+
+## Bilingual display text
+
+Metadata titles/notes, parameter labels and ECharts option text accept fixed strings or
+`{i18n: key}` references into this chart’s own message catalog. See the
+[complete bilingual chart and authoring rules](localization.md); IDs, SQL, binding fields
+and data values remain language independent.

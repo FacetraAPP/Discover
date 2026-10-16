@@ -64,6 +64,83 @@ def text(value, context, nonempty=True):
     return value
 
 
+MESSAGE_KEY = re.compile(r"^[A-Za-z0-9_.-]{1,120}$")
+LOCALE = re.compile(r"^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$")
+
+
+def localized_text(value, context, nonempty=True):
+    """Check display text shape; resource-local reference checks run separately."""
+    if isinstance(value, dict):
+        mapping(value, context, {"i18n"}, {"i18n"})
+        require(isinstance(value["i18n"], str) and MESSAGE_KEY.fullmatch(value["i18n"]), context, "invalid i18n message key")
+    else:
+        text(value, context, nonempty=nonempty)
+
+
+def validate_localization(document, context):
+    catalog = document.get("i18n")
+    messages = {}
+    if catalog is not None:
+        mapping(catalog, context + ".i18n", {"defaultLocale", "messages"}, {"defaultLocale", "messages"})
+        default = text(catalog["defaultLocale"], context + ".i18n.defaultLocale")
+        require(LOCALE.fullmatch(default), context + ".i18n.defaultLocale", "invalid locale tag")
+        messages = mapping(catalog["messages"], context + ".i18n.messages")
+        for key, translations in messages.items():
+            location = context + ".i18n.messages." + key
+            require(MESSAGE_KEY.fullmatch(key), location, "invalid i18n message key")
+            mapping(translations, location)
+            seen = set()
+            for language, translation in translations.items():
+                require(LOCALE.fullmatch(language), location, "invalid locale tag")
+                require(language.lower() not in seen, location, "duplicate locale tag ignoring case")
+                seen.add(language.lower())
+                text(translation, location + "." + language)
+            require(default.lower() in seen, location, "missing defaultLocale translation")
+
+    def reference(value, location):
+        if isinstance(value, dict):
+            localized_text(value, location)
+            require(value["i18n"] in messages, location, "missing resource-local i18n message")
+
+    metadata = document.get("metadata")
+    if isinstance(metadata, dict):
+        for field in ("title", "notes"):
+            reference(metadata.get(field), context + ".metadata." + field)
+    definitions = document.get("params", [])
+    for index, parameter in enumerate(definitions if isinstance(definitions, list) else []):
+        if isinstance(parameter, dict):
+            reference(parameter.get("label"), f"{context}.params[{index}].label")
+    tabs = document.get("tabs", [])
+    for index, tab in enumerate(tabs if isinstance(tabs, list) else []):
+        if isinstance(tab, dict):
+            reference(tab.get("title"), f"{context}.tabs[{index}].title")
+
+    def option(value, location, depth=0):
+        require(depth < 64, location, "option is too deeply nested")
+        if isinstance(value, dict):
+            if "i18n" in value:
+                reference(value, location)
+            elif "from" not in value:
+                for key, child in value.items():
+                    option(child, location + "." + key, depth + 1)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                option(child, f"{location}[{index}]", depth + 1)
+
+    chart = document.get("chart")
+    if isinstance(chart, dict):
+        option(chart.get("option"), context + ".chart.option")
+
+
+def resolve_text(value, document):
+    """Catalog metadata stays a string; downloadable YAML retains every locale."""
+    if isinstance(value, str):
+        return value
+    catalog = document["i18n"]
+    translations = catalog["messages"][value["i18n"]]
+    return next(text for locale, text in translations.items() if locale.lower() == catalog["defaultLocale"].lower())
+
+
 def identifier(value, context):
     require(isinstance(value, str) and ID.fullmatch(value), context, "IDs must contain 1–80 letters, digits, underscores or hyphens")
     return value
@@ -124,7 +201,7 @@ def parameters(values, context):
             require(all(parameter.get(field) is None for field in ("minimum", "maximum")),
                     location, "date parameters cannot have numeric bounds")
         if "label" in parameter:
-            text(parameter["label"], location + ".label")
+            localized_text(parameter["label"], location + ".label")
         for field in ("required", "advanced"):
             if field in parameter:
                 require(type(parameter[field]) is bool, location + "." + field, "expected a boolean")
@@ -267,7 +344,9 @@ def json_value(value, context, depth=0):
 
 def echarts_option(value, chart, params, context, depth=0):
     require(depth < 64, context, "ECharts option is too deeply nested")
-    if isinstance(value, dict) and "from" in value:
+    if isinstance(value, dict) and "i18n" in value:
+        localized_text(value, context)
+    elif isinstance(value, dict) and "from" in value:
         origin = value["from"]
         if origin in ("params", "script"):
             mapping(value, context, {"from", "name"}, {"name"})
@@ -330,17 +409,18 @@ def vela_option(value, params, context):
 
 
 def validate_metadata(document, context):
+    validate_localization(document, context)
     metadata = mapping(document.get("metadata"), context + ".metadata",
                        {"id", "title", "notes", "tags"}, {"id", "title"})
     identifier(metadata["id"], context + ".metadata.id")
-    text(metadata["title"], context + ".metadata.title")
+    localized_text(metadata["title"], context + ".metadata.title")
     if "notes" in metadata:
-        text(metadata["notes"], context + ".metadata.notes", nonempty=False)
+        localized_text(metadata["notes"], context + ".metadata.notes", nonempty=False)
     validate_tags(metadata.get("tags", []), context + ".metadata.tags")
 
 
 def validate_chart(document, context):
-    mapping(document, context, {"metadata", "params", "sources", "dataset", "chart"}, {"metadata", "dataset", "chart"})
+    mapping(document, context, {"i18n", "metadata", "params", "sources", "dataset", "chart"}, {"metadata", "dataset", "chart"})
     validate_metadata(document, context)
     params = parameters(document.get("params", []), context + ".params")
     sources = mapping(document.get("sources", {}), context + ".sources")
@@ -443,7 +523,7 @@ def validate_chart_graph(charts, context, paths=None):
 
 
 def validate_dashboard(document, charts, context):
-    mapping(document, context, {"version", "kind", "metadata", "params", "tabs"}, {"version", "kind", "metadata", "params", "tabs"})
+    mapping(document, context, {"i18n", "version", "kind", "metadata", "params", "tabs"}, {"version", "kind", "metadata", "params", "tabs"})
     validate_metadata(document, context)
     require(type(document["version"]) is int and document["version"] == 1 and document["kind"] == "Dashboard", context, "expected version: 1 and kind: Dashboard")
     params = parameters(document["params"], context + ".params")
@@ -451,7 +531,7 @@ def validate_dashboard(document, charts, context):
     for tab in sequence(document["tabs"], context + ".tabs", 1):
         mapping(tab, context + ".tabs", {"id", "title", "panels", "layout"}, {"id", "title", "panels"})
         tab_ids.append(identifier(tab["id"], context + ".tabs.id"))
-        text(tab["title"], context + ".tabs.title")
+        localized_text(tab["title"], context + ".tabs.title")
         grid = tab.get("layout")
         if grid is not None:
             mapping(grid, context + ".layout", {"type", "columns", "row_height", "gap", "min_width"}, {"type"})

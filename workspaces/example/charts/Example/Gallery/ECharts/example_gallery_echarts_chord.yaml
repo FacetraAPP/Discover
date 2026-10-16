@@ -1,3 +1,14 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: ECharts · 弦图
+      en: ECharts · Chord
+    notes:
+      zh-Hans: ECharts 6+ 弦图：3 个虚构节点与 3 条带权重的连接，宽度表达流量。
+      en: ECharts 6+ chord chart with three fictional nodes and three weighted links. Link width represents
+        flow.
+
 params: []
 sources:
   sample:
@@ -10,12 +21,12 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_chord
-  title: ECharts · 弦图
+  title: {i18n: title}
   tags:
   - 图表原型
   - ECharts
   - chord
-  notes: ECharts 6+ 弦图：3 个虚构节点与 3 条带权重的连接，宽度表达流量。
+  notes: {i18n: notes}
 chart:
   dataset: sample
   renderer: echarts
@@ -25,7 +36,8 @@ chart:
       trigger: item
       confine: true
     series:
-    - type: chord
+    - id: series_1
+      type: chord
       radius:
       - 65%
       - 72%

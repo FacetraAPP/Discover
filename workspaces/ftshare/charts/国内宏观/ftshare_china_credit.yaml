@@ -1,3 +1,23 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 新增信贷 · 同比
+      en: New lending · Year-on-year
+    notes:
+      zh-Hans: |-
+        上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值；上下两图使用相同的日期位置，缺失数据不补零。
+        这是新增信贷，不是社会融资规模总量。当月同比可能因负值或低基数出现超过 ±100% 的变化，两幅图的纵轴范围各自标明。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b
+      en: |-
+        Separate panels show monthly and year-to-date growth in new lending, so extreme monthly changes do not obscure the cumulative trend. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order and both panels use the same date positions. Tap a line for dates and values; missing values are not filled with zero.
+        This is new lending, not total social financing. Negative values or low bases can push monthly growth beyond ±100%; each panel labels its own vertical scale.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/89eo4u6b
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -45,13 +65,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "信贷", "金融"]
   id: ftshare_china_credit
-  title: 新增信贷 · 同比
-  notes: |-
-    上下两幅图分别展示新增信贷当月同比和累计同比，避免极端月度波动掩盖累计趋势。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值；上下两图使用相同的日期位置，缺失数据不补零。
-    这是新增信贷，不是社会融资规模总量。当月同比可能因负值或低基数出现超过 ±100% 的变化，两幅图的纵轴范围各自标明。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/89eo4u6b
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: credit_data
   renderer: echarts

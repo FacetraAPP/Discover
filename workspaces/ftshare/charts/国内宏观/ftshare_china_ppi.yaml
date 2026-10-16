@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: PPI · 同比与环比
+      en: PPI · Year-on-year and month-on-month
+    notes:
+      zh-Hans: |-
+        观察工业生产者出厂价格的同比趋势和当月环比变化。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/n6lijleg
+      en: |-
+        Track year-on-year trends and monthly changes in industrial producer prices. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/n6lijleg
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -45,12 +63,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "物价", "工业", "PPI"]
   id: ftshare_china_ppi
-  title: PPI · 同比与环比
-  notes: |-
-    观察工业生产者出厂价格的同比趋势和当月环比变化。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/n6lijleg
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: ppi_data
   renderer: echarts

@@ -31,6 +31,48 @@ class CatalogTests(unittest.TestCase):
     def build(self):
         return catalog.build_catalog(self.root, "a" * 40)
 
+    def test_catalog_carries_resource_and_workspace_summaries_with_fallback(self):
+        self.chart["metadata"].update(title={"i18n": "title"}, notes={"i18n": "notes"})
+        self.chart["i18n"] = {"defaultLocale": "zh-Hans", "messages": {
+            "title": {"zh-Hans": "价格", "en": "Prices"},
+            "notes": {"zh-Hans": "默认说明", "EN-gb": "British notes"}}}
+        self.write_chart("price", self.chart)
+        manifest = {"title": "Default workspace", "localizations": {
+            "en": {"title": "English workspace", "description": "English notes"},
+            "zh-Hans": {"title": "中文工作区"}}}
+        (self.topic / "workspace.json").unlink()
+        (self.topic / "workspace.yaml").write_text(yaml.safe_dump(manifest))
+        workspace = self.build()["workspaces"][0]
+        resource = workspace["resources"][0]
+        self.assertEqual(workspace["localizations"], manifest["localizations"])
+        self.assertEqual(resource["title"], "价格")
+        self.assertEqual(resource["localizations"]["en"], {"title": "Prices", "description": "默认说明"})
+        self.assertEqual(resource["localizations"]["EN-gb"], {"title": "Prices", "description": "British notes"})
+        self.assertEqual(resource["localizations"]["zh-Hans"], {"title": "价格", "description": "默认说明"})
+
+    def test_workspace_localizations_reject_invalid_summaries(self):
+        (self.topic / "workspace.json").unlink()
+        for translations in [{}, {"en_US": {"title": "English"}}, {"en": {"title": ""}},
+                             {"en": {"title": "English", "notes": "unknown"}},
+                             {"en": {"title": "English"}, "EN": {"title": "Duplicate"}},
+                             {"en": {"title": "English", "description": 123}}]:
+            with self.subTest(translations=translations):
+                (self.topic / "workspace.yaml").write_text(yaml.safe_dump({"title": "Example", "localizations": translations}))
+                with self.assertRaises(ValueError):
+                    self.build()
+
+    def test_all_published_summaries_have_chinese_and_english(self):
+        result = catalog.build_catalog(Path(__file__).resolve().parents[1], "a" * 40)
+        for workspace in result["workspaces"]:
+            for item in [workspace, *workspace["resources"]]:
+                with self.subTest(item=item["id"]):
+                    self.assertIn("zh-Hans", item["localizations"])
+                    english = item["localizations"]["en"]
+                    self.assertTrue(english["title"].strip())
+                    if item["description"].strip():
+                        self.assertTrue(english["description"].strip())
+                    self.assertNotRegex(english["title"] + english["description"], r"[\u3400-\u9fff]")
+
     def test_only_workspaces_content_is_discovered_and_ids_remain_stable(self):
         for name in ["docs/starter", "scripts", "tests", "legacy-topic"]:
             folder = self.root / name

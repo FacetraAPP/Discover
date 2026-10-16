@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 货币供应 · M0/M1/M2 同比
+      en: Money supply · M0/M1/M2 growth
+    notes:
+      zh-Hans: |-
+        比较 M0、M1、M2 的同比增长，观察不同货币口径的变化。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/twl6t7h1
+      en: |-
+        Compare year-on-year growth in M0, M1 and M2 to track changes across monetary aggregates. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/twl6t7h1
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -46,12 +64,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "货币", "金融", "M2"]
   id: ftshare_china_money_supply
-  title: 货币供应 · M0/M1/M2 同比
-  notes: |-
-    比较 M0、M1、M2 的同比增长，观察不同货币口径的变化。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/twl6t7h1
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: money_supply_data
   renderer: echarts

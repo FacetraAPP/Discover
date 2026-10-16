@@ -2,6 +2,13 @@
 
 本工作区包含 18 张在线 ECharts 图表，直接查询 [FTShare 国内宏观 API](https://market.ft.tech/gateway/doc/p/1x61fcn7)，不包含 dashboard 或本地数据副本。
 
+工作区和 18 张图表的标题、说明支持中英文切换，需要 Facetra PR #63 的目录摘要支持。
+参数标签、坐标轴与接口数据保持原文。
+
+Workspace and chart titles/descriptions follow the app's Chinese or English setting.
+Translated Discover summaries require Facetra PR #63. Parameter labels, axes and
+API data remain as authored.
+
 ## 导入
 
 在 Facetra 的「创建 / 加载工作区」选择 GitHub，填写：

@@ -96,12 +96,39 @@ Changing language does not convert currencies, rescale values or alter units.
 
 ## Catalog and portable imports
 
-Catalog `title` and `description` remain strings. The publisher resolves a
-resource's default-language title/notes for these fields and preserves all
-translations in the downloadable YAML, including its original file digest.
-Workspace manifests still use fixed strings; the example manifest and README
-include both Chinese and English descriptions. No external translation file is
-required for a single-resource import or a complete workspace clone.
+Catalog `title` and `description` remain default-language strings. The publisher
+also emits `localizations: {locale: {title, description}}` from each resource's
+title/notes references, resolving each field with the same parent/default fallback
+as Facetra. Discover can switch summaries immediately using one catalog download,
+including offline browsing; it does not have to fetch every YAML definition first.
+The downloadable YAML retains all authored references and translations.
+
+Workspace manifests keep their original string fields and may provide an explicit
+summary map, copied into the catalog and preserved by portable imports:
+
+```yaml
+title: 示例 · Examples
+description: Default workspace description
+localizations:
+  zh-Hans:
+    title: 示例
+    description: 中文工作区说明
+  en:
+    title: Examples
+    description: English workspace description
+```
+
+Locale tags follow the same rules as resource messages. Each summary requires a
+nonblank title; description is optional and can be empty. Unsupported languages
+fall back to the original strings. Workspace IDs, paths and device-local names
+stay independent of the displayed language. This optional format requires
+[Facetra PR #63](https://github.com/FacetraAPP/Facetra/pull/63) for display support.
+Older apps ignore the summary map and continue to use the original strings.
+
+Both public workspaces and all chart/dashboard summaries include Chinese and
+English. FTShare's title/notes translations cover Discover and imported resource
+headings; its parameter labels, axes and API data remain authored text. README
+files are author-supplied documents and are not automatically translated.
 
 Run the [contributor checks](contributing.md#verify-and-submit). Offline validation
 does not execute a formatter or render the chart; test both languages in Facetra

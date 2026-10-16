@@ -1,3 +1,21 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 进出口 · 同比
+      en: Imports and exports · Year-on-year
+    notes:
+      zh-Hans: |-
+        比较出口与进口当月同比，观察外需和内需相关变化。单位：%。
+
+        可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
+        数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/n6bu5izh
+      en: |-
+        Compare monthly year-on-year growth in exports and imports to track changes related to external and domestic demand. Unit: %.
+
+        Choose the number of observations. Dates run in ascending order. Tap a line for dates and values, and use the legend to show or hide series. Missing values are not filled with zero.
+        Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/n6bu5izh
+
 params:
 - name: periods
   label: 显示最近（期数）
@@ -41,12 +59,8 @@ dataset:
 metadata:
   tags: ["国内宏观", "贸易", "进出口"]
   id: ftshare_china_trade
-  title: 进出口 · 同比
-  notes: |-
-    比较出口与进口当月同比，观察外需和内需相关变化。单位：%。
-
-    可选择显示期数；横轴按时间升序排列。点击曲线查看日期和数值，点击图例可显示或隐藏曲线；缺失数据不补零。
-    数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/n6bu5izh
+  title: {i18n: title}
+  notes: {i18n: notes}
 chart:
   dataset: trade_data
   renderer: echarts

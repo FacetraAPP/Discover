@@ -229,8 +229,6 @@ def build_workspace(root):
     result = {"id": topic, "title": title, "description": description,
               "license": license, "requiredConnections": [{"alias": alias, "type": required[alias]} for alias in sorted(required)],
               "files": files, "resources": resources}
-    if "localizations" in manifest:
-        result["localizations"] = manifest["localizations"]
     if (root / "previews/workspace.png").exists():
         result["preview"] = file_record(root, "previews/workspace.png")
     return result

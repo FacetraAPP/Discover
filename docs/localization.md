@@ -103,30 +103,25 @@ as Facetra. Discover can switch summaries immediately using one catalog download
 including offline browsing; it does not have to fetch every YAML definition first.
 The downloadable YAML retains all authored references and translations.
 
-Workspace manifests keep their original string fields and may provide an explicit
-summary map, copied into the catalog and preserved by portable imports:
+Workspace `title` and `description` are fixed content and do not participate in
+language switching. A workspace manifest uses plain strings:
 
 ```yaml
 title: 示例 · Examples
-description: Default workspace description
-localizations:
-  zh-Hans:
-    title: 示例
-    description: 中文工作区说明
-  en:
-    title: Examples
-    description: English workspace description
+description: Example charts and dashboards / 示例图表与看板
+license: Apache-2.0
+requiredConnections: []
 ```
 
-Locale tags follow the same rules as resource messages. Each summary requires a
-nonblank title; description is optional and can be empty. Unsupported languages
-fall back to the original strings. Workspace IDs, paths and device-local names
-stay independent of the displayed language. This optional format requires
-[Facetra PR #63](https://github.com/FacetraAPP/Facetra/pull/63) for display support.
-Older apps ignore the summary map and continue to use the original strings.
+Workspace manifests reject `i18n` and `localizations`, including null/empty values,
+and reject reference objects on `title`/`description`. The old workspace summary
+map has been removed without compatibility support. This is coordinated with
+[Facetra PR #70](https://github.com/FacetraAPP/Facetra/pull/70). Catalog workspace
+summaries are copied from the fixed strings and contain no `localizations` map.
+Workspace IDs, paths and device-local names remain stable across language changes.
 
-Both public workspaces and all chart/dashboard summaries include Chinese and
-English. FTShare's title/notes translations cover Discover and imported resource
+Chart/dashboard summaries include Chinese and English. Workspace headings retain
+their authored fixed text in every language. FTShare's title/notes translations cover Discover and imported resource
 headings; its parameter labels, axes and API data remain authored text. README
 files are author-supplied documents and are not automatically translated.
 

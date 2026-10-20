@@ -2,11 +2,3 @@ title: FTShare · 国内宏观
 description: 中国价格、增长、投资、消费、信贷、财政、货币、贸易与利率的 18 张在线图表。
 license: Apache-2.0
 requiredConnections: []
-localizations:
-  zh-Hans:
-    title: FTShare · 国内宏观
-    description: 中国价格、增长、投资、消费、信贷、财政、货币、贸易与利率的 18 张在线图表。
-  en:
-    title: FTShare · China macroeconomics
-    description: 18 online charts covering prices, growth, investment, consumption, credit, fiscal revenue, money
-      supply, trade and interest rates in China.

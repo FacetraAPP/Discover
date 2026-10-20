@@ -31,40 +31,51 @@ class CatalogTests(unittest.TestCase):
     def build(self):
         return catalog.build_catalog(self.root, "a" * 40)
 
-    def test_catalog_carries_resource_and_workspace_summaries_with_fallback(self):
+    def test_resource_summaries_use_fallback_and_workspace_text_stays_fixed(self):
         self.chart["metadata"].update(title={"i18n": "title"}, notes={"i18n": "notes"})
         self.chart["i18n"] = {"defaultLocale": "zh-Hans", "messages": {
             "title": {"zh-Hans": "价格", "en": "Prices"},
             "notes": {"zh-Hans": "默认说明", "EN-gb": "British notes"}}}
         self.write_chart("price", self.chart)
-        manifest = {"title": "Default workspace", "localizations": {
-            "en": {"title": "English workspace", "description": "English notes"},
-            "zh-Hans": {"title": "中文工作区"}}}
+        manifest = {"title": "Default workspace", "description": "Fixed notes"}
         (self.topic / "workspace.json").unlink()
         (self.topic / "workspace.yaml").write_text(yaml.safe_dump(manifest))
         workspace = self.build()["workspaces"][0]
         resource = workspace["resources"][0]
-        self.assertEqual(workspace["localizations"], manifest["localizations"])
+        self.assertEqual(workspace["title"], "Default workspace")
+        self.assertEqual(workspace["description"], "Fixed notes")
+        self.assertNotIn("localizations", workspace)
+        self.assertNotIn("i18n", workspace)
         self.assertEqual(resource["title"], "价格")
         self.assertEqual(resource["localizations"]["en"], {"title": "Prices", "description": "默认说明"})
         self.assertEqual(resource["localizations"]["EN-gb"], {"title": "Prices", "description": "British notes"})
         self.assertEqual(resource["localizations"]["zh-Hans"], {"title": "价格", "description": "默认说明"})
 
-    def test_workspace_localizations_reject_invalid_summaries(self):
-        (self.topic / "workspace.json").unlink()
-        for translations in [{}, {"en_US": {"title": "English"}}, {"en": {"title": ""}},
-                             {"en": {"title": "English", "notes": "unknown"}},
-                             {"en": {"title": "English"}, "EN": {"title": "Duplicate"}},
-                             {"en": {"title": "English", "description": 123}}]:
-            with self.subTest(translations=translations):
-                (self.topic / "workspace.yaml").write_text(yaml.safe_dump({"title": "Example", "localizations": translations}))
-                with self.assertRaises(ValueError):
+    def test_workspace_rejects_translation_configuration_without_compatibility(self):
+        for filename in ("workspace.yaml", "workspace.json"):
+            for field in ("localizations", "i18n"):
+                for value in ({}, None, {"en": {"title": "English"}}):
+                    with self.subTest(filename=filename, field=field, value=value):
+                        for previous in self.topic.glob("workspace.*"):
+                            previous.unlink()
+                        (self.topic / filename).write_text(json.dumps({"title": "Example", field: value}))
+                        with self.assertRaisesRegex(ValueError, "unsupported fields.*" + field):
+                            self.build()
+
+    def test_workspace_rejects_translation_references_on_title_and_description(self):
+        for field in ("title", "description"):
+            with self.subTest(field=field):
+                manifest = {"title": "Fixed title", field: {"i18n": field}}
+                (self.topic / "workspace.json").write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "expected a .*string"):
                     self.build()
 
     def test_all_published_summaries_have_chinese_and_english(self):
         result = catalog.build_catalog(Path(__file__).resolve().parents[1], "a" * 40)
         for workspace in result["workspaces"]:
-            for item in [workspace, *workspace["resources"]]:
+            self.assertNotIn("localizations", workspace)
+            self.assertTrue(workspace["title"].strip())
+            for item in workspace["resources"]:
                 with self.subTest(item=item["id"]):
                     self.assertIn("zh-Hans", item["localizations"])
                     english = item["localizations"]["en"]

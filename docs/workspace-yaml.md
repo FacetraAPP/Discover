@@ -42,7 +42,6 @@ backslashes, absolute paths or .. traversal are allowed. Files may be at most
 | title | Required nonempty string | Workspace card and detail title |
 | description | Optional string | Workspace card/detail description |
 | license | Optional string, defaults to Apache-2.0 | License for redistributed content |
-| requiredConnections | Optional list of unique alias/type maps, defaults to [] | Local connection IDs or aliases needed by this workspace |
 
 Workspace names identify workspaces inside Facetra. The catalog's topic key comes
 from the directory name under `workspaces/`; it is independent of the display title.
@@ -132,10 +131,11 @@ explicit with values plus that chart's defaults.
 Connections are configured on the user's device. A database source uses
 connection: business; an HTTP source can use templates such as
 "{{ connections.market.endpoint }}" and "{{ connections.market.token }}".
-requiredConnections lists typed requirements without their values, for example
-`[{alias: market, type: key-value}]`. `type` defaults to `key-value`; custom type
-IDs are supported. Aliases must be unique. String lists are not accepted. The catalog
-also discovers dependencies from chart source definitions and referenced charts.
+Workspace manifests and catalog records do not declare `requiredConnections`.
+Facetra infers aliases directly from the sources used by each chart's dataset and
+parameter options, following cross-chart source and dataset references. Missing
+connections appear on the affected chart cards. Manage aliases in Settings →
+Connection Library; offline catalog validation does not need local credentials.
 
 The topic README must explain what each connection means and which local fields
 are needed. Do not commit tokens, API keys, private data, personal health records

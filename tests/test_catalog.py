@@ -74,9 +74,11 @@ class CatalogTests(unittest.TestCase):
         result = catalog.build_catalog(Path(__file__).resolve().parents[1], "a" * 40)
         for workspace in result["workspaces"]:
             self.assertNotIn("localizations", workspace)
+            self.assertNotIn("requiredConnections", workspace)
             self.assertTrue(workspace["title"].strip())
             for item in workspace["resources"]:
                 with self.subTest(item=item["id"]):
+                    self.assertNotIn("requiredConnections", item)
                     self.assertIn("zh-Hans", item["localizations"])
                     english = item["localizations"]["en"]
                     self.assertTrue(english["title"].strip())
@@ -137,7 +139,7 @@ class CatalogTests(unittest.TestCase):
         workspace = self.build()["workspaces"][0]
         files = {file["path"]: file for file in workspace["files"]}
         self.assertEqual(files["connections/ftshare.yaml"], catalog.file_record(self.topic, "connections/ftshare.yaml"))
-        self.assertEqual(workspace["requiredConnections"], [])
+        self.assertNotIn("requiredConnections", workspace)
         self.assertNotIn("connections/ftshare.yaml", workspace["resources"][0]["files"])
 
     def test_invalid_connection_types_are_rejected(self):
@@ -304,7 +306,7 @@ class PublishedExampleTests(unittest.TestCase):
         vela = next(r for r in example["resources"] if r["resourceID"] == "example_vela_dashboard")
         self.assertEqual(set(vela["files"]), {"dashboards/example_vela_dashboard.yaml", "charts/Example/Vela/example_vela_candlestick.yaml",
                                              "charts/Example/Vela/example_vela_indicators.yaml", "data/example/echarts-ohlcv.csv"})
-        self.assertEqual(vela["requiredConnections"], [])
+        self.assertNotIn("requiredConnections", vela)
         self.assertFalse(any("health" in f["path"] for f in example["files"]))
         self.assertTrue({"workspace.yaml", "README.md"}.issubset({f["path"] for f in example["files"]}))
         self.assertFalse(any("healthkit" in r["sourceKinds"] for r in example["resources"]))

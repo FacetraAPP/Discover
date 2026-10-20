@@ -55,7 +55,7 @@ CPI、PMI、PPI、信贷、货币供应实际返回 `data.items`；日度利率�
 
 ## 可选 FTShare connection
 
-`connections/ftshare.yaml` 是连接类型的字段定义，随完整工作区导入，仅包含字段名，不包含任何凭据。国内宏观接口在验证时支持匿名请求，所以当前图表不依赖 connection，`requiredConnections` 为空。
+`connections/ftshare.yaml` 是连接类型的字段定义，随完整工作区导入，仅包含字段名，不包含任何凭据。国内宏观接口在验证时支持匿名请求，所以当前图表不依赖 connection；连接需求直接由图表的 source 引用推断，无需在工作区清单中声明。
 
 如需在个人副本中使用认证接口或服务要求 API Key，在连接库新建 `FTShare<工作区名称>` 类型，添加本工作区别名 `ftshare`，在本机填写：
 

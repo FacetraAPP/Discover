@@ -1,4 +1,3 @@
 title: Fictional monthly sales
 description: A minimal CSV chart and dashboard with an explicit shared parameter.
 license: Apache-2.0
-requiredConnections: []

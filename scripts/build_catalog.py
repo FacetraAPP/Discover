@@ -14,7 +14,6 @@ else:
 
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]+)\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]+))$")
-CONNECTION = re.compile(r"\{\{\s*connections\.([A-Za-z0-9_-]+)\.[A-Za-z0-9_-]+\s*\}\}")
 MAX_FILE = 20 * 1024 * 1024
 
 
@@ -46,16 +45,6 @@ def read_file(root, path):
 def file_record(root, path):
     data = read_file(root, path)
     return {"path": path, "size": len(data), "sha256": hashlib.sha256(data).hexdigest()}
-
-
-def walk(value):
-    if isinstance(value, dict):
-        for key, child in value.items():
-            yield key, child
-            yield from walk(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from walk(child)
 
 
 def localized_summaries(document):
@@ -139,10 +128,10 @@ def build_workspace(root):
         if item["type"] == "dashboard":
             validate_dashboard(item["document"], documents, f"{topic}/{item['path']}")
 
-    dependencies, assets, connections, kinds = {}, {}, {}, {}
+    dependencies, assets, kinds = {}, {}, {}
     for resource_id, item in charts.items():
         dependencies[resource_id], assets[resource_id] = set(), set()
-        connections[resource_id], kinds[resource_id] = set(), set()
+        kinds[resource_id] = set()
         for _, definition, _ in chart_references(item["document"]):
             target_id = REF.fullmatch(definition["ref"])[1] or resource_id
             if target_id != resource_id:
@@ -160,11 +149,6 @@ def build_workspace(root):
                 path = "data/" + str(relative_path(definition["file_path"]))
                 read_file(root, path)
                 assets[resource_id].add(path)
-            if "connection" in definition:
-                connections[resource_id].add(definition["connection"])
-            for _, value in walk(definition):
-                if isinstance(value, str):
-                    connections[resource_id].update(CONNECTION.findall(value))
 
     def closure(resource_id, visiting=None):
         visiting = set() if visiting is None else visiting
@@ -175,7 +159,6 @@ def build_workspace(root):
             result.update(closure(dependency, visiting | {resource_id}))
         return result
 
-    required = {c["alias"]: c.get("type", "key-value") for c in manifest.get("requiredConnections", [])}
     for item in resources:
         document = item.pop("document")
         if item["type"] == "chart":
@@ -189,16 +172,13 @@ def build_workspace(root):
                         raise ValueError(f"{topic}/{item['path']}: dashboard references a chart outside this workspace")
                     selected.update(closure(chart))
         paths = {item["path"]}
-        source_kinds, resource_connections = set(), set()
+        source_kinds = set()
         for chart in selected:
             paths.add(charts[chart]["path"])
             paths.update(assets[chart])
             source_kinds.update(kinds[chart])
-            resource_connections.update(connections[chart])
         item["files"] = sorted(paths)
         item["sourceKinds"] = sorted(source_kinds)
-        item["requiredConnections"] = [{"alias": alias, "type": required.get(alias, "key-value")} for alias in sorted(resource_connections)]
-        required.update({alias: required.get(alias, "key-value") for alias in resource_connections})
 
     paths = {manifest_path} | {item["path"] for item in resources}
     connection_root = root / "connections"
@@ -227,7 +207,7 @@ def build_workspace(root):
     if sum(file["size"] for file in files) > 100 * 1024 * 1024:
         raise ValueError(f"{topic}: workspace exceeds the 100 MB installation limit")
     result = {"id": topic, "title": title, "description": description,
-              "license": license, "requiredConnections": [{"alias": alias, "type": required[alias]} for alias in sorted(required)],
+              "license": license,
               "files": files, "resources": resources}
     if (root / "previews/workspace.png").exists():
         result["preview"] = file_record(root, "previews/workspace.png")

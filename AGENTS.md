@@ -10,7 +10,7 @@ content; no application checkout, private documentation or credentials are neede
 - [Contributor guide](docs/contributing.md): setup, a complete starter workspace,
   validation commands and the pull request/publishing process.
 - [Workspace and parameter format](docs/workspace-yaml.md): directory layout,
-  manifest fields, metadata, parameter types and connection requirements.
+  manifest fields, metadata, parameter types and chart connection references.
 - [Chart format](docs/chart-yaml.md): acquisition sources, datasets, references,
   native/value/ECharts/Vela renderers and complete examples.
 - [Chart authoring lessons](LESSONS.md): metric interpretation, ISO dates, axes,
@@ -32,8 +32,7 @@ other tools can read the same instructions directly.
 ## Content rules
 
 - Publish one manifest per topic: workspace.yaml for new content; workspace.json
-  remains readable for legacy content. Publish title, description, license and
-  requiredConnections only; workspace titles/descriptions are fixed strings and reject i18n/localizations; workspace IDs, kind and personal roles are app metadata.
+  remains readable for legacy content. Publish title, description and license only; workspace titles/descriptions are fixed strings and reject i18n/localizations; workspace IDs, kind and personal roles are app metadata.
 - Use .yaml for charts and dashboards, including nested folders. Filenames match
   metadata.id. IDs contain 1–80 ASCII letters, digits, underscores
   or hyphens; chart and dashboard IDs share one namespace inside each workspace.

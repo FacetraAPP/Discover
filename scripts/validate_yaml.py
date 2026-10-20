@@ -265,7 +265,7 @@ def validate_connection_type(document, context):
 
 
 def validate_workspace(document, context, *, legacy=False):
-    fields = {"title", "description", "license", "requiredConnections"}
+    fields = {"title", "description", "license"}
     if legacy:
         fields.update({"id", "kind", "isPersonal"})
     mapping(document, context, fields, {"title"})
@@ -279,12 +279,6 @@ def validate_workspace(document, context, *, legacy=False):
             text(document[field], context + "." + field, nonempty=False)
     if legacy and "isPersonal" in document:
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
-    connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")
-    for connection in connections:
-        mapping(connection, context + ".requiredConnections", {"alias", "type"}, {"alias"})
-        identifier(connection["alias"], context + ".requiredConnections.alias")
-        identifier(connection.get("type", "key-value"), context + ".requiredConnections.type")
-    unique([connection["alias"] for connection in connections], context + ".requiredConnections")
 
 
 def reference(value, context, kind):

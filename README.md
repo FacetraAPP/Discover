@@ -13,7 +13,7 @@ discovered by the publisher.
 
 ```text
 workspaces/example/
-  workspace.yaml       # Portable title, description, license and required connections
+  workspace.yaml       # Portable title, description and license
   README.md            # Markdown overview shown in Facetra workspace details
   charts/**/*.yaml
   dashboards/**/*.yaml

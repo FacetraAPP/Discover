@@ -110,7 +110,6 @@ language switching. A workspace manifest uses plain strings:
 title: 示例 · Examples
 description: Example charts and dashboards / 示例图表与看板
 license: Apache-2.0
-requiredConnections: []
 ```
 
 Workspace manifests reject `i18n` and `localizations`, including null/empty values,

@@ -33,7 +33,7 @@ other tools can read the same instructions directly.
 
 - Publish one manifest per topic: workspace.yaml for new content; workspace.json
   remains readable for legacy content. Publish title, description, license and
-  requiredConnections and optional localizations only; workspace IDs, kind and personal roles are app metadata.
+  requiredConnections only; workspace titles/descriptions are fixed strings and reject i18n/localizations; workspace IDs, kind and personal roles are app metadata.
 - Use .yaml for charts and dashboards, including nested folders. Filenames match
   metadata.id. IDs contain 1–80 ASCII letters, digits, underscores
   or hyphens; chart and dashboard IDs share one namespace inside each workspace.

@@ -41,7 +41,6 @@ backslashes, absolute paths or .. traversal are allowed. Files may be at most
 | --- | --- | --- |
 | title | Required nonempty string | Workspace card and detail title |
 | description | Optional string | Workspace card/detail description |
-| localizations | Optional locale-to-summary map | Translated title and optional description for Discover; see [display text](localization.md) |
 | license | Optional string, defaults to Apache-2.0 | License for redistributed content |
 | requiredConnections | Optional list of unique alias/type maps, defaults to [] | Local connection IDs or aliases needed by this workspace |
 
@@ -168,6 +167,8 @@ these optional forms. Configure actual values in the device's connection library
 ## Bilingual resources
 
 Charts and dashboards can include their own `i18n` message table. Titles, notes, parameter labels,
-tab titles and ECharts display text may reference its keys. Workspace manifests can
-provide optional `localizations` alongside their default strings. See
+tab titles and ECharts display text may reference its keys. Workspace `title` and
+`description` are fixed strings and do not change with App language. Workspace
+manifests reject `i18n`, `localizations` and translation reference objects; there
+is no compatibility format. See
 [Chinese and English display text](localization.md) for syntax, fallback and catalog behavior.

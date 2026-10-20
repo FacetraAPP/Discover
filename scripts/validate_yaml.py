@@ -265,7 +265,7 @@ def validate_connection_type(document, context):
 
 
 def validate_workspace(document, context, *, legacy=False):
-    fields = {"title", "description", "license", "requiredConnections", "localizations"}
+    fields = {"title", "description", "license", "requiredConnections"}
     if legacy:
         fields.update({"id", "kind", "isPersonal"})
     mapping(document, context, fields, {"title"})
@@ -277,19 +277,6 @@ def validate_workspace(document, context, *, legacy=False):
     for field in ("description", "license"):
         if document.get(field) is not None:
             text(document[field], context + "." + field, nonempty=False)
-    if "localizations" in document:
-        translations = mapping(document["localizations"], context + ".localizations")
-        require(bool(translations), context + ".localizations", "expected at least one locale")
-        seen = set()
-        for locale, summary in translations.items():
-            location = context + ".localizations." + locale
-            require(LOCALE.fullmatch(locale), location, "invalid locale tag")
-            require(locale.lower() not in seen, location, "duplicate locale tag ignoring case")
-            seen.add(locale.lower())
-            mapping(summary, location, {"title", "description"}, {"title"})
-            text(summary["title"], location + ".title")
-            if "description" in summary:
-                text(summary["description"], location + ".description", nonempty=False)
     if legacy and "isPersonal" in document:
         require(type(document["isPersonal"]) is bool, context, "isPersonal must be boolean")
     connections = sequence(document.get("requiredConnections", []), context + ".requiredConnections")

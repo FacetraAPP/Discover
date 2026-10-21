@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Facetra · 数值卡片
       en: Facetra · Value card
     notes:
-      zh-Hans: 4 个虚构数值的总和 75。value 是 Facetra 数值渲染器，不属于 Swift Charts 的基础 Mark。
-      en: The sum of four fictional values is 75. value is Facetra’s numeric renderer, not a basic Swift Charts
-        mark.
+      zh-Hans: '展示 4 个虚构数值的合计 75，单位为演示单位。'
+      en: 'The sum of four fictional values is 75, in demonstration units.'
 
 params: []
 sources:

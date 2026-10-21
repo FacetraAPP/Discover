@@ -7,8 +7,8 @@ i18n:
       en: HTML and Vega-Lite Gallery
       zh-Hans: HTML 与 Vega-Lite 示例
     notes:
-      en: 'Offline renderer examples. Requires Facetra PR #78. All data are fictional.'
-      zh-Hans: '离线渲染器示例，需要 Facetra PR #78 的支持。数据均为虚构。'
+      en: 'Explore statistical charts, regional summary cards and a report using fictional sales data offline. Requires Facetra with HTML and Vega-Lite charts.'
+      zh-Hans: '浏览虚构销售数据的统计图、地区汇总卡片与报表，全部可离线查看。需要支持 HTML 和 Vega-Lite 图表的 Facetra。'
     basic:
       en: Basic charts
       zh-Hans: 基础图表

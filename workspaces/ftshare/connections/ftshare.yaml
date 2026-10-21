@@ -1,7 +1,7 @@
 name: FTShare
 notes: |
-  FTShare 托管 API 的可选连接类型。endpoint 填写 https://market.ft.tech/gateway，
-  api_key 填写在 FTShare 获取的 API Key，请求头使用 FTSHARE_API_KEY。
+  FTShare 认证接口的可选连接。endpoint 填写 https://market.ft.tech/gateway，
+  api_key 填写在 FTShare 获取的 API Key。
   本工作区的国内宏观图表使用公开接口，默认无需创建连接。
 fields:
   - key: endpoint

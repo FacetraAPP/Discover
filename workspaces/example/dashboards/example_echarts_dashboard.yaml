@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 配置示例
       en: ECharts · Configuration examples
     notes:
-      zh-Hans: 四张图均由 YAML 配置，使用打包的虚构数据，可离线查看。打开图表的查看 YAML 可复制完整配方。
-      en: Four YAML-configured charts using bundled fictional data, available offline. Open each chart’s YAML
-        editor to copy its complete recipe.
+      zh-Hans: '通过股价、K 线、收入与利润率、渠道热力图探索虚构行情和经营数据。全部可离线查看。'
+      en: 'Explore fictional market and business data through prices, candles, revenue and margin, and a channel heatmap. All charts work offline.'
     market:
       zh-Hans: 行情
       en: Market

@@ -56,6 +56,31 @@ other tools can read the same instructions directly.
 - Individual files are limited to 20 MiB, and a complete workspace to 100 MiB.
   Optional previews are previews/<resource-id>.png and previews/workspace.png.
 
+## Documentation and notes
+
+- Treat workspace `README.md`, manifest descriptions, YAML `metadata.notes` and
+  their `i18n.messages` translations as user-facing content. Explain what the
+  workspace or resource shows, how to use it, data sources, units, metric
+  definitions, required setup and limitations that affect interpretation.
+- Do not use Markdown or YAML notes as a work log: no dated progress entries,
+  task recaps, "newly added" lists, debugging stories, test commands/results,
+  screenshots from an investigation, or records of attempted fixes. Put change
+  history, validation evidence and remaining work in commits, PRs or issues.
+- Keep implementation details out of user-facing text: no SQL plumbing, internal
+  field/binding names, renderer APIs, serialization/cache/download mechanics or
+  generic CSV → SQL → chart diagrams. Mention a technical name only when the
+  user needs it for setup or editing; describe its purpose in plain language.
+- State compatibility in terms of the feature the user needs. Do not make PR
+  numbers or development-build history the explanation of a requirement.
+- Keep `docs/`, repository skills and this file focused on current contributor
+  instructions and format contracts. Technical examples belong there when they
+  help author or validate content; remove obsolete migration narratives and
+  application internals unrelated to authoring. `LESSONS.md` holds reusable
+  chart-design guidance, not a diary of individual investigations.
+- Review every supported translation when changing notes. Preserve provenance,
+  licensing, units, missing-data rules, fixed date windows, pagination limits
+  and required connections; concision must not hide facts needed to use a chart.
+
 ## Checks and implementation changes
 
 Run from the repository root:

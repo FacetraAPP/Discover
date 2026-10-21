@@ -14,8 +14,8 @@ i18n:
       zh-Hans: 股价与均线
       en: Share price and moving average
     notes:
-      zh-Hans: 虚构历史行情与股票信息，CSV 通过 DuckDB 读取。
-      en: Fictional historical prices and stock information, read from CSV with DuckDB.
+      zh-Hans: '比较所选股票的收盘价与均线，价格为演示单位。可调整交易日数和均线周期；历史不足的均线区间留空。数据为虚构示例。'
+      en: 'Compare the selected stock’s closing price and moving average in demonstration price units. Adjust the trading-day count and moving-average period; initial values remain blank until enough history is available. Data are fictional.'
 
 params:
 - name: symbol

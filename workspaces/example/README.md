@@ -1,148 +1,70 @@
 # 示例工作区 · Example workspace
 
-这个工作区包含 61 个图表、6 个看板和 9 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
+61 个图表和 6 个看板，涵盖股票行情、经营数据、常用图形与金融技术指标。可从 Discover 导入，在本地查看和编辑。
 
-股票行情、销售与 OHLCV 数据均为虚构示例。工作区不包含任何凭据。
+61 charts and six dashboards covering stock prices, business data, common chart types and financial indicators. Import from Discover to view and edit local copies.
 
-All 61 charts and six dashboards include Chinese and English display text. Stock prices, sales and OHLCV
-values are fictional; no credentials are included.
+## 使用 · Getting started
 
-## 中英切换 · Chinese and English
+1. 在 Discover 中导入本工作区，打开图表或看板；除 HTTP 示例外，全部可离线查看，无需连接。
+2. 在「设置 → 通用 → 应用语言」选择简体中文或 English，切换图表与看板的标题、说明和参数标签。数据名称与代码保持原文。
+3. 需要调整示例时，打开图表或看板的 YAML 编辑器。
 
-导入后，在 Facetra「设置 → 通用 → 应用语言」选择简体中文或 English，图表标题、说明、参数标签、
-看板分页及 ECharts 业务文案会随之切换。每份 YAML 自带 `i18n.messages` 文案表，显示位置使用
-`{i18n: key}`；缺少某种语言时回退到 `defaultLocale: zh-Hans`。资源 ID、SQL、数据列和参数值不参与翻译。
+Import this workspace from Discover and open a chart or dashboard. All examples except the HTTP chart work offline without connections. Choose **Settings → General → App Language** to switch chart and dashboard display text between English and Simplified Chinese. Data names and codes remain as authored. Open the YAML editor to adapt an example.
 
-After importing, choose **Settings → General → App Language → English / 简体中文**. Titles, notes,
-parameter labels, dashboard tabs and ECharts business labels follow that choice. Each resource carries
-its own translation catalog and falls back to Simplified Chinese. IDs, queries, data fields, ticker
-symbols, metric codes and fictional sample identifiers remain stable. Language changes reuse loaded data
-and preserve chart interactions and parameter drafts.
+## 内容 · What's included
 
-需要包含 [Facetra PR #61](https://github.com/FacetraAPP/Facetra/pull/61) 多语言支持的应用版本。
-This content requires the application support in Facetra PR #61; older development builds cannot read
-the new references. See the [authoring guide](../../docs/localization.md) for complete YAML syntax.
-
-## English guide
-
-Import **Examples** from Discover, then open a chart or dashboard. The 37 prototypes in **Chart Gallery**
-are completely offline and require no parameters or connections. They cover seven Swift Charts marks,
-Facetra's value card, all 23 core ECharts 6.1.0 series and six additional variants or coordinate systems.
-The stock, business, OHLCV and gallery CSV files contain small fictional datasets licensed under Apache-2.0.
-
-**Stock analysis** demonstrates shared parameters and chart-to-chart source/dataset references.
-**ECharts · Configuration examples** combines prices, candlesticks, revenue/margin and a monthly channel
-heatmap. **Mosaic · Layout examples** demonstrates wide grid layouts and narrow stacked cards.
-**Vela · OHLCV and technical indicators** compares candles and volume with moving averages, Bollinger
-Bands, RSI and MACD using the same forty trading days. Prices and volume use fictional units; business
-amounts are in units of CNY 10,000. The same numeric values and units apply in both languages.
-
-Only **HTTP example · IPv4 segments** needs a local Key-Value connection: assign alias `http_example`,
-add an `endpoint` field and set it to `https://api.ipify.org`. This service must return an IPv4 address.
-Connection values stay on your device. All resource and local-data references remain within this workspace.
-
-Open a chart's YAML editor to copy or adapt its recipe. Files under `charts/` and `dashboards/` keep
-complete translations when copied; `data/` holds the CSV assets. Edit this README to customize the
-workspace guide shown in Facetra. Fixed data names and category codes are not automatically translated.
+| 内容 · Content | 用途 · Purpose |
+| --- | --- |
+| 行情与月度数据 · Prices and monthly data | 比较股价、均线、成交量和月度均价 · Compare prices, moving averages, volume and monthly average prices |
+| [股票分析 · Stock analysis](dashboards/example_dashboard.yaml) | 选择股票与时间窗口，查看行情与成交量 · Choose a stock and time window to explore prices and volume |
+| [ECharts 配置示例 · ECharts examples](dashboards/example_echarts_dashboard.yaml) | 价格走势、K 线、收入与利润率、渠道热力图 · Prices, candles, revenue and margin, and a channel heatmap |
+| [Mosaic 布局示例 · Mosaic layout](dashboards/example_mosaic_dashboard.yaml) | 宽屏多列排列，窄屏顺序阅读 · A multi-column dashboard that stacks on narrow screens |
+| [Vela 金融图表 · Vela financial charts](dashboards/example_vela_dashboard.yaml) | 蜡烛图、成交量、均线、布林带、RSI 与 MACD · Candles, volume, moving averages, Bollinger Bands, RSI and MACD |
+| [图表原型库 · Chart Gallery](dashboards/example_chart_gallery.yaml) | 37 个离线图形示例 · 37 offline chart examples |
+| [HTML 与 Vega-Lite · Renderer gallery](dashboards/renderer_gallery.yaml) | 地区汇总卡片、报表及 12 种统计图示例 · Regional cards, a report table and 12 statistical chart examples |
 
 ## 图表原型库
 
-[图表原型看板](dashboards/example_chart_gallery.yaml) 包含 **37 个新增原型**，全部无需参数、连接或网络。打开图表的「编辑 YAML」即可复制配置；重点是 `chart` 区块。
+37 个图形示例均可独立打开，无需参数、连接或网络。
 
-Swift Charts 按 Apple 文档的 **7 种基础 Mark** 分类：AreaMark、LineMark、PointMark、RectangleMark、RuleMark、BarMark、SectorMark。
-向量化 Plot 是这些 Mark 的批量 API，并非额外图形类别；iOS 26+ 的 Chart3D/SurfacePlot 不在本次兼容 iOS 17 的 YAML 原生接口范围。
-另有 Facetra 的 value 数值卡片原型，它不属于 Swift Charts。
+- **Swift Charts**：折线、面积、柱状、饼图、散点、热力图与任务区间；另有数值卡片。
+- **ECharts**：常用统计图、层级图、关系图、流向图、地图、仪表盘，以及极坐标、日历与矩阵等示例。
 
-ECharts 固定到 **6.1.0**，覆盖 **23 种核心 series**；另提供面积、环形、柱线组合、极坐标、日历、matrix 六个原型。
-GL 3D、GL 流场、第三方插件和在线地图底图需要独立渲染扩展，不属于核心离线 SVG 原型库。
+地图中的两个岛屿为虚构区域。任务区间以天为单位；其他示例的数值和单位见各图说明。
+弦图与矩阵示例需要内置 ECharts 6 或更新版本的 Facetra。
 
-| 引擎 | 原型（每个名称对应独立 YAML） |
-| --- | --- |
-| Swift Charts | line、area、bar、pie、scatter、heatmap、rule；另有 value |
-| ECharts 核心 | line、bar、pie、scatter、effectScatter、radar、tree、treemap、sunburst、boxplot、candlestick、heatmap、map、lines、parallel、graph、sankey、funnel、gauge、pictorialBar、themeRiver、custom、chord |
-| ECharts 变体/坐标 | area、doughnut、mixed、polar、calendar、matrix |
-
-新增文件在 `charts/Example/Gallery/SwiftCharts/` 和 `charts/Example/Gallery/ECharts/`。图表 ID 采用 `example_gallery_<swift|echarts>_<类型>`。
-`gallery-categories.csv` 只有 4 行，`gallery-scatter.csv` 5 行、`gallery-heatmap.csv` 6 行、`gallery-intervals.csv` 3 行；均为本项目创作的虚构数据（Apache-2.0）。数值单位、K 线顺序和区间含义写在各图 notes 中。
-层级、网络、箱线图等结构化样本直接内嵌 `chart.option`，共享小 CSV 作为可执行 dataset；无需外部资产。
-地图使用本项目创作的两个虚构岛屿 GeoJSON，通过内嵌表达式 `echarts.registerMap` 注册，不代表真实地理区域。
-自定义图使用可复制的 `renderItem` 表达式，矩形裁剪在绘图区内。
-散点使用真实数值 X 轴；原生热力图以 `chart.color` 绑定颜色；原生区间以 `chart.x_end` 绑定终点。这三类原生配置需要支持相应字段的 Facetra 版本。
-弦图与 matrix 需要 Facetra 内置 ECharts 6+。
-
-来源：[Apple Swift Charts](https://developer.apple.com/documentation/charts)、[ECharts 官方示例](https://echarts.apache.org/examples/en/index.html)、[ECharts 6.1.0](https://github.com/apache/echarts/releases/tag/6.1.0)。
-
-## 内容
-
-- **行情与月度数据**：股票价格、成交量和月度统计，展示本地 CSV、SQL 与图表间数据引用。
-- **HTTP**：通过 HTTP 请求展示 IP 分布，演示连接别名与请求模板。
-- **ECharts**：价格走势、K 线、热力图与经营数据。
-- **Vela**：[OHLCV 蜡烛图](charts/Example/Vela/example_vela_candlestick.yaml)与[技术指标](charts/Example/Vela/example_vela_indicators.yaml)，共享已有的 40 日虚构 `echarts-ohlcv.csv`，无需新增数据或连接。
-- **看板**：常规、ECharts 与 Mosaic 布局，可以查看并编辑各分页的图表组合。
+The gallery contains seven native chart types, a value card and 29 ECharts examples. The two mapped islands are fictional. Task intervals use days; other units are described in each chart. Chord and matrix examples require Facetra with ECharts 6 or later.
 
 ## Vela 金融图表
 
-[Vela · OHLCV 与技术指标](dashboards/example_vela_dashboard.yaml)看板分两页：基础蜡烛图展示开高低收与成交量；技术指标页展示 SMA、EMA、布林带、RSI 与 MACD，SMA 周期显式绑定看板参数。价格单位为虚构价格点，成交量为虚构成交单位。
+使用同一份 40 个交易日的虚构行情，比较蜡烛图、成交量与技术指标。价格为虚构价格点，成交量为虚构成交单位。
+均线周期可通过参数调整；历史不足以计算指标的初始区间留空。不补周末，也不自动重新采样。
+小高度卡片仅显示主图；查看完整指标请使用较大的图表区域。图内临时设置不会保存，长期修改请使用 YAML 编辑器。
 
-需要支持 `renderer: vela` 的 Facetra 版本（应用支持见 [Facetra PR #51](https://github.com/FacetraAPP/Facetra/pull/51)）。数据先由 SQL 转成日期与数值列，再交给离线 Vela 计算指标；40 行历史的预热期会保留空值。`timeframe: 1d` 设置日线刻度，不重采样、不补周末。窄屏可查看完整副图，小高度卡片只显示主图指标。
+Compare candles, volume and technical indicators over forty fictional trading days. Prices and volume use fictional units. Adjust moving-average periods with parameters. Initial indicator values remain blank until enough history is available; weekends are not filled and data are not resampled. Small cards show only the main chart. Use a larger view for all indicators, and the YAML editor for saved settings.
 
-扩展时可在 `chart.option.indicators` 添加 Vela 内置类型，`inputs` 配置周期、价格来源及颜色，也可绑定普通参数。修改 YAML 才会持久保存；图内临时设置不会回写文件。完整字段见 [Vela 配置](../../docs/chart-yaml.md#vela-ohlcv)。
+需要支持 Vela 金融图表的 Facetra 版本。Requires Facetra with Vela financial charts.
 
 ## HTML 与 Vega-Lite · HTML and Vega-Lite
 
-Requires [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
-Older clients do not recognize `html` or `vega_lite`.
+卡片与表格按地区汇总收入和利润。12 个 Vega-Lite 示例包括柱状、折线、堆叠面积、散点、热力图、饼图、直方图、箱线图，以及组合、分面和地区交互筛选。
 
-The 36 records in [`data/example/renderer-sales.csv`](data/example/renderer-sales.csv) are fictional monthly product sales for
-January–June 2026, across two regions and three products. Revenue and profit use
-demonstration units; units are counts. No network, credentials or connections
-are needed. Values are explicitly cast in SQL; dates retain ISO calendar values.
+Cards and a table summarize revenue and profit by region. The twelve Vega-Lite examples include bar, line, stacked area, scatter, heatmap, pie, histogram and boxplot charts, plus combined views, regional facets and an interactive region filter.
 
-The gallery contains bar, line, stacked area, scatter, heatmap, pie, histogram,
-boxplot, layered, faceted, concatenated and interactive region-filter examples.
-`vega_bar` owns the shared source and typed Dataset. Other Vega-Lite charts
-reference that Dataset by resource ID. Native Vega-Lite mark/encoding/transform/
-composition/params options remain editable YAML. Bindings expand to SQL row objects.
+需要支持 HTML 和 Vega-Lite 图表的 Facetra 版本。Requires Facetra with HTML and Vega-Lite charts.
 
-Two HTML examples show regional summary cards and a report table. HTML uses
-Mustache escaped placeholders and sections (`{{#rows}}…{{/rows}}`), CSS theme
-variables and bound data. Authored JavaScript is unsupported and the document
-blocks scripts and network access. SQL owns all aggregation.
+## HTTP 示例 · HTTP example
 
-Open [Renderer gallery](dashboards/renderer_gallery.yaml) for the three-tab dashboard.
-The chart recipes are in [`charts/Example/Gallery/VegaLite/`](charts/Example/Gallery/VegaLite/)
-and [`charts/Example/Gallery/HTML/`](charts/Example/Gallery/HTML/). Charts can also be imported
-individually; dependency closures retain the provider chart and local CSV.
-Titles and Notes support English and Simplified Chinese. Expand Notes to see
-Markdown and a Mermaid data-flow diagram. In the chart's table view, select
-**Dataset Result** to inspect transformed output and switch back to a source to
-compare raw data. Source display settings do not affect the Dataset table.
+只有 **HTTP · IPv4 分段** 需要联网与本地连接。在连接库创建 Key-Value 连接，别名为 `http_example`，添加 `endpoint` 字段并设为 `https://api.ipify.org`。服务需返回 IPv4 地址；饼图按地址四段数字的相对大小显示，属于图形演示。
 
-### 中文
+Only **HTTP example · IPv4 segments** requires a network connection and local setup. Create a Key-Value connection with alias `http_example`, add `endpoint` and set it to `https://api.ipify.org`. The service must return IPv4. The pie compares the address's four numeric segments as a chart demonstration.
 
-本工作区的渲染器示例提供 12 种 Vega-Lite 图表、2 个 HTML 示例与一个三页看板。
-数据完全虚构，单位为演示单位；无需连接、凭据或网络。
-HTML 仅支持 HTML/CSS 和声明式绑定，不执行自定义 JavaScript。
-所有示例依赖 Facetra PR #78 的新渲染器支持。
+## 数据与许可 · Data and license
 
-## 使用
+股票行情、经营、OHLCV 与图形示例使用本项目创作的虚构数据，存于 9 份 CSV 及部分图形样本中。经营示例金额以万元为单位；HTML 和 Vega-Lite 使用 2026 年 1–6 月的虚构产品销售数据，收入与利润为演示单位，销量为件。语言切换不改变数值或单位。
 
-工作区本身无需连接；只有保留的 HTTP 演示单独需要 `http_example` 连接，图表原型看板完全离线。
+Stock, business, OHLCV and gallery data are fictional, held in nine CSV files and chart samples. Business examples use CNY 10,000. HTML and Vega-Lite examples cover January–June 2026 product sales; revenue and profit use demonstration units, and units sold are counts. Changing language does not change values or units.
 
-1. 在 Discover 中选择本工作区并点击 **导入**。
-2. 打开导入工作区的图表或看板；本地 CSV 示例可以直接查看。
-3. 使用 HTTP 示例前，在连接库中创建一个 Key-Value 连接，设置别名 `http_example`，添加字段 `endpoint`，值为 `https://api.ipify.org`。
-
-连接值仅保存在你的设备上。所有图表、看板和本地文件引用都位于本工作区内。
-
-## 文件
-
-工作区信息存储在 [workspace.yaml](workspace.yaml)，图表、看板和数据分别位于 `charts/`、`dashboards/` 与 `data/`。你可以编辑本文件，为工作区补充用途和使用说明；Facetra 的工作区菜单与 Discover 详情会显示这些 Markdown 内容。
-
-## License
-
-Apache-2.0，详见 [仓库许可证](../../LICENSE)。
-
-## 标签
-
-图表和看板按股票行情、经营、网络与布局标记主题，并补充均线、成交量、K线、热力图等内容标签。ECharts 图表也带有 ECharts 标签；标签在导入后保留。
+示例配置与虚构数据采用 [Apache-2.0](../../LICENSE)。连接值仅保存在你的设备上。
+Example configurations and fictional data are licensed under [Apache-2.0](../../LICENSE). Connection values stay on your device.

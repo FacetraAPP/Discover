@@ -11,12 +11,8 @@ i18n:
       zh-Hans: ECharts · K 线与成交量
       en: ECharts · Candlesticks and volume
     notes:
-      zh-Hans: |-
-        40 个交易日的离线虚构 OHLCV。K 线数据按 open、close、low、high 顺序绑定。
-        上下两个 grid 共享缩放；均线由 SQL 计算；成交量用 color_by 跟随当日涨跌。
-      en: |-
-        Forty trading days of fictional offline OHLCV data. Candlestick values are bound in open, close, low, high order.
-        The two grids share zoom; SQL calculates the moving average; color_by colors volume by the day’s price movement.
+      zh-Hans: '40 个交易日的虚构行情，展示开盘、最高、最低、收盘、均线与成交量。价格和成交量采用演示单位。上下两图可同步缩放，成交量颜色表示当日涨跌。'
+      en: 'Forty fictional trading days showing open, high, low, close, a moving average and volume in demonstration units. Zoom both panels together; volume colors indicate the day’s price movement.'
     candlestick:
       zh-Hans: K线
       en: Candlestick

@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 箱线图
       en: ECharts · Box plot
     notes:
-      zh-Hans: 3 组虚构的 [最小值, Q1, 中位数, Q3, 最大值]，直接内嵌 chart.option。单位为演示单位。
-      en: Three fictional [minimum, Q1, median, Q3, maximum] groups embedded directly in chart.option, in demonstration
-        units.
+      zh-Hans: '比较三组虚构数据的分布：最小值、下四分位数、中位数、上四分位数与最大值。数值为演示单位。'
+      en: 'Compare three fictional distributions using the minimum, lower quartile, median, upper quartile and maximum, in demonstration units.'
 
 params: []
 sources:

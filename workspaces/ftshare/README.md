@@ -2,12 +2,10 @@
 
 本工作区包含 18 张在线 ECharts 图表，直接查询 [FTShare 国内宏观 API](https://market.ft.tech/gateway/doc/p/1x61fcn7)，不包含 dashboard 或本地数据副本。
 
-工作区和 18 张图表的标题、说明支持中英文切换，需要 Facetra PR #63 的目录摘要支持。
-参数标签、坐标轴与接口数据保持原文。
+18 张图表的标题、说明支持中英文切换。工作区名称、参数标签、坐标轴与接口数据保持原文。
 
-Workspace and chart titles/descriptions follow the app's Chinese or English setting.
-Translated Discover summaries require Facetra PR #63. Parameter labels, axes and
-API data remain as authored.
+Chart titles and descriptions follow the app's Chinese or English setting.
+The workspace name, parameter labels, axes and API data remain as authored.
 
 ## 导入
 
@@ -18,9 +16,9 @@ API data remain as authored.
 - 分支：`main`
 - GitHub connection：不选择，公开仓库支持匿名读取。
 
-导入后打开「图表」并选择「国内宏观」文件夹。月度图表默认显示最近 24 期已发布指标，GDP 默认显示最近 20 季；使用下拉选项切换常用时间窗口，月度最多 200 期、GDP 最多 100 季。LPR 原始历史包含按日填充记录，SQL 按月保留最后一次报价，避免重复月份。
+导入后打开「图表」并选择「国内宏观」文件夹。月度图表默认显示最近 24 期已发布指标，GDP 默认显示最近 20 季；使用下拉选项切换常用时间窗口，月度最多 200 期、GDP 最多 100 季。LPR 按月保留最后一次报价。
 
-日度利率图默认使用已经发布数据的固定区间 `2026-08-01`–`2026-08-31`，不是自动滚动到今天。开始/结束日期使用原生日历，参数始终保存 ISO 日期（`YYYY-MM-DD`）；YAML 在 HTTP 请求中显式使用 `date_format('yyyyMMdd')` 转换为接口要求的格式。结束日期不能早于开始日期。曲线和报价行使用下拉选项，其中 18 家报价行支持搜索。选项来自 2026-08-03 的接口记录；中债默认「中债国债收益率曲线」，SHIBOR 报价默认「中国银行」。每次加载一页，最多 1000 条；较长区间应缩短日期窗口或调整高级参数「页码」，本工作区不自动跨页合并。
+日度利率图默认使用已经发布数据的固定区间 `2026-08-01`–`2026-08-31`，不是自动滚动到今天。使用日历选择开始与结束日期，结束日期不能早于开始日期。曲线和报价行使用下拉选项，其中 18 家报价行支持搜索。报价行选项以 2026-08-03 的数据为准，可能不覆盖此后的变化；中债默认「中债国债收益率曲线」，SHIBOR 报价默认「中国银行」。每次加载一页，最多 1000 条；较长区间应缩短日期窗口或调整高级参数「页码」，本工作区不自动跨页合并。
 
 ## 图表与口径
 
@@ -45,17 +43,14 @@ API data remain as authored.
 | `ftshare_china_shibor_quote` | [SHIBOR · 报价行利率](https://market.ft.tech/gateway/doc/p/optr82sd) | % |
 | `ftshare_china_wenzhou` | [温州民间融资 · 综合与分项利率](https://market.ft.tech/gateway/doc/p/e4w9tgm2) | % |
 
-增速、利率与价格指数的同比/环比均以百分比显示，PMI 为指数点。点击图表查看日期和带单位的数值，点击图例可隐藏曲线。日度利率及存在缺报月份的月度指标使用真实时间轴，日期空档不压缩；利率纵轴按数据范围缩放，比较变化时应同时查看刻度。PMI 始终显示 50 荣枯线且标签置于绘图区内。新增信贷的当月/累计同比使用上下两个独立纵轴，避免当月同比的极端值压平累计走势。GDP 的 Q1/Q2/Q3/Q4 标签分别指年初至该季度的累计数据，不是单季度数据。信贷接口只提供新增信贷，不能视为社会融资规模总量。税收当月同比为服务端计算值。
+增速、利率与价格指数的同比/环比均以百分比显示，PMI 为指数点。点击图表查看日期和带单位的数值，点击图例可隐藏曲线。日度利率及存在缺报月份的月度指标使用真实时间轴，日期空档不压缩；利率纵轴按数据范围缩放，比较变化时应同时查看刻度。PMI 以 50 为荣枯分界。新增信贷的当月/累计同比使用上下两个独立纵轴，避免当月同比的极端值压平累计走势。GDP 的 Q1/Q2/Q3/Q4 标签分别指年初至该季度的累计数据，不是单季度数据。信贷接口只提供新增信贷，不能视为社会融资规模总量。税收当月同比采用数据源提供的计算值。
 
-金额单位、币种在不同接口中可能为空或与文档描述不同，因此这些图表选择同比增速，不擅自把金额当作人民币亿元或美元。`national_cpi`/`ppi` 指数值不混入增速曲线。所有字符串数值用 `TRY_CAST` 转为数值，缺失值保持 null，曲线不跨缺失值连接、不补零。中文月份转换为 YYYY-MM，季度转换为 YYYY-Qn，再按时间升序展示。
-
-CPI、PMI、PPI、信贷、货币供应实际返回 `data.items`；日度利率返回 `data.records`；其余历史序列返回 `data` 数组。信贷、货币供应文档开头曾写 `data.records`，本工作区按在线响应使用 `data.items`。
-
-国内宏观目录中的两种财经日历为事件列表，混合指标和单位，当前没有转换为时序图表。
+这些图表展示增速、利率或指数点，不展示币种与金额单位尚不明确的金额序列。价格指数值与同比、环比增速分别理解。
+缺失数据留空、不补零；日期按时间升序展示。
 
 ## 可选 FTShare connection
 
-`connections/ftshare.yaml` 是连接类型的字段定义，随完整工作区导入，仅包含字段名，不包含任何凭据。国内宏观接口在验证时支持匿名请求，所以当前图表不依赖 connection，`requiredConnections` 为空。
+当前国内宏观图表使用公共接口，无需配置连接。完整工作区导入包含可选的 FTShare 连接表单；表单不包含凭据。
 
 如需在个人副本中使用认证接口或服务要求 API Key，在连接库新建 `FTShare<工作区名称>` 类型，添加本工作区别名 `ftshare`，在本机填写：
 
@@ -64,15 +59,8 @@ CPI、PMI、PPI、信贷、货币供应实际返回 `data.items`；日度利率�
 | `endpoint` | API 根地址：`https://market.ft.tech/gateway`，不带末尾 `/` |
 | `api_key` | 自己的 FTShare API Key，仅存于本机 Keychain |
 
-然后将需要认证的图表 HTTP source 改为类似下面的配置（其余字段保留）。这一步会让该图表需要本机 `ftshare` connection：
-
-```yaml
-url: "{{ connections.ftshare.endpoint }}/api/v1/market/data/economic/china-cpi"
-headers:
-  FTSHARE_API_KEY: "{{ connections.ftshare.api_key }}"
-```
-
-认证请求头与 [官方 Python SDK](https://github.com/FTShare-Lab/FTShare-python-sdk/blob/main/src/ftshare/base.py) 一致。GitHub connection 与 FTShare connection 用途独立；读取公开仓库不需要 GitHub token。
+为个人副本添加认证时，按 [HTTP 数据源说明](../../docs/chart-yaml.md#http) 编辑对应图表，使用本机连接中的地址，并通过 `FTSHARE_API_KEY` 请求头传递 API Key。
+读取本公开仓库无需 GitHub token。
 
 ## 来源与许可
 

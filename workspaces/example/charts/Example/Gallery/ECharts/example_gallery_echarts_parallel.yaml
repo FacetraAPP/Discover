@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 平行坐标
       en: ECharts · Parallel coordinates
     notes:
-      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
-      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
-        the executable dataset. No network, parameters or connections are required.
+      zh-Hans: '从速度、成本与质量三个维度比较三组虚构样本，各维度的演示刻度为 0–10。可离线查看。'
+      en: 'Compare three fictional samples across speed, cost and quality, each on a demonstration scale of 0–10. Works offline.'
     speed:
       zh-Hans: 速度
       en: Speed

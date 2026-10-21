@@ -5,14 +5,8 @@ i18n:
       en: HTML · Regional summary report
       zh-Hans: HTML · 地区汇总报告
     notes:
-      en: "Fictional monthly product sales, January–June 2026. Revenue/profit use\
-        \ demonstration units; units are counts. No credentials or network required.\n\
-        \n**Data:** open the table and select **Dataset Result** to inspect typed\
-        \ SQL output, or select a source to compare the original CSV.\n\n```mermaid\n\
-        flowchart LR\n  CSV --> SQL\n  SQL --> Chart\n```"
-      zh-Hans: "2026 年 1–6 月的虚构产品销售数据。收入与利润采用演示单位，销量单位为件。无需连接或网络。\n\n**数据：**打开表格，选择\
-        \ **Dataset 结果** 检查 SQL 输出，或选择数据源对照原始 CSV。\n\n```mermaid\nflowchart LR\n \
-        \ CSV --> SQL\n  SQL --> Chart\n```"
+      en: 'Compare total revenue and profit by region in a report table. Uses fictional product sales for January–June 2026, with amounts in demonstration units. No connection or network required.'
+      zh-Hans: '在表格中对照各地区的收入与利润总额。使用 2026 年 1–6 月的虚构产品销售数据，金额为演示单位；无需连接或网络。'
 metadata:
   id: html_table
   title:

@@ -5,11 +5,8 @@ i18n:
       zh-Hans: ECharts · 离线地图
       en: ECharts · Offline map
     notes:
-      zh-Hans: '两个虚构岛屿的 GeoJSON 内嵌在 chart.option.series.data 的表达式中，通过 registerMap 离线注册；不代表真实地理区域。 layoutCenter/layoutSize
-        与 aspectScale: 1 保持虚构平面坐标的等比例形状。'
-      en: 'GeoJSON for two fictional islands is embedded in the chart.option.series.data expression and registered
-        offline with registerMap; it does not represent real places. layoutCenter/layoutSize and aspectScale:
-        1 preserve equal scale in the fictional planar coordinates.'
+      zh-Hans: '比较两个虚构岛屿的演示数值，可离线查看。岛屿不代表真实地理区域。'
+      en: 'Compare demonstration values for two fictional islands offline. The islands do not represent real places.'
 
 params: []
 sources:

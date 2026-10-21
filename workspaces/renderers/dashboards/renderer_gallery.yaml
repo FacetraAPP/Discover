@@ -1,0 +1,113 @@
+version: 1
+kind: Dashboard
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTML and Vega-Lite Gallery
+      zh-Hans: HTML 与 Vega-Lite 示例
+    notes:
+      en: 'Offline renderer examples. Requires Facetra PR #78. All data are fictional.'
+      zh-Hans: '离线渲染器示例，需要 Facetra PR #78 的支持。数据均为虚构。'
+    basic:
+      en: Basic charts
+      zh-Hans: 基础图表
+    analysis:
+      en: Statistical views
+      zh-Hans: 统计视图
+    composition:
+      en: Composition and HTML
+      zh-Hans: 组合与 HTML
+metadata:
+  id: renderer_gallery
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - Renderer Gallery
+params: []
+tabs:
+- id: basic
+  title:
+    i18n: basic
+  layout:
+    type: grid
+    columns: 12
+    row_height: 80
+    min_width: 700
+  panels:
+  - id: vega_bar
+    chart: vega_bar
+    width: 6
+    row_span: 4
+  - id: vega_line
+    chart: vega_line
+    width: 6
+    row_span: 4
+  - id: vega_area
+    chart: vega_area
+    width: 6
+    row_span: 4
+  - id: vega_scatter
+    chart: vega_scatter
+    width: 6
+    row_span: 4
+- id: analysis
+  title:
+    i18n: analysis
+  layout:
+    type: grid
+    columns: 12
+    row_height: 80
+    min_width: 700
+  panels:
+  - id: vega_heatmap
+    chart: vega_heatmap
+    width: 6
+    row_span: 4
+  - id: vega_pie
+    chart: vega_pie
+    width: 6
+    row_span: 4
+  - id: vega_histogram
+    chart: vega_histogram
+    width: 6
+    row_span: 4
+  - id: vega_boxplot
+    chart: vega_boxplot
+    width: 6
+    row_span: 4
+- id: composition
+  title:
+    i18n: composition
+  layout:
+    type: grid
+    columns: 12
+    row_height: 80
+    min_width: 700
+  panels:
+  - id: vega_layer
+    chart: vega_layer
+    width: 6
+    row_span: 4
+  - id: vega_facet
+    chart: vega_facet
+    width: 6
+    row_span: 4
+  - id: vega_concat
+    chart: vega_concat
+    width: 6
+    row_span: 4
+  - id: vega_interactive
+    chart: vega_interactive
+    width: 6
+    row_span: 4
+  - id: html_cards
+    chart: html_cards
+    width: 6
+    row_span: 4
+  - id: html_table
+    chart: html_table
+    width: 6
+    row_span: 4

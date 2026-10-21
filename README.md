@@ -128,3 +128,7 @@ CI uses the same tests and --validate-only command on every PR and main push.
 It checks YAML structure/types, parameters, references and dashboard layouts in
 addition to catalog dependencies and file limits. Validation is offline; SQL
 execution, remote responses and visual rendering still require a Facetra preview.
+
+The [renderer gallery](workspaces/renderers/README.md) adds 12 declarative
+Vega-Lite chart types, two HTML/CSS views and a bilingual dashboard with local
+fictional data. It requires [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).

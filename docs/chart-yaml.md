@@ -410,3 +410,27 @@ Metadata titles/notes, parameter labels and ECharts option text accept fixed str
 `{i18n: key}` references into this chart’s own message catalog. See the
 [complete bilingual chart and authoring rules](localization.md); IDs, SQL, binding fields
 and data values remain language independent.
+
+## HTML and Vega-Lite (Facetra PR #78)
+
+These pre-release renderers require [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
+Older clients cannot read them. See the complete [renderer gallery](../workspaces/renderers/README.md).
+
+- `renderer: html`: `option` accepts required nonempty `html`, optional string
+  `css`, and optional object/array `data`. Bind Dataset rows in `data` using
+  `{from: dataset_id, rows: true}`. Mustache escaped placeholders (`{{name}}`),
+  dotted paths and sections (`{{#rows}}…{{/rows}}`) render values/lists.
+  SQL owns calculations. Theme variables are `--text`, `--muted`, `--card`,
+  `--border`, `--accent`. `option.js` and `chart.scripts` are rejected;
+  sandboxed HTML scripts and network access are disabled.
+- `renderer: vega_lite`: `option` is a native Vega-Lite 6 specification with a
+  mark or composed view (`layer`, `facet`, `repeat`, `concat`, `hconcat`, `vconcat`).
+  Bind `data.values: {from: dataset_id, rows: true}` to SQL output. Declare
+  encoding field types, use native transforms/parameters and cast CSV numbers
+  in SQL. `chart.scripts` and script bindings are unsupported. Native lookup
+  `from` objects remain native configuration; `js:` strings are plain text.
+  Resources are bundled and external URL loading is disabled.
+
+Metadata Notes support Markdown, including fenced `mermaid` diagrams. Diagrams
+run offline in strict mode and follow the application theme. The chart table
+selector includes **Dataset Result**, separate from raw **Data Sources**.

@@ -1,10 +1,10 @@
 # 示例工作区 · Example workspace
 
-这个工作区包含 47 个图表、5 个看板和 8 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
+这个工作区包含 61 个图表、6 个看板和 9 份 CSV 数据，可以在 Facetra 的 Discover 中导入为可编辑的本地副本。
 
 股票行情、销售与 OHLCV 数据均为虚构示例。工作区不包含任何凭据。
 
-All 47 charts and five dashboards include Chinese and English display text. Stock prices, sales and OHLCV
+All 61 charts and six dashboards include Chinese and English display text. Stock prices, sales and OHLCV
 values are fictional; no credentials are included.
 
 ## 中英切换 · Chinese and English
@@ -87,6 +87,43 @@ GL 3D、GL 流场、第三方插件和在线地图底图需要独立渲染扩展
 需要支持 `renderer: vela` 的 Facetra 版本（应用支持见 [Facetra PR #51](https://github.com/FacetraAPP/Facetra/pull/51)）。数据先由 SQL 转成日期与数值列，再交给离线 Vela 计算指标；40 行历史的预热期会保留空值。`timeframe: 1d` 设置日线刻度，不重采样、不补周末。窄屏可查看完整副图，小高度卡片只显示主图指标。
 
 扩展时可在 `chart.option.indicators` 添加 Vela 内置类型，`inputs` 配置周期、价格来源及颜色，也可绑定普通参数。修改 YAML 才会持久保存；图内临时设置不会回写文件。完整字段见 [Vela 配置](../../docs/chart-yaml.md#vela-ohlcv)。
+
+## HTML 与 Vega-Lite · HTML and Vega-Lite
+
+Requires [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
+Older clients do not recognize `html` or `vega_lite`.
+
+The 36 records in [`data/example/renderer-sales.csv`](data/example/renderer-sales.csv) are fictional monthly product sales for
+January–June 2026, across two regions and three products. Revenue and profit use
+demonstration units; units are counts. No network, credentials or connections
+are needed. Values are explicitly cast in SQL; dates retain ISO calendar values.
+
+The gallery contains bar, line, stacked area, scatter, heatmap, pie, histogram,
+boxplot, layered, faceted, concatenated and interactive region-filter examples.
+`vega_bar` owns the shared source and typed Dataset. Other Vega-Lite charts
+reference that Dataset by resource ID. Native Vega-Lite mark/encoding/transform/
+composition/params options remain editable YAML. Bindings expand to SQL row objects.
+
+Two HTML examples show regional summary cards and a report table. HTML uses
+Mustache escaped placeholders and sections (`{{#rows}}…{{/rows}}`), CSS theme
+variables and bound data. Authored JavaScript is unsupported and the document
+blocks scripts and network access. SQL owns all aggregation.
+
+Open [Renderer gallery](dashboards/renderer_gallery.yaml) for the three-tab dashboard.
+The chart recipes are in [`charts/Example/Gallery/VegaLite/`](charts/Example/Gallery/VegaLite/)
+and [`charts/Example/Gallery/HTML/`](charts/Example/Gallery/HTML/). Charts can also be imported
+individually; dependency closures retain the provider chart and local CSV.
+Titles and Notes support English and Simplified Chinese. Expand Notes to see
+Markdown and a Mermaid data-flow diagram. In the chart's table view, select
+**Dataset Result** to inspect transformed output and switch back to a source to
+compare raw data. Source display settings do not affect the Dataset table.
+
+### 中文
+
+本工作区的渲染器示例提供 12 种 Vega-Lite 图表、2 个 HTML 示例与一个三页看板。
+数据完全虚构，单位为演示单位；无需连接、凭据或网络。
+HTML 仅支持 HTML/CSS 和声明式绑定，不执行自定义 JavaScript。
+所有示例依赖 Facetra PR #78 的新渲染器支持。
 
 ## 使用
 

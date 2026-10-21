@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Swift Charts · 区间 · RuleMark
       en: Swift Charts · Intervals · RuleMark
     notes:
-      zh-Hans: 3 个虚构任务的区间，单位为天。chart.x / x_end 为数值起止，chart.y 为任务分类。
-      en: Intervals for three fictional tasks, in days. chart.x / x_end are numeric start/end positions; chart.y
-        is the task category.
+      zh-Hans: '比较 3 个虚构任务的开始、结束与持续时间，单位为天。'
+      en: 'Compare the start, end and duration of three fictional tasks, in days.'
 
 params: []
 sources:

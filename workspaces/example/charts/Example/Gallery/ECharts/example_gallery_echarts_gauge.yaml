@@ -5,8 +5,8 @@ i18n:
       zh-Hans: ECharts · 仪表盘
       en: ECharts · Gauge
     notes:
-      zh-Hans: 虚构完成率 72%；百分比范围固定为 0–100。数据内嵌 chart.option。
-      en: A fictional completion rate of 72%, on a fixed 0–100 percent scale. Data is embedded in chart.option.
+      zh-Hans: '虚构完成率为 72%，以 0–100% 的固定刻度展示。'
+      en: 'A fictional completion rate of 72%, on a fixed 0–100% scale.'
     completion:
       zh-Hans: 完成率
       en: Completion

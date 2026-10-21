@@ -8,8 +8,8 @@ i18n:
       zh-Hans: 月度均价
       en: Monthly average price
     notes:
-      zh-Hans: DuckDB SQL 关联两个 CSV，按月聚合。
-      en: DuckDB SQL joins two CSV files and aggregates by month.
+      zh-Hans: '查看所选股票每月的平均收盘价，价格为演示单位。使用虚构行情，可离线查看。'
+      en: 'View the selected stock’s average closing price by month, in demonstration price units. Uses fictional market data and works offline.'
 
 params:
 - name: symbol

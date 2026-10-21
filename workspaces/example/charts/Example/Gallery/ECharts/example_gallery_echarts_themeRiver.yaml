@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 主题河流
       en: ECharts · Theme river
     notes:
-      zh-Hans: 4 个 ISO 日期、2 个渠道的 8 条虚构记录，数据格式为 [日期, 数值, 系列名]。
-      en: Eight fictional observations for two channels across four ISO dates, in [date, value, series name]
-        format.
+      zh-Hans: '比较两个渠道在 4 个日期的变化趋势，共 8 条虚构观测。'
+      en: 'Compare trends for two channels across four dates, using eight fictional observations.'
     web:
       zh-Hans: 线上
       en: Web

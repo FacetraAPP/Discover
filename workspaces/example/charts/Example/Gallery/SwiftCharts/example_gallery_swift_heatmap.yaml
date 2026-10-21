@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Swift Charts · 热力图 · RectangleMark
       en: Swift Charts · Heatmap · RectangleMark
     notes:
-      zh-Hans: 3 天 × 2 个渠道的 6 个虚构单元格；chart.color 绑定数值颜色，X/Y 为分类轴。
-      en: Six fictional cells covering three days and two channels. chart.color binds the numeric color value;
-        X and Y are categorical axes.
+      zh-Hans: '比较 3 天内两个渠道的 6 个虚构数值，颜色深浅表示大小。数值为演示单位。'
+      en: 'Compare six fictional values across three days and two channels. Color intensity indicates magnitude, in demonstration units.'
 
 params: []
 sources:

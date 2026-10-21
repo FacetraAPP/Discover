@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 热力图
       en: ECharts · Heatmap
     notes:
-      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
-      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
-        the executable dataset. No network, parameters or connections are required.
+      zh-Hans: '比较 3 天内线上与门店的 6 个虚构数值，颜色深浅表示大小。数值为演示单位，可离线查看。'
+      en: 'Compare six fictional values for web and store channels over three days. Color intensity indicates magnitude, in demonstration units. Works offline.'
     web:
       zh-Hans: 线上
       en: Web

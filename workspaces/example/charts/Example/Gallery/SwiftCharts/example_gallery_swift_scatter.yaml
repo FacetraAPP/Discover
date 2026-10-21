@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Swift Charts · 散点 · PointMark
       en: Swift Charts · Scatter · PointMark
     notes:
-      zh-Hans: 5 个虚构坐标。X 为真实数值轴，间距 1、2、3、2 不会按行号等距绘制。
-      en: Five fictional coordinates on a true numeric X axis. Gaps of 1, 2, 3 and 2 retain their spacing instead
-        of being equally spaced by row.
+      zh-Hans: '查看 5 个虚构观测的坐标关系，横轴保留数值之间的实际间距。'
+      en: 'Explore the relationship between five fictional observations. The horizontal axis preserves numeric spacing.'
 
 params: []
 sources:

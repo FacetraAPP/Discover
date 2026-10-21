@@ -5,9 +5,8 @@ i18n:
       zh-Hans: 图表原型
       en: Chart Gallery
     notes:
-      zh-Hans: 7 种 Swift Charts 基础 Mark、Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
-      en: Seven basic Swift Charts marks, a Facetra value card, 23 core ECharts 6.1 series and six common variants
-        or coordinate examples. Everything runs offline, without parameters or connections.
+      zh-Hans: '浏览 37 个图形示例，涵盖常用统计图、层级、关系、流向、地图与数值卡片。全部使用离线虚构数据，无需参数或连接。'
+      en: 'Browse 37 chart examples covering common statistics, hierarchies, relationships, flows, maps and a value card. All use fictional offline data without parameters or connections.'
     swift_charts:
       zh-Hans: Swift Charts
       en: Swift Charts

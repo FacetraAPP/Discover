@@ -14,12 +14,8 @@ i18n:
       zh-Hans: ECharts · 股价与均线
       en: ECharts · Share price and moving average
     notes:
-      zh-Hans: |-
-        虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
-        点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。
-      en: |-
-        Fictional market data. Shares the native price chart’s dataset; SQL calculates the moving average and retains initial NULL values as gaps.
-        Toggle series in the legend, zoom with mouse or touch, and hover or tap to inspect values.
+      zh-Hans: '比较虚构股价与均线，价格采用演示单位。历史不足以计算均线的区间留空。点击图例切换曲线，缩放或轻触查看数值。'
+      en: 'Compare fictional share prices and a moving average in demonstration price units. The moving average remains blank until enough history is available. Toggle lines in the legend, zoom, or tap to inspect values.'
     close:
       zh-Hans: 收盘价
       en: Close

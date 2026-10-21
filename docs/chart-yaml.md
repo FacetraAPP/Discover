@@ -23,14 +23,6 @@ No other top-level fields are allowed. Resource id, title, notes and tags belong
 inside metadata; renderer belongs inside chart. Source/dataset IDs follow the ID rules in the workspace
 guide; dataset input IDs must be unique without regard to case.
 
-This is a breaking format change coordinated with Facetra's resource metadata
-schema. Move former chart.id/title/notes/tags into the top-level metadata object
-and remove them from chart. Keep filenames, resource IDs and reference values.
-Documents without metadata or with fields at their former locations fail
-validation; there is no compatibility reader or automatic migration. Update
-the application and published content together. Catalog cards still expose
-title/description/tags, extracted from metadata, and chartType from chart.
-
 ## Acquisition sources
 
 A concrete source contains source, provider fields, and optional display.
@@ -255,10 +247,8 @@ Do not add native plot/x/y fields, ECharts option or scripts.
 
 ### Vela OHLCV
 
-Requires a Facetra version supporting `renderer: vela` (application integration:
-[Facetra #51](https://github.com/FacetraAPP/Facetra/pull/51)). Vela is bundled in
-the app and receives the SQL result offline; no provider or scripting engine is
-loaded. Only `dataset`, `renderer` and `option` belong in this chart block.
+Requires Facetra with Vela financial charts. Only `dataset`, `renderer` and
+`option` belong in this chart block.
 
 ~~~yaml
 metadata:
@@ -309,8 +299,7 @@ or [dashboard](../workspaces/example/dashboards/example_vela_dashboard.yaml) for
 Offline validation checks the option shape and parameter references. Vela checks
 indicator types and input names/types/ranges in the actual preview. Temporary
 changes in its settings dialog are not saved; write YAML to persist them.
-Extra SQL factor columns are not yet bound as custom Vela series. The core is
-Apache-2.0; the separately licensed PineTS addon is not part of this integration.
+Extra SQL factor columns cannot be bound as custom Vela series.
 
 ### ECharts
 
@@ -385,24 +374,13 @@ offline validation does not prove SQL or JavaScript correctness.
 ## Tags
 
 Charts and dashboards accept optional `metadata.tags: [股票, 行情]`.
-Omission means no tags. Metadata fields at their former locations are rejected. Tags must be strings of 1–64 characters
+Omission means no tags. Tags must be strings of 1–64 characters
 after trimming, without control characters. Display spelling and order are
 preserved; duplicates are merged ignoring case and accents. Quote numeric or
 boolean-looking names (`"2026"`, `"on"`).
 
-Discover publishes resource tags in its generated catalog. Workspace cards and
-filters use the union of their resources' tags. Cards display one compact line
-with overflow counts, and details show all tags. Search matches words across
-names, descriptions and tags, including `#tag` queries. The tag picker supports
-search and multiple selections, matching **any** selected tag; search, resource
-type, folders and favorites combine with that selection. Counts in the picker
-reflect the current search and other filters, before the tag selection. Active
-tags remain visible and removable even if another filter yields no results.
-
-Local chart/dashboard action menus offer **Edit Tags**, including existing tag
-suggestions. Saving uses the regular revision/conflict and read-only checks;
-block YAML keeps its other fields, comments and formatting. Flow-style YAML
-may be reserialized. Tags are retained when duplicating or importing resources.
+Use tags that describe the subject, metric or chart type. They help users find
+resources in Discover and remain available after import.
 
 ## Bilingual display text
 
@@ -411,10 +389,10 @@ Metadata titles/notes, parameter labels and ECharts option text accept fixed str
 [complete bilingual chart and authoring rules](localization.md); IDs, SQL, binding fields
 and data values remain language independent.
 
-## HTML and Vega-Lite (Facetra PR #78)
+## HTML and Vega-Lite
 
-These pre-release renderers require [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
-Older clients cannot read them. See the complete [renderer gallery](../workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite).
+Requires Facetra with HTML and Vega-Lite chart support. See the complete
+[renderer gallery](../workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite).
 
 - `renderer: html`: `option` accepts required nonempty `html`, optional string
   `css`, and optional object/array `data`. Bind Dataset rows in `data` using
@@ -431,6 +409,7 @@ Older clients cannot read them. See the complete [renderer gallery](../workspace
   `from` objects remain native configuration; `js:` strings are plain text.
   Resources are bundled and external URL loading is disabled.
 
-Metadata Notes support Markdown, including fenced `mermaid` diagrams. Diagrams
-run offline in strict mode and follow the application theme. The chart table
-selector includes **Dataset Result**, separate from raw **Data Sources**.
+Metadata notes support Markdown, including fenced `mermaid` diagrams. Use
+formatting or diagrams only to explain the chart's subject, data or interpretation.
+Keep implementation walkthroughs out of notes; see the
+[documentation rules](../AGENTS.md#documentation-and-notes).

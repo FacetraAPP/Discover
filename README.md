@@ -1,134 +1,72 @@
 # Facetra Discover
 
-Public, portable workspaces for [Facetra](https://github.com/FacetraAPP/Facetra).
-Each topic directory under `workspaces/` **is a workspace**. Charts, dashboards and local
-data dependencies may reference only files in their own workspace. Required
-connections refer to values configured on the user's device; never commit tokens,
-API keys, private data or personal health records.
+Public, importable workspaces for [Facetra](https://github.com/FacetraAPP/Facetra).
+Browse Discover in the app to import a workspace, chart or dashboard. Imported
+charts and dashboards are editable local copies.
 
-Published content lives in `workspaces/`. Repository documentation and the
-non-published starter live in `docs/`; catalog tooling and regression tests live
-in `scripts/` and `tests/`. Only direct topic folders in `workspaces/` are
-discovered by the publisher.
+## Workspaces
 
-```text
-workspaces/example/
-  workspace.yaml       # Portable title, description, license and required connections
-  README.md            # Markdown overview shown in Facetra workspace details
-  charts/**/*.yaml
-  dashboards/**/*.yaml
-  data/**/*
-  previews/<id>.png    # Optional preview for a chart or dashboard
-  previews/workspace.png
-```
+- [Examples](workspaces/example/README.md): 61 charts and six dashboards covering
+  stock prices, business data, financial indicators and chart galleries. Includes
+  Chinese and English display text. All examples except the HTTP chart run offline
+  with fictional data.
+- [FTShare · Chinese macroeconomics](workspaces/ftshare/README.md): 18 online charts
+  for economic indicators and interest rates, with data definitions and setup guidance.
 
-Resource filenames must match their YAML IDs. IDs are unique across charts and
-dashboards within one workspace. External source/dataset references use
-`<chart-id>.yaml#/sources/<name>` or `<chart-id>.yaml#/dataset`, resolved by ID
-inside that workspace. Different workspaces may reuse the same IDs. Symlinks,
-hidden paths, path traversal, missing dependency targets and cycles are rejected.
+Each workspace README explains its data sources, units, license, required
+connections and limitations. Connection values stay on your device; this
+repository contains no credentials.
 
-Workspace metadata is defined in `workspace.yaml`: `title`, optional `description`
-and optional `license` (defaults to this repository's Apache-2.0 license). The
-catalog uses these directly. Chart and dashboard names and descriptions come from
-their own YAML `title` and `notes` fields.
-Workspace IDs, storage kind and personal-space flags are excluded from YAML.
-For localized resources, catalog title/description use the declared default language; downloadable YAML
-retains all translations. The example workspace includes Chinese and English display text using
-[resource-local catalogs and explicit references](docs/localization.md).
-Catalog topic keys come from the workspace directory names; local workspace names
-and storage settings are managed by Facetra.
-
-Workspace documentation lives in `README.md` (legacy `readme.md` is also accepted).
-Describe the purpose, included charts and dashboards, required connections and setup
-steps in Markdown. The catalog lists this file with its size and SHA-256 digest;
-Facetra downloads it at the catalog's source revision for the workspace detail and
-retains it in complete workspace imports. Individual resource imports do not copy it.
-README contents are not embedded in the index.
-
-Legacy `workspace.json` remains accepted; a topic must contain exactly one manifest.
-For migration, retain the portable metadata, omit `id`, `kind` and `isPersonal`,
-and remove the JSON file.
-
-## Contributing and agent skills
+## Contributing
 
 Start with [AGENTS.md](AGENTS.md) and the [contributor guide](docs/contributing.md).
-This repository includes a [complete minimal starter](docs/starter/) and
-self-contained specifications for [workspaces and parameters](docs/workspace-yaml.md),
-[charts](docs/chart-yaml.md) and [dashboards](docs/dashboard-yaml.md).
-No Facetra source checkout or private documentation is required.
+Use the [complete starter](docs/starter/) to create a workspace. Format references
+cover [workspaces and parameters](docs/workspace-yaml.md), [charts](docs/chart-yaml.md),
+[dashboards](docs/dashboard-yaml.md) and [Chinese and English text](docs/localization.md).
 
-The [FTShare workspace](workspaces/ftshare/README.md) includes 18 online charts covering
-Chinese macroeconomic indicators and interest rates, plus an optional FTShare
-connection type. Its public macro endpoints and GitHub import can be used
-without a connection.
-
-Repository skills are available at
-[create-chart-yaml](.agents/skills/create-chart-yaml/SKILL.md) and
-[create-dashboard-yaml](.agents/skills/create-dashboard-yaml/SKILL.md).
-Agents supporting repository skill discovery can invoke $create-chart-yaml or
-$create-dashboard-yaml; others can read the same SKILL.md files.
-
-## Catalog publishing
-
-Pushes to `main` run `.github/workflows/catalog.yml`. Pull requests run validation
-without publishing. The workflow builds a deterministic, compact `discover.json`
-and publishes it with `LICENSE` to the `catalog` branch. It does not change `main`.
-Publication is serialized and outdated source builds do not replace the catalog.
-
-The index includes workspace and resource metadata, recursive installation
-closures, local connection requirements, file sizes and SHA-256 digests. Its
-`sourceRevision` is the exact main commit containing all referenced files. PNGs
-are optional, never embedded in the index, and downloaded only in resource details.
-
-Catalog URL:
+Published workspaces live under `workspaces/<topic>/`:
 
 ```text
-https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@catalog/discover.json
+workspace.yaml       # Title, description, license and connection requirements
+README.md            # User guide displayed in Facetra
+charts/**/*.yaml
+dashboards/**/*.yaml
+data/**/*
+previews/<id>.png     # Optional chart or dashboard preview
+previews/workspace.png
 ```
 
-Content URL:
+Each topic is independent. Keep chart references and data within its workspace.
+Write user guides and resource notes for readers using the content; keep format
+instructions in `docs/` and change history in PRs and commits.
 
-```text
-https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@<sourceRevision>/<workspace.path>/<file.path>
-```
+Repository skills are available for
+[charts](.agents/skills/create-chart-yaml/SKILL.md) and
+[dashboards](.agents/skills/create-dashboard-yaml/SKILL.md).
 
-Workspace entries keep stable topic IDs such as `ftshare` and publish a separate
-repository-relative `path`, such as `workspaces/ftshare`. File and resource paths
-remain relative to that workspace. Resource IDs and references do not change
-when a topic moves. Clients must use the workspace `path` for downloads, source
-links and the GitHub checkout prefix; older catalogs without it use the topic ID.
-
-The app falls back to the corresponding `raw.githubusercontent.com` URL when
-the CDN times out, returns an error, or serves invalid content. Both origins use
-the same source commit. Branch URLs can remain cached for hours; a cached index
-still resolves to a consistent, immutable content snapshot. Chart/dashboard
-imports create local editable copies. Full workspace imports clone/load this
-GitHub repository on `main` and register the workspace's `path` as its prefix;
-subsequent workspace updates use the app's ordinary Git workflow.
-
-## Local validation
+## Validation and publishing
 
 Requires Python 3.12 or newer:
 
 ```sh
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --validate-only
-.venv/bin/python scripts/build_catalog.py --revision "$(git rev-parse HEAD)" --output dist
 ```
 
-Individual files are limited to 20 MiB; an installed workspace is limited to
-100 MiB. The [example workspace](workspaces/example/README.md)
-contains 61 charts, 6 dashboards and nine fictional-data CSV files, including
-37 offline prototypes covering all seven Swift Charts marks and all 23 core
-ECharts 6.1.0 series.
-CI uses the same tests and --validate-only command on every PR and main push.
-It checks YAML structure/types, parameters, references and dashboard layouts in
-addition to catalog dependencies and file limits. Validation is offline; SQL
-execution, remote responses and visual rendering still require a Facetra preview.
+Validation checks YAML, references, parameters, layouts and file limits offline.
+SQL, remote data and rendering need a Facetra preview. See the contributor guide
+for submission and validation details.
 
-The [renderer gallery within Examples](workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite) includes 12 declarative
-Vega-Lite chart types, two HTML/CSS views and a bilingual dashboard with local
-fictional data. It requires [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
+Pull requests run validation. Successful `main` builds publish the catalog to
+the `catalog` branch. Commit source content, not generated catalog files.
+
+Published catalog:
+
+```text
+https://cdn.jsdelivr.net/gh/FacetraAPP/Discover@catalog/discover.json
+```
+
+Content is licensed under [Apache-2.0](LICENSE) unless a workspace states otherwise.
+Remote data remains subject to its provider's terms.

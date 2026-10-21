@@ -5,8 +5,8 @@ i18n:
       zh-Hans: ECharts · K 线
       en: ECharts · Candlestick
     notes:
-      zh-Hans: 4 根虚构 K 线，数据顺序为 [开盘, 收盘, 最低, 最高]，单位为演示价格。
-      en: Four fictional candles in [open, close, low, high] order, in demonstration price units.
+      zh-Hans: '4 根虚构 K 线，每根展示开盘、收盘、最低与最高价，单位为演示价格。'
+      en: 'Four fictional candles, each showing open, close, low and high in demonstration price units.'
 
 params: []
 sources:

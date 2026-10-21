@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 关系图
       en: ECharts · Graph
     notes:
-      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
-      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
-        the executable dataset. No network, parameters or connections are required.
+      zh-Hans: '查看四个虚构节点之间的有向关系。箭头表示连接方向，可离线查看。'
+      en: 'Explore directed relationships among four fictional nodes. Arrows show connection direction. Works offline.'
 
 params: []
 sources:

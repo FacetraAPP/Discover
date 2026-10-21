@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 矩形树图
       en: ECharts · Treemap
     notes:
-      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
-      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
-        the executable dataset. No network, parameters or connections are required.
+      zh-Hans: '比较虚构产品与服务各子类别的占比，矩形面积表示演示数值。可离线查看。'
+      en: 'Compare subcategory shares for fictional products and services. Rectangle area represents demonstration values. Works offline.'
     products:
       zh-Hans: 产品
       en: Products

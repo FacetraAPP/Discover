@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 桑基图
       en: ECharts · Sankey
     notes:
-      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
-      en: Structured fictional samples are embedded directly in chart.option, with a shared four-row CSV as
-        the executable dataset. No network, parameters or connections are required.
+      zh-Hans: '查看四个虚构节点之间的流量分配，连线宽度表示流量大小。数值为演示单位，可离线查看。'
+      en: 'Explore flows among four fictional nodes. Link width represents flow magnitude in demonstration units. Works offline.'
 
 params: []
 sources:

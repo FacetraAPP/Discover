@@ -1,9 +1,8 @@
 # Chinese and English display text
 
 Charting Contract v1 supports a resource-local message catalog and explicit display
-references. This pre-release extension requires the application support in
-[Facetra PR #61](https://github.com/FacetraAPP/Facetra/pull/61). Older development
-clients cannot read these new fields. Existing fixed-string resources still work. The top-level `i18n` block is optional,
+references. Requires Facetra with localized chart and dashboard display text.
+The top-level `i18n` block is optional,
 not a business parameter: omit it to keep titles and labels fixed across languages.
 Only explicit references require a catalog and an existing key.
 
@@ -114,9 +113,7 @@ requiredConnections: []
 ```
 
 Workspace manifests reject `i18n` and `localizations`, including null/empty values,
-and reject reference objects on `title`/`description`. The old workspace summary
-map has been removed without compatibility support. This is coordinated with
-[Facetra PR #70](https://github.com/FacetraAPP/Facetra/pull/70). Catalog workspace
+and reject reference objects on `title`/`description`. Catalog workspace
 summaries are copied from the fixed strings and contain no `localizations` map.
 Workspace IDs, paths and device-local names remain stable across language changes.
 

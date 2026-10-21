@@ -14,12 +14,8 @@ i18n:
       zh-Hans: ECharts · 收入与利润率
       en: ECharts · Revenue and profit margin
     notes:
-      zh-Hans: |-
-        12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
-        months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。
-      en: |-
-        Twelve months of fictional business data, in units of CNY 10,000. Bars stack online and store revenue; the right axis shows profit margin.
-        SQL controls months; target sets the target line; show_labels binds directly to ECharts label.show.
+      zh-Hans: '堆叠柱比较线上与门店收入，右轴显示利润率。12 个月的虚构经营数据，金额单位为万元，利润率为百分比。可调整月数、收入目标和数值标签。'
+      en: 'Stacked bars compare online and store revenue; the right axis shows profit margin over twelve fictional months. Amounts are in CNY 10,000 and margin is a percentage. Adjust the month count, revenue target and value labels.'
     target:
       zh-Hans: 目标
       en: Target

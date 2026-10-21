@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 矩阵坐标
       en: ECharts · Matrix coordinates
     notes:
-      zh-Hans: ECharts 6+ matrix 坐标系：3 列 × 2 行，6 个虚构散点，颜色绑定第三维数值。
-      en: 'ECharts 6+ matrix coordinates: three columns by two rows, with six fictional scatter points colored
-        by the third dimension.'
+      zh-Hans: '在 3 列、2 行的矩阵中比较 6 个虚构观测，颜色表示数值大小。需要内置 ECharts 6 或更新版本的 Facetra。'
+      en: 'Compare six fictional observations in a three-column, two-row matrix, with color indicating magnitude. Requires Facetra with ECharts 6 or later.'
     web:
       zh-Hans: 线上
       en: Web

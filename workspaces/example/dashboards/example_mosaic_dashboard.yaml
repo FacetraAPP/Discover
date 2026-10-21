@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Mosaic · 组合示例
       en: Mosaic · Layout examples
     notes:
-      zh-Hans: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。
-      en: Ten offline chart instances demonstrate different column widths and row spans. Wide layouts form
-        a rectangle; narrow screens stack cards in order. Open the YAML editor to copy the layout.
+      zh-Hans: '十个离线图表组合展示行情、经营与网络示例。宽屏多列排列，窄屏按顺序阅读。'
+      en: 'Ten offline chart panels combine market, business and network examples. Wide screens use multiple columns; narrow screens stack cards in reading order.'
     tab_0:
       zh-Hans: Mosaic
       en: Mosaic

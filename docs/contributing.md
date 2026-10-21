@@ -85,7 +85,11 @@ discovery, invoke $create-chart-yaml or $create-dashboard-yaml. Otherwise read
 their SKILL.md entrypoints directly. Both link only to instructions and examples
 in this repository and use the same validation command as CI.
 
-The [renderer gallery in the `example` workspace](../workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite) exercises HTML/CSS templates, Markdown/Mermaid Notes,
-and 12 native Vega-Lite specifications. These are pre-release additions requiring
-Facetra PR #78. Keep HTML declarative (`html/css/data`); do not add JavaScript to
-content. Renderer-library/host changes belong in the application repository.
+The [renderer gallery in the `example` workspace](../workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite)
+provides HTML/CSS and twelve Vega-Lite examples. Requires Facetra with HTML and
+Vega-Lite charts. Keep HTML declarative (`html/css/data`); do not add JavaScript
+to content. Renderer-library/host changes belong in the application repository.
+
+Follow the [documentation and notes rules](../AGENTS.md#documentation-and-notes):
+workspace READMEs and resource notes explain the content to users. Put authoring
+syntax in format guides and validation evidence or change history in the PR.

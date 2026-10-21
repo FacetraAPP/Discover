@@ -33,11 +33,6 @@ Panel IDs are unique across every tab, including repeated instances of the same
 chart. All IDs follow the workspace ID rules; titles are nonempty fixed strings or display references.
 Unknown fields fail validation.
 
-For existing files, move the root id/title/notes/tags into metadata and remove
-their former keys. Keep version/kind/params/tabs at the root and retain all
-resource IDs, filenames and panel references. This is a breaking change paired
-with Facetra's metadata schema; old and mixed document structures are rejected.
-
 ## Explicit shared parameters
 
 ~~~yaml
@@ -169,24 +164,13 @@ compact layouts. Document any required local connections in the workspace README
 ## Tags
 
 Charts and dashboards accept optional `metadata.tags: [股票, 行情]`.
-Omission means no tags. Metadata fields at their former locations are rejected. Tags must be strings of 1–64 characters
+Omission means no tags. Tags must be strings of 1–64 characters
 after trimming, without control characters. Display spelling and order are
 preserved; duplicates are merged ignoring case and accents. Quote numeric or
 boolean-looking names (`"2026"`, `"on"`).
 
-Discover publishes resource tags in its generated catalog. Workspace cards and
-filters use the union of their resources' tags. Cards display one compact line
-with overflow counts, and details show all tags. Search matches words across
-names, descriptions and tags, including `#tag` queries. The tag picker supports
-search and multiple selections, matching **any** selected tag; search, resource
-type, folders and favorites combine with that selection. Counts in the picker
-reflect the current search and other filters, before the tag selection. Active
-tags remain visible and removable even if another filter yields no results.
-
-Local chart/dashboard action menus offer **Edit Tags**, including existing tag
-suggestions. Saving uses the regular revision/conflict and read-only checks;
-block YAML keeps its other fields, comments and formatting. Flow-style YAML
-may be reserialized. Tags are retained when duplicating or importing resources.
+Use tags that describe the subject, metric or chart type. They help users find
+resources in Discover and remain available after import.
 
 ## Bilingual dashboards
 

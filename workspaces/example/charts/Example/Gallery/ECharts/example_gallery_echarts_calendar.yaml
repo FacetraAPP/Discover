@@ -5,9 +5,8 @@ i18n:
       zh-Hans: ECharts · 日历热力图
       en: ECharts · Calendar heatmap
     notes:
-      zh-Hans: 日历坐标系中展示 4 条虚构 ISO 日期记录；缺失日期保留为空白，不补零。
-      en: Four fictional ISO-date observations on calendar coordinates. Missing dates remain blank rather than
-        becoming zero.
+      zh-Hans: '在日历上查看 4 条虚构观测。缺失日期留空，不补零。'
+      en: 'View four fictional observations on a calendar. Missing dates remain blank rather than becoming zero.'
 
 params: []
 sources:

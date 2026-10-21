@@ -121,7 +121,7 @@ python3 -m venv .venv
 
 Individual files are limited to 20 MiB; an installed workspace is limited to
 100 MiB. The [example workspace](workspaces/example/README.md)
-contains 47 charts, 5 dashboards and eight fictional-data CSV files, including
+contains 61 charts, 6 dashboards and nine fictional-data CSV files, including
 37 offline prototypes covering all seven Swift Charts marks and all 23 core
 ECharts 6.1.0 series.
 CI uses the same tests and --validate-only command on every PR and main push.
@@ -129,6 +129,6 @@ It checks YAML structure/types, parameters, references and dashboard layouts in
 addition to catalog dependencies and file limits. Validation is offline; SQL
 execution, remote responses and visual rendering still require a Facetra preview.
 
-The [renderer gallery](workspaces/renderers/README.md) adds 12 declarative
+The [renderer gallery within Examples](workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite) includes 12 declarative
 Vega-Lite chart types, two HTML/CSS views and a bilingual dashboard with local
 fictional data. It requires [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).

@@ -414,7 +414,7 @@ and data values remain language independent.
 ## HTML and Vega-Lite (Facetra PR #78)
 
 These pre-release renderers require [Facetra PR #78](https://github.com/FacetraAPP/Facetra/pull/78).
-Older clients cannot read them. See the complete [renderer gallery](../workspaces/renderers/README.md).
+Older clients cannot read them. See the complete [renderer gallery](../workspaces/example/README.md#html-与-vega-lite--html-and-vega-lite).
 
 - `renderer: html`: `option` accepts required nonempty `html`, optional string
   `css`, and optional object/array `data`. Bind Dataset rows in `data` using

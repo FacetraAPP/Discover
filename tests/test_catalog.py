@@ -297,10 +297,10 @@ class PublishedExampleTests(unittest.TestCase):
     def test_published_example_has_no_health_sources_or_dangling_references(self):
         root = Path(__file__).resolve().parents[1]
         result = catalog.build_catalog(root, "0" * 40)
-        self.assertEqual({workspace["path"] for workspace in result["workspaces"]}, {"workspaces/example", "workspaces/ftshare", "workspaces/renderers"})
+        self.assertEqual({workspace["path"] for workspace in result["workspaces"]}, {"workspaces/example", "workspaces/ftshare"})
         example = next(w for w in result["workspaces"] if w["id"] == "example")
-        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 47)
-        self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 5)
+        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 61)
+        self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 6)
         vela = next(r for r in example["resources"] if r["resourceID"] == "example_vela_dashboard")
         self.assertEqual(set(vela["files"]), {"dashboards/example_vela_dashboard.yaml", "charts/Example/Vela/example_vela_candlestick.yaml",
                                              "charts/Example/Vela/example_vela_indicators.yaml", "data/example/echarts-ohlcv.csv"})

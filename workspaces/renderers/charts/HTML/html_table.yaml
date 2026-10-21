@@ -1,0 +1,52 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTML · Regional summary report
+      zh-Hans: HTML · 地区汇总报告
+    notes:
+      en: "Fictional monthly product sales, January–June 2026. Revenue/profit use\
+        \ demonstration units; units are counts. No credentials or network required.\n\
+        \n**Data:** open the table and select **Dataset Result** to inspect typed\
+        \ SQL output, or select a source to compare the original CSV.\n\n```mermaid\n\
+        flowchart LR\n  CSV --> SQL\n  SQL --> Chart\n```"
+      zh-Hans: "2026 年 1–6 月的虚构产品销售数据。收入与利润采用演示单位，销量单位为件。无需连接或网络。\n\n**数据：**打开表格，选择\
+        \ **Dataset 结果** 检查 SQL 输出，或选择数据源对照原始 CSV。\n\n```mermaid\nflowchart LR\n \
+        \ CSV --> SQL\n  SQL --> Chart\n```"
+metadata:
+  id: html_table
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - Renderer Gallery
+  - html
+params: []
+sources: {}
+dataset:
+  id: sales
+  sources:
+  - id: raw
+    ref: vega_bar.yaml#/sources/sales
+  sql: SELECT region, ROUND(SUM(CAST(revenue AS DOUBLE)),2) AS revenue, ROUND(SUM(CAST(profit
+    AS DOUBLE)),2) AS profit FROM raw GROUP BY region ORDER BY region
+chart:
+  dataset: sales
+  renderer: html
+  option:
+    html: <h2>{{title}}</h2><table><thead><tr><th>Region</th><th>Revenue (demo units)</th><th>Profit
+      (demo units)</th></tr></thead><tbody>{{#rows}}<tr><td>{{region}}</td><td>{{revenue}}</td><td>{{profit}}</td></tr>{{/rows}}</tbody></table><p>Fictional
+      data · HTML/CSS · no authored scripts</p>
+    css: 'body { padding: 20px; } h2 { margin: 0 0 12px; font-size: 20px; } p { color:
+      var(--muted); } .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      gap: 12px; } article { background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 16px; } strong { font-size: 26px; display: block;
+      margin-top: 12px; } table { width:100%; border-collapse:collapse; } th,td {
+      padding:10px; border-bottom:1px solid var(--border); text-align:left; }'
+    data:
+      title:
+        i18n: title
+      rows:
+        from: sales
+        rows: true

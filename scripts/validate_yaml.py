@@ -352,8 +352,10 @@ def echarts_option(value, chart, params, context, depth=0):
     require(depth < 64, context, "ECharts option is too deeply nested")
     if isinstance(value, dict) and "i18n" in value:
         localized_text(value, context)
-    elif isinstance(value, dict) and "from" in value:
+    elif isinstance(value, dict) and "from" in value and (chart.get("renderer", "echarts") == "echarts" or isinstance(value["from"], str)):
         origin = value["from"]
+        if origin == "script":
+            require(chart.get("renderer", "echarts") == "echarts", context, "script bindings require ECharts")
         if origin in ("params", "script"):
             mapping(value, context, {"from", "name"}, {"name"})
             name = text(value["name"], context + ".name")
@@ -456,7 +458,7 @@ def validate_chart(document, context):
             text(dataset["sql"], context + ".dataset.sql")
     chart = mapping(document["chart"], context + ".chart")
     renderer = chart.get("renderer", "default")
-    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"}}
+    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"}, "html": {"option"}, "vega_lite": {"option"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
     mapping(chart, context + ".chart", {"dataset", "renderer"} | fields[renderer], {"dataset"})
     require(chart["dataset"] == dataset["id"], context, "chart.dataset must equal dataset.id")
@@ -480,7 +482,17 @@ def validate_chart(document, context):
     elif renderer == "vela":
         vela_option(chart.get("option"), params, context + ".chart.option")
     else:
-        require(chart["dataset"] not in ("params", "script"), context, "reserved ECharts dataset ID")
+        if renderer == "html":
+            option = mapping(chart.get("option"), context + ".chart.option", {"html", "css", "data"}, {"html"})
+            text(option["html"], context + ".chart.option.html")
+            if "css" in option:
+                require(isinstance(option["css"], str), context, "css must be text")
+            if "data" in option:
+                require(isinstance(option["data"], (dict, list)), context, "data must be an object or array")
+        if renderer == "vega_lite":
+            option = mapping(chart.get("option"), context + ".chart.option")
+            require(any(key in option for key in ("mark", "layer", "facet", "hconcat", "vconcat", "concat", "repeat")), context, "Vega-Lite requires a mark or composed view")
+        require(chart["dataset"] not in ("params", "script"), context, "reserved dataset ID")
         require(bool(mapping(chart.get("option"), context + ".chart.option")), context, "option cannot be empty")
         for name, script in mapping(chart.get("scripts", {}), context + ".chart.scripts").items():
             require(re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", name), context, "invalid script name")

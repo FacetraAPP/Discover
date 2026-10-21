@@ -1,0 +1,64 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: Vega-Lite · Revenue with labels
+      zh-Hans: Vega-Lite · 收入与标签叠加
+    notes:
+      en: "Fictional monthly product sales, January–June 2026. Revenue/profit use\
+        \ demonstration units; units are counts. No credentials or network required.\n\
+        \n**Data:** open the table and select **Dataset Result** to inspect typed\
+        \ SQL output, or select a source to compare the original CSV.\n\n```mermaid\n\
+        flowchart LR\n  CSV --> SQL\n  SQL --> Chart\n```"
+      zh-Hans: "2026 年 1–6 月的虚构产品销售数据。收入与利润采用演示单位，销量单位为件。无需连接或网络。\n\n**数据：**打开表格，选择\
+        \ **Dataset 结果** 检查 SQL 输出，或选择数据源对照原始 CSV。\n\n```mermaid\nflowchart LR\n \
+        \ CSV --> SQL\n  SQL --> Chart\n```"
+metadata:
+  id: vega_layer
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - Renderer Gallery
+  - vega_lite
+params: []
+sources: {}
+dataset:
+  id: sales
+  ref: vega_bar.yaml#/dataset
+chart:
+  dataset: sales
+  renderer: vega_lite
+  option:
+    data:
+      values:
+        from: sales
+        rows: true
+    encoding:
+      x:
+        field: month
+        type: temporal
+        timeUnit: yearmonth
+        axis:
+          format: '%b'
+          labelOverlap: true
+        title: Month
+      y:
+        aggregate: sum
+        field: revenue
+        type: quantitative
+        title: Revenue (demo units)
+    layer:
+    - mark:
+        type: bar
+        tooltip: true
+    - mark:
+        type: text
+        dy: -8
+      encoding:
+        text:
+          aggregate: sum
+          field: revenue
+          type: quantitative
+          format: .0f

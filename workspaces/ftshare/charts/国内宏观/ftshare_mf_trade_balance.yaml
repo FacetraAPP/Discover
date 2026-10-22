@@ -1,0 +1,99 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 对外贸易 · 月度顺差
+      en: External trade · Monthly balance
+    notes:
+      zh-Hans: |-
+        以当月出口额减进口额观察货物贸易顺差/逆差，单位亿美元；正数为顺差。仅纳入币种美元且原始单位为亿元（即一亿美元）的记录。金额为名义值，未作季节或价格调整，不等同国际收支经常账户。默认最近24个观测期，缺少任一金额时不计算差额。
+
+        缺失值保留空白；观察期内无记录的日期不补点。数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/n6bu5izh
+      en: |-
+        Subtract monthly imports from exports to show the goods-trade surplus or deficit in USD 100 million; positives are surpluses. Only records explicitly labeled USD and the source hundred-million unit are used. Nominal amounts are not price- or seasonally adjusted and differ from the current-account balance. Defaults to 24 observations; both inputs are required.
+
+        Missing values remain empty; dates without observations are not filled. Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/n6bu5izh
+    param.periods:
+      zh-Hans: 最近期数
+      en: Recent observations
+    series.balance:
+      zh-Hans: 贸易差额（亿美元）
+      en: Trade balance (USD 100m)
+metadata:
+  id: ftshare_mf_trade_balance
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - 国内宏观
+  - 进出口
+params:
+- name: periods
+  label:
+    i18n: param.periods
+  type: integer
+  default: 24
+  options:
+  - 12
+  - 24
+  - 48
+  - 96
+sources:
+  remote:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-customs-trade
+    headers:
+      FTSHARE_API_KEY: '{{ connections.ftshare.api_key | default('''') }}'
+      Content-Type: application/json
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: analysis
+  sources:
+  - id: raw
+    ref: '#/sources/remote'
+  sql: WITH n AS (SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月',
+    1), 2, '0') || '-01' AS period,TRY_CAST(export_current AS DOUBLE)-TRY_CAST(import_current AS DOUBLE) AS balance
+    FROM raw WHERE unit='亿元' AND currency='美元') SELECT * FROM (SELECT * FROM n ORDER BY period DESC LIMIT $periods)
+    r ORDER BY period
+chart:
+  dataset: analysis
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 58
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: true
+    yAxis:
+      type: value
+      name: USD 100m
+      scale: false
+    series:
+    - id: balance
+      name:
+        i18n: series.balance
+      type: bar
+      data:
+        from: analysis
+        x: period
+        y: balance
+      markLine:
+        silent: true
+        symbol: none
+        label:
+          show: false
+        data:
+        - yAxis: 0

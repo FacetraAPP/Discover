@@ -1,0 +1,52 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Product counts by category
+      zh-Hans: HTTP · 各类别商品数量
+    notes:
+      en: 'Counts synthetic DummyJSON products across the complete current product
+        response. Unit: products; categories are supplied by the service. Requires
+        internet and state-driven HTTP collection support. Up to 100 pages of 30 products;
+        total/count changes can affect a refresh.'
+      zh-Hans: 统计 DummyJSON 当前全部模拟商品的类别分布，单位为件；类别由服务提供。需要联网及支持状态驱动 HTTP 采集的客户端。每页
+        30 件，最多 100 页；刷新期间商品或总数变化可能影响结果。
+metadata:
+  id: example_http_offset
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  products:
+    source: http
+    url: https://dummyjson.com/products
+    params:
+      limit: 30
+      skip: '{{ page.offset }}'
+    pagination:
+      initial:
+        offset: 0
+      records: response.json.products
+      next: 'if page.offset + records.len < response.json.total { #{offset: page.offset
+        + records.len} } else { () }'
+      max_pages: 100
+    limits:
+      max_requests: 100
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/products'
+  sql: SELECT category AS name, COUNT(*) AS value FROM raw GROUP BY category ORDER
+    BY value DESC, name
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

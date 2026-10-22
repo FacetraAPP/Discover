@@ -1,8 +1,8 @@
 # 示例工作区 · Example workspace
 
-61 个图表和 6 个看板，涵盖股票行情、经营数据、常用图形与金融技术指标。可从 Discover 导入，在本地查看和编辑。
+68 个图表和 6 个看板，涵盖股票行情、经营数据、常用图形与金融技术指标。可从 Discover 导入，在本地查看和编辑。
 
-61 charts and six dashboards covering stock prices, business data, common chart types and financial indicators. Import from Discover to view and edit local copies.
+68 charts and six dashboards covering stock prices, business data, common chart types and financial indicators. Import from Discover to view and edit local copies.
 
 ## 使用 · Getting started
 
@@ -10,7 +10,7 @@
 2. 在「设置 → 通用 → 应用语言」选择简体中文或 English，切换图表与看板的标题、说明和参数标签。数据名称与代码保持原文。
 3. 需要调整示例时，打开图表或看板的 YAML 编辑器。
 
-Import this workspace from Discover and open a chart or dashboard. All examples except the HTTP chart work offline without connections. Choose **Settings → General → App Language** to switch chart and dashboard display text between English and Simplified Chinese. Data names and codes remain as authored. Open the YAML editor to adapt an example.
+Import this workspace from Discover and open a chart or dashboard. The HTTP examples require internet; the other examples work offline without connections. Choose **Settings → General → App Language** to switch chart and dashboard display text between English and Simplified Chinese. Data names and codes remain as authored. Open the YAML editor to adapt an example.
 
 ## 内容 · What's included
 
@@ -56,9 +56,9 @@ Cards and a table summarize revenue and profit by region. The twelve Vega-Lite e
 
 ## HTTP 示例 · HTTP example
 
-只有 **HTTP · IPv4 分段** 需要联网与本地连接。在连接库创建 Key-Value 连接，别名为 `http_example`，添加 `endpoint` 字段并设为 `https://api.ipify.org`。服务需返回 IPv4 地址；饼图按地址四段数字的相对大小显示，属于图形演示。
+**HTTP · IPv4 分段** 需要联网与本地连接。在连接库创建 Key-Value 连接，别名为 `http_example`，添加 `endpoint` 字段并设为 `https://api.ipify.org`。服务需返回 IPv4 地址；饼图按地址四段数字的相对大小显示，属于图形演示。
 
-Only **HTTP example · IPv4 segments** requires a network connection and local setup. Create a Key-Value connection with alias `http_example`, add `endpoint` and set it to `https://api.ipify.org`. The service must return IPv4. The pie compares the address's four numeric segments as a chart demonstration.
+**HTTP example · IPv4 segments** requires a network connection and local setup. Create a Key-Value connection with alias `http_example`, add `endpoint` and set it to `https://api.ipify.org`. The service must return IPv4. The pie compares the address's four numeric segments as a chart demonstration.
 
 ## 数据与许可 · Data and license
 
@@ -68,3 +68,47 @@ Stock, business, OHLCV and gallery data are fictional, held in nine CSV files an
 
 示例配置与虚构数据采用 [Apache-2.0](../../LICENSE)。连接值仅保存在你的设备上。
 Example configurations and fictional data are licensed under [Apache-2.0](../../LICENSE). Connection values stay on your device.
+
+
+## HTTP 采集示例 · HTTP collection examples
+
+需要支持状态驱动分页、逐项请求及 HTML/XML 提取的 Facetra。旧客户端需先升级。
+这些示例联网读取远端数据；除 GitHub REST 与游标示例外，新增示例无需本地连接。
+
+Requires Facetra with state-driven pagination, per-item requests and HTML/XML extraction.
+Upgrade older clients before importing these charts. They read remote data; among these
+examples, only the GitHub REST and cursor charts need a local connection.
+
+| 图表 · Chart | 内容与范围 · Content and scope |
+| --- | --- |
+| [角色状态 · Character status](charts/Example/HTTP/example_http_page.yaml) | Rick and Morty API 当前全部页的虚构角色数量，最多 100 页 · Fictional character counts across all current pages, at most 100 pages |
+| [商品类别 · Product categories](charts/Example/HTTP/example_http_offset.yaml) | DummyJSON 全部模拟商品，30 件/页，最多 100 页 · All synthetic products, 30 per page, at most 100 pages |
+| [公开仓库星标 · Repository stars](charts/Example/HTTP/example_http_links.yaml) | FacetraAPP 公开仓库当前星标，最多 20 页 · Current stars for public repositories, at most 20 pages |
+| [三个类别商品 · Three categories](charts/Example/HTTP/example_http_foreach.yaml) | DummyJSON 返回的前三个类别，各类别读取全部商品 · All products in the first three category slugs returned by the service |
+| [演示图书评分 · Demo book ratings](charts/Example/HTTP/example_http_html.yaml) | Books to Scrape 前三页、最多 60 本演示图书的随机评分数量 · Random ratings for at most 60 demo books on the first three catalog pages |
+| [近期发布条目 · Recent release entries](charts/Example/HTTP/example_http_xml.yaml) | GitHub 当前 Rust Atom 订阅按更新月统计，非完整发布历史 · Current Rust Atom feed grouped by update month; not complete release history |
+| [拉取请求状态 · Pull request states](charts/Example/HTTP/example_http_cursor.yaml) | FacetraAPP/Facetra 全部拉取请求当前状态，50 条/页，最多 20 页 · All current pull request states, 50 per page, at most 20 pages |
+
+GitHub REST 与游标示例需在连接库创建别名为 github_example 的 Key-Value 连接，添加 token，
+其 GitHub token 需可读取该公开仓库。凭据仅保存在本机，请勿写进 YAML。
+GitHub 请求仍受访问限额约束；服务失败时不会显示部分采集结果。
+固定范围的图书样本不代表整个目录。订阅仅反映当前保留的条目，不能用于推断完整月度发布量。
+接口数据与排列可能变化，配置不会自动保存历史或补回采集中漏掉的记录。
+
+For the GitHub REST and cursor charts, create a Key-Value connection aliased github_example with a token
+field containing a GitHub token permitted to read the public repository. Keep it on the
+device, outside YAML. GitHub requests remain subject to rate limits; failed collections
+do not display partial totals. The book sample covers a fixed part of the catalog. A feed
+contains only its retained entries and cannot establish complete monthly release counts.
+Remote data/order may change; the examples do not store history or recover missing records.
+
+数据来源：[Rick and Morty API](https://rickandmortyapi.com/documentation)、
+[DummyJSON](https://dummyjson.com/docs/products)、
+[GitHub API](https://docs.github.com/en/rest)、
+[Books to Scrape](https://books.toscrape.com/)。
+Books to Scrape 的价格和评分为随机演示数据，没有现实意义。远端数据的权利与使用条件
+由各提供方决定，本仓库的 Apache-2.0 许可覆盖示例配置，不授予远端数据的再分发许可。
+
+Sources are linked above. Books to Scrape prices/ratings are random demo values with no
+real-world meaning. Providers retain their data rights and terms; this repository's
+Apache-2.0 license covers the example configurations and does not relicense remote data.

@@ -6,9 +6,9 @@ charts and dashboards are editable local copies.
 
 ## Workspaces
 
-- [Examples](workspaces/example/README.md): 61 charts and six dashboards covering
+- [Examples](workspaces/example/README.md): 68 charts and six dashboards covering
   stock prices, business data, financial indicators and chart galleries. Includes
-  Chinese and English display text. All examples except the HTTP chart run offline
+  Chinese and English display text. The HTTP examples require internet; the other examples run offline
   with fictional data.
 - [FTShare · Chinese macroeconomics](workspaces/ftshare/README.md): 18 online charts
   for economic indicators and interest rates, with data definitions and setup guidance.

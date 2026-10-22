@@ -1,0 +1,50 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Character status counts
+      zh-Hans: HTTP · 角色状态数量
+    notes:
+      en: 'Counts fictional characters by status across all pages returned by the
+        Rick and Morty API. Unit: characters; unknown is a reported status. Requires
+        internet and state-driven HTTP collection support. At most 100 pages; a longer
+        collection fails instead of truncating.'
+      zh-Hans: 统计 Rick and Morty API 当前全部页面中各状态的虚构角色数量，单位为个；unknown 是接口报告的状态。需要联网及支持状态驱动
+        HTTP 采集的客户端。最多 100 页，超限会报错，不显示截断结果。
+metadata:
+  id: example_http_page
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  characters:
+    source: http
+    url: https://rickandmortyapi.com/api/character
+    params:
+      page: '{{ page.n }}'
+    pagination:
+      initial:
+        n: 1
+      records: response.json.results
+      next: 'if page.n < response.json.info.pages { #{n: page.n + 1} } else { () }'
+      max_pages: 100
+    limits:
+      max_requests: 100
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/characters'
+  sql: SELECT status AS name, COUNT(*) AS value FROM raw GROUP BY status ORDER BY
+    status
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

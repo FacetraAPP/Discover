@@ -1,0 +1,61 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · GitHub pull request states
+      zh-Hans: HTTP · GitHub 拉取请求状态
+    notes:
+      en: 'Counts pull requests in FacetraAPP/Facetra by current state using the GitHub
+        GraphQL cursor. Unit: pull requests; includes all states, not commits or issues.
+        Requires internet, cursor-expression support and a local GitHub connection
+        aliased github_example with token permission to read this public repository.
+        At most 20 pages of 50; no token is supplied by this example.'
+      zh-Hans: 通过 GitHub GraphQL 游标统计 FacetraAPP/Facetra 拉取请求的当前状态，单位为个；包含全部状态，不计提交或
+        issue。需要联网、支持游标表达式的客户端，以及别名为 github_example 的本地 GitHub 连接；token 需可读取该公开仓库。每页
+        50 条，最多 20 页；示例不提供 token。
+metadata:
+  id: example_http_cursor
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  requests:
+    source: http
+    method: post
+    url: https://api.github.com/graphql
+    headers:
+      Authorization: Bearer {{ connections.github_example.token }}
+      User-Agent: Facetra-Discover
+    json:
+      query: 'query($after: String) { repository(owner: "FacetraAPP", name: "Facetra")
+        { pullRequests(first: 50, after: $after) { nodes { number state } pageInfo
+        { hasNextPage endCursor } } } }'
+      variables:
+        after: '{{ page.cursor }}'
+    pagination:
+      initial:
+        cursor: null
+      records: response.json.data.repository.pullRequests.nodes
+      next: 'if response.json.data.repository.pullRequests.pageInfo.hasNextPage {
+        #{cursor: response.json.data.repository.pullRequests.pageInfo.endCursor} }
+        else { () }'
+      max_pages: 20
+    limits:
+      max_requests: 20
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/requests'
+  sql: SELECT state AS name, COUNT(*) AS value FROM raw GROUP BY state ORDER BY state
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

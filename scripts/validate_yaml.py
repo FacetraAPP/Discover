@@ -7,6 +7,11 @@ from urllib.parse import urlsplit
 
 import yaml
 
+try:
+    from . import http_collection
+except ImportError:
+    import http_collection
+
 ID = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
 REF = re.compile(r"^(?:([A-Za-z0-9_-]{1,80})\.yaml)?#/(dataset|sources/([A-Za-z0-9_-]{1,80}))$")
 
@@ -295,19 +300,23 @@ def reference(value, context, kind):
 
 
 def source(value, context):
-    common = {"source", "display"}
+    common = {"source", "display", "depends_on"}
     if "ref" in value:
         mapping(value, context, {"ref", "with", "display"}, {"ref"})
         reference(value["ref"], context, "source")
         bindings(value.get("with", {}), context + ".with")
     else:
         kind = value.get("source")
-        fields = {"duckdb": {"file"}, "http": {"url", "method", "headers", "params", "json", "data", "format", "recordsPath"},
+        fields = {"duckdb": {"file"}, "http": {"url", "method", "headers", "params", "json", "data", "format", "recordsPath", "pagination", "foreach", "extract", "limits", "retry"},
                   "database": {"connection", "sql"}, "sqlite": {"file_path", "sql"}}
         require(isinstance(kind, str) and kind in fields, context, "source must be duckdb, http, database or sqlite")
         mapping(value, context, common | fields[kind], {"source"})
         for field in {"duckdb": ["file"], "http": ["url"], "database": ["connection", "sql"], "sqlite": ["file_path", "sql"]}[kind]:
             text(value.get(field), context + "." + field)
+        dependencies = value.get("depends_on") or []
+        sequence(dependencies, context+".depends_on", maximum=32)
+        for dependency in dependencies: identifier(dependency, context+".depends_on")
+        unique(dependencies, context+".depends_on")
         if kind == "database":
             identifier(value["connection"], context + ".connection")
         if kind == "http":
@@ -315,9 +324,9 @@ def source(value, context):
             require(method in ("get", "post"), context, "HTTP supports get and post")
             require(not ("json" in value and "data" in value), context, "use either json or data")
             require(method != "get" or not {"json", "data"} & value.keys(), context, "GET cannot have a body")
-            require(value.get("format", "json") in ("json", "csv"), context, "format must be json or csv")
+            require(value.get("format", "json") in ("json", "csv", "html", "xml"), context, "invalid HTTP format")
             if "recordsPath" in value:
-                require(value.get("format") == "json", context, "recordsPath requires format: json")
+                require(value.get("format", "json") == "json", context, "recordsPath requires JSON")
                 for part in sequence(value["recordsPath"], context + ".recordsPath"):
                     text(part, context + ".recordsPath")
             for field in ("headers", "params", "data"):
@@ -329,6 +338,7 @@ def source(value, context):
                             scalar(child, context + "." + field)
             if "json" in value:
                 json_value(value["json"], context + ".json")
+            http_collection.validate(value, context, (mapping, text, number, identifier, require, json_value))
             if "{{" not in value["url"]:
                 url = urlsplit(value["url"])
                 require(url.scheme == "https" and url.hostname and not url.username and not url.password and not url.fragment, context, "HTTP requires HTTPS without user info or fragment")
@@ -518,6 +528,11 @@ def validate_chart_graph(charts, context, paths=None):
     definitions = {name: parameters(document.get("params", []), context + "/" + name + ".params") for name, document in charts.items()}
     edges = {}
     for name, document in charts.items():
+        for source_name, definition in document.get("sources", {}).items():
+            for dependency in definition.get("depends_on") or []:
+                location = f"{context}/{paths.get(name, name + '.yaml')}.sources/{source_name}"
+                require(dependency in document.get("sources", {}), location, "missing source dependency")
+                edges.setdefault((name, "sources/" + source_name), []).append((name, "sources/" + dependency))
         for node, value, kind in chart_references(document):
             location = f"{context}/{paths.get(name, name + '.yaml')}.{node}"
             match = reference(value["ref"], location, kind)

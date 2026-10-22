@@ -1,0 +1,68 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Demo book rating counts
+      zh-Hans: HTTP · 演示图书评分数量
+    notes:
+      en: 'Counts demo books by randomly assigned rating on the first three catalog
+        pages of Books to Scrape. Unit: books. Prices and ratings are fictional and
+        have no real-world meaning. Requires internet and HTML extraction/pagination
+        support; this is a bounded 60-book sample, not the whole catalog.'
+      zh-Hans: 统计 Books to Scrape 目录前三页演示图书的随机评分分布，单位为本。价格和评分均为虚构数据，没有现实含义。需要联网及支持
+        HTML 提取与分页的客户端；这是最多 60 本的固定范围样本，不是完整目录。
+metadata:
+  id: example_http_html
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  books:
+    source: http
+    url: '{{ page.url }}'
+    format: html
+    extract:
+      rows: article.product_pod
+      fields:
+        title:
+          selector: h3 a
+          attribute: title
+        rating:
+          selector: .star-rating
+          attribute: class
+      context:
+        next:
+          selector: .pager .next a
+          attribute: href
+          required: false
+          resolve_url: true
+    pagination:
+      initial:
+        url: https://books.toscrape.com/catalogue/page-1.html
+        n: 1
+      next: 'if page.n < 3 && response.extracted.next != () { #{url: response.extracted.next,
+        n: page.n + 1} } else { () }'
+      max_pages: 3
+    limits:
+      max_requests: 3
+      max_rows: 60
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/books'
+  sql: "SELECT CASE regexp_extract(rating, 'One|Two|Three|Four|Five')\n      WHEN\
+    \ 'One' THEN '1' WHEN 'Two' THEN '2' WHEN 'Three' THEN '3'\n      WHEN 'Four'\
+    \ THEN '4' WHEN 'Five' THEN '5' END AS name, COUNT(*) AS value\n    FROM raw GROUP\
+    \ BY name ORDER BY name"
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

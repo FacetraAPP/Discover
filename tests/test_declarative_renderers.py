@@ -13,7 +13,7 @@ class DeclarativeRendererTests(unittest.TestCase):
         workspace = next(w for w in result['workspaces'] if w['id'] == 'example')
         charts = [r for r in workspace['resources'] if r.get('chartType') in {'html', 'vega_lite'}]
         self.assertEqual(len(charts), 14)
-        self.assertEqual(workspace['requiredConnections'], [{'alias': 'http_example', 'type': 'key-value'}])
+        self.assertEqual(workspace['requiredConnections'], [{'alias': 'github_example', 'type': 'key-value'}, {'alias': 'http_example', 'type': 'key-value'}])
         for chart in charts:
             self.assertIn('data/example/renderer-sales.csv', chart['files'])
             self.assertEqual(chart['requiredConnections'], [])

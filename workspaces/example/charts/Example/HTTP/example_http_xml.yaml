@@ -1,0 +1,50 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Recent Rust release entries
+      zh-Hans: HTTP · 近期 Rust 发布条目
+    notes:
+      en: 'Counts entries by update month in the current Rust release Atom feed on
+        GitHub. Unit: feed entries; this is a limited recent feed, not complete monthly
+        release history. Requires internet and XML/XPath namespace support. Duplicate
+        versions are not merged; invalid update dates are omitted.'
+      zh-Hans: 按更新月份统计 GitHub 当前 Rust 发布 Atom 订阅中的条目，单位为条。订阅仅保留近期内容，不代表完整月度发布历史。需要联网及支持
+        XML/XPath 命名空间的客户端。不同条目不按版本合并；无效更新时间会被排除。
+metadata:
+  id: example_http_xml
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  releases:
+    source: http
+    url: https://github.com/rust-lang/rust/releases.atom
+    format: xml
+    extract:
+      rows: /a:feed/a:entry
+      namespaces:
+        a: http://www.w3.org/2005/Atom
+      fields:
+        title:
+          selector: a:title
+        updated:
+          selector: a:updated
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/releases'
+  sql: SELECT strftime(TRY_CAST(updated AS TIMESTAMP), '%Y-%m') AS name, COUNT(*)
+    AS value FROM raw WHERE TRY_CAST(updated AS TIMESTAMP) IS NOT NULL GROUP BY name
+    ORDER BY name
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

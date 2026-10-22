@@ -73,8 +73,8 @@ is a complete chart whose connection setup is in [the example README](../workspa
 | params | Optional query mapping with scalar values |
 | json | Optional nested JSON POST body; objects, lists, scalars and null are supported |
 | data | Optional POST form mapping with scalar values; mutually exclusive with json |
-| format | json or csv; defaults to json |
-| recordsPath | Optional list of object-key strings for a nested JSON record collection; requires explicit format: json |
+| format | json, csv, html or xml; defaults to json |
+| recordsPath | Optional list of object-key strings for a nested JSON record collection; requires JSON (the default) |
 
 GET has no json/data body. JSON can be one object or an object array; for a nested
 record collection supply recordsPath. CSV responses become tabular data directly.
@@ -88,6 +88,15 @@ the saved parameter value. Filters apply only to parameter references.
 An entire JSON value consisting of a parameter template preserves its scalar
 type; a template embedded in other text produces a string. Template syntax and
 resolved response fields still need runtime verification.
+
+### Pagination, dependencies and markup
+
+[HTTP collection sources](http-collection.md) document state objects, strict
+expressions, depends_on, foreach, HTML/CSS and XML/XPath extraction, limits and
+retry. Requires Facetra with those acquisition features. The seven online
+collection examples include page, offset, Link and GraphQL cursor pagination.
+Ordinary HTTP sources retain the original response for upstream templates;
+collection modes expose merged records. Validate responses and rendering in Facetra.
 
 ### Database query
 

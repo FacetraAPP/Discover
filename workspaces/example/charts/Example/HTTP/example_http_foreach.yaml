@@ -1,0 +1,65 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Products from three categories
+      zh-Hans: HTTP · 三个类别的商品
+    notes:
+      en: 'Counts synthetic DummyJSON products from the first three category slugs
+        returned by the service. Unit: products. Each selected category is fetched
+        through all its pages. Requires internet and HTTP foreach/pagination support.
+        Category order can change; this sample does not represent the whole store.'
+      zh-Hans: 统计 DummyJSON 返回的前三个类别中的模拟商品，单位为件。每个选中类别会读取全部页面。需要联网及支持逐项请求与分页的客户端。类别顺序可能变化，此样本不代表全部商品。
+metadata:
+  id: example_http_foreach
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  categories:
+    source: http
+    url: https://dummyjson.com/products/category-list
+    pagination:
+      initial: {}
+      records: '[response.json[0], response.json[1], response.json[2]]'
+      next: ()
+      max_pages: 1
+  products:
+    source: http
+    depends_on:
+    - categories
+    foreach:
+      source: categories
+      max_items: 3
+      include_item: true
+    url: https://dummyjson.com/products/category/{{ item.value }}
+    params:
+      limit: 30
+      skip: '{{ page.offset }}'
+    pagination:
+      initial:
+        offset: 0
+      records: response.json.products
+      next: 'if page.offset + records.len < response.json.total { #{offset: page.offset
+        + records.len} } else { () }'
+      max_pages: 20
+    limits:
+      max_requests: 60
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/products'
+  sql: SELECT category AS name, COUNT(*) AS value FROM raw GROUP BY category ORDER
+    BY category
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

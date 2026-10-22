@@ -1,0 +1,51 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      en: HTTP · Public repository stars
+      zh-Hans: HTTP · 公开仓库星标
+    notes:
+      en: 'Current star counts for public FacetraAPP repositories, followed through
+        every GitHub REST Link page. Unit: stars. Requires internet and state-driven
+        HTTP collection support. Create a local Key-Value connection aliased github_example with a token field permitted to read public repositories. Keep the token outside YAML. GitHub rate limits apply; this is a current
+        snapshot, not star history. At most 20 pages of 30 repositories.'
+      zh-Hans: 沿 GitHub REST 下一页链接统计 FacetraAPP 公开仓库的当前星标，单位为个。需要联网及支持状态驱动 HTTP 采集的客户端。受
+        GitHub 访问限额约束；请创建别名 github_example 的本地 Key-Value 连接，添加可读取公开仓库的 token 字段，不要将凭据写入 YAML。这是当前快照，不是星标历史。每页 30 个仓库，最多 20 页。
+metadata:
+  id: example_http_links
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - http
+  - collection
+sources:
+  repositories:
+    source: http
+    url: '{{ page.url }}'
+    headers:
+      Authorization: Bearer {{connections.github_example.token}}
+      Accept: application/vnd.github+json
+      User-Agent: Facetra-Discover
+    pagination:
+      initial:
+        url: https://api.github.com/orgs/FacetraAPP/repos?per_page=30&type=public&sort=full_name
+      next: 'if response.links.contains("next") { #{url: response.links.next} } else
+        { () }'
+      max_pages: 20
+    limits:
+      max_requests: 20
+      timeout_ms: 120000
+dataset:
+  id: data
+  sources:
+  - id: raw
+    ref: '#/sources/repositories'
+  sql: SELECT name, stargazers_count AS value FROM raw ORDER BY value DESC, name
+chart:
+  dataset: data
+  renderer: default
+  plot: bar
+  x: name
+  y: value

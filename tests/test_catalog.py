@@ -299,7 +299,7 @@ class PublishedExampleTests(unittest.TestCase):
         result = catalog.build_catalog(root, "0" * 40)
         self.assertEqual({workspace["path"] for workspace in result["workspaces"]}, {"workspaces/example", "workspaces/ftshare"})
         example = next(w for w in result["workspaces"] if w["id"] == "example")
-        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 61)
+        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 68)
         self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 6)
         vela = next(r for r in example["resources"] if r["resourceID"] == "example_vela_dashboard")
         self.assertEqual(set(vela["files"]), {"dashboards/example_vela_dashboard.yaml", "charts/Example/Vela/example_vela_candlestick.yaml",

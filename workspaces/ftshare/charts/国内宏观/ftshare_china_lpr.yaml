@@ -36,6 +36,9 @@ params:
 sources:
   macro:
     source: http
+    headers:
+      FTSHARE_API_KEY: "{{ connections.ftshare.api_key | default('') }}"
+      Content-Type: application/json
     method: get
     url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-lpr
     format: json

@@ -1,0 +1,91 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 财政收入 · 月度规模
+      en: Fiscal revenue · Monthly amounts
+    notes:
+      zh-Hans: |-
+        观察月度实际规模与季节性，单位人民币万亿元；仅纳入明确标为人民币、亿元的记录并换算。显示当月值，不将年内累计值与当月值混用。 默认最近24个可用期数，可选择12/24/48/96期；缺报月份不插值，名义金额未作价格或季节调整。
+
+        缺失值保留空白；观察期内无记录的日期不补点。数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/w515ivba
+      en: |-
+        Track monthly scale and seasonality in trillion CNY. Only observations explicitly labeled CNY and 100 million yuan are converted. Monthly amounts are shown separately from year-to-date totals. Defaults to the latest 24 available observations, with 12/24/48/96 choices. Missing months are not interpolated, and nominal amounts are neither inflation- nor seasonally adjusted.
+
+        Missing values remain empty; dates without observations are not filled. Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/w515ivba
+    param.periods:
+      zh-Hans: 最近期数
+      en: Recent observations
+    series.amount:
+      zh-Hans: 当月规模（万亿元）
+      en: Monthly amount (trillion CNY)
+metadata:
+  id: ftshare_mf_fiscal_amount
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - 国内宏观
+  - 财政收入
+params:
+- name: periods
+  label:
+    i18n: param.periods
+  type: integer
+  default: 24
+  options:
+  - 12
+  - 24
+  - 48
+  - 96
+sources:
+  remote:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-fiscal-revenue
+    headers:
+      FTSHARE_API_KEY: '{{ connections.ftshare.api_key | default('''') }}'
+      Content-Type: application/json
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: analysis
+  sources:
+  - id: raw
+    ref: '#/sources/remote'
+  sql: WITH n AS (SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月',
+    1), 2, '0') || '-01' AS period, TRY_CAST("revenue_current" AS DOUBLE)/10000 AS amount FROM raw WHERE unit='亿元'
+    AND currency='人民币') SELECT * FROM (SELECT * FROM n ORDER BY period DESC LIMIT $periods) r ORDER BY period
+chart:
+  dataset: analysis
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 58
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: true
+    yAxis:
+      type: value
+      name: trillion CNY
+      scale: false
+    series:
+    - id: amount
+      name:
+        i18n: series.amount
+      type: bar
+      data:
+        from: analysis
+        x: period
+        y: amount

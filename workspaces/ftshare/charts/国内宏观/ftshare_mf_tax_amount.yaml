@@ -1,0 +1,91 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: 税收收入 · 当月金额
+      en: Tax revenue · Monthly amounts
+    notes:
+      zh-Hans: |-
+        观察税收收入当月金额，单位亿元；与原有累计同比图配合，区分税基规模和增长速度。当月值不是年内累计，年初与合并发布月份遵循来源口径。默认最近24个可用观测，金额未作季节或价格调整，不能仅凭单月跳升判断政策效果。
+
+        缺失值保留空白；观察期内无记录的日期不补点。数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/ht6ox0mg
+      en: |-
+        Track monthly tax revenue in CNY 100 million, alongside the cumulative-growth chart to distinguish scale from growth. Monthly figures are separate from year-to-date totals; early-year and combined releases follow source coverage. Defaults to 24 observations. Nominal amounts are not price- or seasonally adjusted, so single-month jumps do not identify policy effects.
+
+        Missing values remain empty; dates without observations are not filled. Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/ht6ox0mg
+    param.periods:
+      zh-Hans: 最近期数
+      en: Recent observations
+    series.amount:
+      zh-Hans: 当月税收（亿元）
+      en: Monthly tax revenue (CNY 100m)
+metadata:
+  id: ftshare_mf_tax_amount
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - 国内宏观
+  - 税收
+params:
+- name: periods
+  label:
+    i18n: param.periods
+  type: integer
+  default: 24
+  options:
+  - 12
+  - 24
+  - 48
+  - 96
+sources:
+  remote:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-tax-revenue
+    headers:
+      FTSHARE_API_KEY: '{{ connections.ftshare.api_key | default('''') }}'
+      Content-Type: application/json
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: analysis
+  sources:
+  - id: raw
+    ref: '#/sources/remote'
+  sql: WITH n AS (SELECT regexp_extract(month, '([0-9]{4})年', 1) || '-' || lpad(regexp_extract(month, '年([0-9]{1,2})月',
+    1), 2, '0') || '-01' AS period,TRY_CAST(monthly_revenue AS DOUBLE) AS amount FROM raw) SELECT * FROM (SELECT
+    * FROM n ORDER BY period DESC LIMIT $periods) r ORDER BY period
+chart:
+  dataset: analysis
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 58
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: true
+    yAxis:
+      type: value
+      name: CNY 100m
+      scale: false
+    series:
+    - id: amount
+      name:
+        i18n: series.amount
+      type: bar
+      data:
+        from: analysis
+        x: period
+        y: amount

@@ -1,0 +1,109 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: SHIBOR · 期限溢价
+      en: SHIBOR · Term premium
+    notes:
+      zh-Hans: |-
+        观察3个月SHIBOR减隔夜SHIBOR，单位基点，体现银行间期限资金相对隔夜资金的报价差。它并非无风险套利收益，仍受期限、信用和流动性影响。默认2026-08-01至2026-10-21，单页1000条；仅同日完整报价计算。
+
+        缺失值保留空白；观察期内无记录的日期不补点。数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/3jnxyzmy
+      en: |-
+        Track 3-month minus overnight SHIBOR in basis points, a measure of quoted term funding cost relative to overnight money. The spread is not a risk-free arbitrage return and reflects term, credit and liquidity conditions. Default: 2026-08-01 to 2026-10-21, one page up to 1,000 rows. Both quotes must exist on the same date.
+
+        Missing values remain empty; dates without observations are not filled. Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/3jnxyzmy
+    param.start_date:
+      zh-Hans: 开始日期
+      en: Start date
+    param.end_date:
+      zh-Hans: 结束日期
+      en: End date
+    series.spread:
+      zh-Hans: 3个月−隔夜（基点）
+      en: 3m−overnight (bp)
+metadata:
+  id: ftshare_mf_shibor_term_spread
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - 国内宏观
+  - SHIBOR日度利率
+params:
+- name: start_date
+  label:
+    i18n: param.start_date
+  type: date
+  default: '2026-08-01'
+- name: end_date
+  label:
+    i18n: param.end_date
+  type: date
+  default: '2026-10-21'
+sources:
+  remote:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/shibor-daily
+    headers:
+      FTSHARE_API_KEY: '{{ connections.ftshare.api_key | default('''') }}'
+      Content-Type: application/json
+    format: json
+    recordsPath:
+    - data
+    - records
+    params:
+      start_date: '{{ params.start_date | date_format(''yyyyMMdd'') }}'
+      end_date: '{{ params.end_date | date_format(''yyyyMMdd'') }}'
+      page: 1
+      page_size: 1000
+dataset:
+  id: analysis
+  sources:
+  - id: raw
+    ref: '#/sources/remote'
+  sql: SELECT CAST(trade_date AS VARCHAR) AS period,100*(TRY_CAST(m3 AS DOUBLE)-TRY_CAST(on_rate AS DOUBLE)) AS
+    spread FROM raw ORDER BY period
+chart:
+  dataset: analysis
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 58
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: false
+    yAxis:
+      type: value
+      name: bp
+      scale: false
+    series:
+    - id: spread
+      name:
+        i18n: series.spread
+      type: line
+      data:
+        from: analysis
+        x: period
+        y: spread
+      showSymbol: true
+      symbolSize: 4
+      connectNulls: false
+      markLine:
+        silent: true
+        symbol: none
+        label:
+          show: false
+        data:
+        - yAxis: 0

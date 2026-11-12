@@ -1,0 +1,116 @@
+i18n:
+  defaultLocale: zh-Hans
+  messages:
+    title:
+      zh-Hans: GDP · 名义产业结构
+      en: GDP · Nominal sector mix
+    notes:
+      zh-Hans: |-
+        显示三次产业增加值占当期累计名义GDP的比例，单位%。Q2为上半年、Q3为前三季度，非单季产业权重。分子分母要求同为人民币亿元，份额之和可能因四舍五入偏离100%。这是名义增加值结构，不是实际增长贡献或产业投资回报。默认最近24个季度观测。
+
+        缺失值保留空白；观察期内无记录的日期不补点。数据来源：FTShare。文档：https://market.ft.tech/gateway/doc/p/egodfcdg
+      en: |-
+        Show primary, secondary and tertiary value added as shares of year-to-date nominal GDP, in %. Q2 covers the first half and Q3 the first three quarters, not standalone quarters. Numerators and denominator must share CNY/100-million units; rounding can move the total from 100%. These are nominal output shares, not real growth contributions or investment returns. Defaults to 24 quarterly observations.
+
+        Missing values remain empty; dates without observations are not filled. Source: FTShare. Documentation: https://market.ft.tech/gateway/doc/p/egodfcdg
+    param.periods:
+      zh-Hans: 最近期数
+      en: Recent observations
+    series.primary_share:
+      zh-Hans: 第一产业（%）
+      en: Primary (%)
+    series.secondary_share:
+      zh-Hans: 第二产业（%）
+      en: Secondary (%)
+    series.tertiary_share:
+      zh-Hans: 第三产业（%）
+      en: Tertiary (%)
+metadata:
+  id: ftshare_mf_gdp_sector_mix
+  title:
+    i18n: title
+  notes:
+    i18n: notes
+  tags:
+  - 国内宏观
+  - GDP
+params:
+- name: periods
+  label:
+    i18n: param.periods
+  type: integer
+  default: 24
+  options:
+  - 12
+  - 24
+  - 48
+  - 96
+sources:
+  remote:
+    source: http
+    method: get
+    url: https://market.ft.tech/gateway/api/v1/market/data/economic/china-gdp
+    headers:
+      FTSHARE_API_KEY: '{{ connections.ftshare.api_key | default('''') }}'
+      Content-Type: application/json
+    format: json
+    recordsPath:
+    - data
+dataset:
+  id: analysis
+  sources:
+  - id: raw
+    ref: '#/sources/remote'
+  sql: WITH n AS (SELECT regexp_extract(period,'([0-9]{4})年',1)||'-Q'||regexp_extract(period,'([1-4])季度',1) AS period,100*TRY_CAST(primary
+    AS DOUBLE)/nullif(TRY_CAST(gdp AS DOUBLE),0) AS primary_share,100*TRY_CAST(secondary AS DOUBLE)/nullif(TRY_CAST(gdp
+    AS DOUBLE),0) AS secondary_share,100*TRY_CAST(tertiary AS DOUBLE)/nullif(TRY_CAST(gdp AS DOUBLE),0) AS tertiary_share
+    FROM raw WHERE unit='亿元' AND currency='人民币') SELECT * FROM (SELECT * FROM n ORDER BY period DESC LIMIT $periods)
+    r ORDER BY period
+chart:
+  dataset: analysis
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+      valueFormatter: 'js:(v) => v == null ? ''—'' : Number(v).toFixed(2) + ''%'''
+    legend:
+      type: scroll
+      top: 0
+    grid:
+      left: 12
+      right: 24
+      top: 58
+      bottom: 30
+      containLabel: true
+    xAxis:
+      type: category
+      boundaryGap: true
+      data:
+        from: analysis
+        field: period
+    yAxis:
+      type: value
+      name: '%'
+      scale: false
+    series:
+    - id: primary_share
+      name:
+        i18n: series.primary_share
+      type: bar
+      data:
+        from: analysis
+        field: primary_share
+    - id: secondary_share
+      name:
+        i18n: series.secondary_share
+      type: bar
+      data:
+        from: analysis
+        field: secondary_share
+    - id: tertiary_share
+      name:
+        i18n: series.tertiary_share
+      type: bar
+      data:
+        from: analysis
+        field: tertiary_share

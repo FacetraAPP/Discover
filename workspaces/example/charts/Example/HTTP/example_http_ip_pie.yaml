@@ -6,9 +6,8 @@ i18n:
       en: HTTP example · IPv4 segments
     notes:
       zh-Hans: 通过 HTTP 获取公网 IPv4，将四段数字转换为饼图扇区。扇区大小按每段数值占总和的比例计算。
-      en: Fetches the public IPv4 address over HTTP and turns its four numeric segments into pie sectors. Each
-        sector shows that segment’s share of the sum.
-
+      en: Fetches the public IPv4 address over HTTP and turns its four numeric segments
+        into pie sectors. Each sector shows that segment’s share of the sum.
 params: []
 sources:
   connection:
@@ -23,24 +22,35 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/connection'
-  sql: |-
-    WITH segments AS (
-      SELECT CAST(ip AS VARCHAR) AS ip, position,
-             TRY_CAST(split_part(CAST(ip AS VARCHAR), '.', position) AS INTEGER) AS octet
-      FROM raw CROSS JOIN range(1, 5) AS positions(position)
-    )
-    SELECT '第' || position || '段' AS segment,
-           CASE WHEN regexp_full_match(ip, '[0-9]{1,3}([.][0-9]{1,3}){3}') AND octet BETWEEN 0 AND 255
-                THEN octet ELSE error('HTTP example requires a valid IPv4 address.') END AS value
-    FROM segments ORDER BY position
+  sql: "WITH segments AS (\n  SELECT CAST(ip AS VARCHAR) AS ip, position,\n      \
+    \   TRY_CAST(split_part(CAST(ip AS VARCHAR), '.', position) AS INTEGER) AS octet\n\
+    \  FROM raw CROSS JOIN range(1, 5) AS positions(position)\n)\nSELECT '第' || position\
+    \ || '段' AS segment,\n       CASE WHEN regexp_full_match(ip, '[0-9]{1,3}([.][0-9]{1,3}){3}')\
+    \ AND octet BETWEEN 0 AND 255\n            THEN octet ELSE error('HTTP example\
+    \ requires a valid IPv4 address.') END AS value\nFROM segments ORDER BY position"
 metadata:
-  tags: ["HTTP", "网络", "饼图"]
+  tags:
+  - HTTP
+  - 网络
+  - 饼图
   id: example_http_ip_pie
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 chart:
   dataset: network
-  renderer: default
-  plot: pie
-  x: segment
-  y: value
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: item
+      confine: true
+    series:
+    - type: pie
+      radius: 65%
+      encode:
+        itemName: segment
+        value: value
+      data:
+        from: network
+        rows: true

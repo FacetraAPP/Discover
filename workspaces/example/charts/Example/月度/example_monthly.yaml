@@ -8,12 +8,12 @@ i18n:
       zh-Hans: 月度均价
       en: Monthly average price
     notes:
-      zh-Hans: '查看所选股票每月的平均收盘价，价格为演示单位。使用虚构行情，可离线查看。'
-      en: 'View the selected stock’s average closing price by month, in demonstration price units. Uses fictional market data and works offline.'
-
+      zh-Hans: DuckDB SQL 关联两个 CSV，按月聚合。
+      en: DuckDB SQL joins two CSV files and aggregates by month.
 params:
 - name: symbol
-  label: {i18n: symbol}
+  label:
+    i18n: symbol
   type: string
   required: true
   options:
@@ -33,24 +33,43 @@ dataset:
         param: symbol
   - id: symbols
     ref: example_price.yaml#/sources/symbols
-  sql: |-
-    SELECT strftime(CAST(p.trade_date AS DATE), '%Y-%m') AS month,
-           s.name AS symbol_name,
-           AVG(CAST(p.close AS DOUBLE)) AS average_close,
-           COUNT(*) AS trading_days,
-           CAST(SUM(CAST(p.volume AS BIGINT)) AS BIGINT) AS volume
-    FROM prices p LEFT JOIN symbols s ON p.symbol = s.symbol
-    WHERE p.symbol = $symbol
-    GROUP BY month, s.name
-    ORDER BY month
+  sql: "SELECT strftime(CAST(p.trade_date AS DATE), '%Y-%m') AS month,\n       s.name\
+    \ AS symbol_name,\n       AVG(CAST(p.close AS DOUBLE)) AS average_close,\n   \
+    \    COUNT(*) AS trading_days,\n       CAST(SUM(CAST(p.volume AS BIGINT)) AS BIGINT)\
+    \ AS volume\nFROM prices p LEFT JOIN symbols s ON p.symbol = s.symbol\nWHERE p.symbol\
+    \ = $symbol\nGROUP BY month, s.name\nORDER BY month"
 metadata:
-  tags: ["股票", "月度", "聚合"]
+  tags:
+  - 股票
+  - 月度
+  - 聚合
   id: example_monthly
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 chart:
   dataset: monthly
-  renderer: default
-  plot: bar
-  x: month
-  y: average_close
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    grid:
+      left: 12
+      right: 18
+      top: 24
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      data:
+        from: monthly
+        field: month
+    yAxis:
+      type: value
+      scale: true
+    series:
+    - type: bar
+      data:
+        from: monthly
+        field: average_close

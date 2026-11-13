@@ -6,7 +6,8 @@ i18n:
       en: Stock analysis
     notes:
       zh-Hans: 选择共享参数后点应用。近期成交分页固定展示 30 个交易日。
-      en: Choose shared parameters, then apply them. The recent-volume tab always shows thirty trading days.
+      en: Choose shared parameters, then apply them. The recent-volume tab always
+        shows thirty trading days.
     symbol:
       zh-Hans: 股票代码
       en: Stock symbol
@@ -22,17 +23,22 @@ i18n:
     recent_volume:
       zh-Hans: 近期成交
       en: Recent volume
-
 metadata:
-  tags: ["股票", "行情", "分析"]
+  tags:
+  - 股票
+  - 行情
+  - 分析
   id: example_dashboard
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 version: 1
 kind: Dashboard
 params:
 - name: symbol
-  label: {i18n: symbol}
+  label:
+    i18n: symbol
   type: string
   required: true
   options:
@@ -42,11 +48,12 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: {i18n: trading_days}
+  label:
+    i18n: trading_days
   type: integer
   required: true
   minimum: 1e+0
-  maximum: 1.8e+2
+  maximum: 180.0
   options:
   - 30
   - 60
@@ -55,7 +62,8 @@ params:
   advanced: false
   default: 60
 - name: ma_window
-  label: {i18n: ma_window}
+  label:
+    i18n: ma_window
   type: integer
   required: true
   minimum: 2e+0
@@ -64,18 +72,19 @@ params:
   default: 20
 tabs:
 - id: overview
-  title: {i18n: overview}
+  title:
+    i18n: overview
   panels:
   - id: price_main
     chart: example_price
-    height: 2.4e+2
+    height: 240.0
     params:
-      symbol:
-        param: symbol
-      days:
-        param: days
       ma_window:
         param: ma_window
+      days:
+        param: days
+      symbol:
+        param: symbol
   - id: volume_main
     chart: example_volume
     height: 2e+2
@@ -85,11 +94,12 @@ tabs:
       days:
         param: days
 - id: detail
-  title: {i18n: recent_volume}
+  title:
+    i18n: recent_volume
   panels:
   - id: volume_recent
     chart: example_volume
-    height: 2.4e+2
+    height: 240.0
     params:
       symbol:
         param: symbol

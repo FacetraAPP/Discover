@@ -14,8 +14,14 @@ i18n:
       zh-Hans: ECharts · 收入与利润率
       en: ECharts · Revenue and profit margin
     notes:
-      zh-Hans: '堆叠柱比较线上与门店收入，右轴显示利润率。12 个月的虚构经营数据，金额单位为万元，利润率为百分比。可调整月数、收入目标和数值标签。'
-      en: 'Stacked bars compare online and store revenue; the right axis shows profit margin over twelve fictional months. Amounts are in CNY 10,000 and margin is a percentage. Adjust the month count, revenue target and value labels.'
+      zh-Hans: '12 个月的虚构经营数据，金额单位为万元。柱状图堆叠线上与门店收入，右轴显示利润率。
+
+        months 由 SQL 控制；target 绑定目标线；show_labels 直接绑定 ECharts 的 label.show。'
+      en: 'Twelve months of fictional business data, in units of CNY 10,000. Bars
+        stack online and store revenue; the right axis shows profit margin.
+
+        SQL controls months; target sets the target line; show_labels binds directly
+        to ECharts label.show.'
     target:
       zh-Hans: 目标
       en: Target
@@ -31,29 +37,25 @@ i18n:
     amount_unit:
       zh-Hans: 万元
       en: CNY 10,000
-
 params:
 - name: months
-  label: {i18n: months}
+  label:
+    i18n: months
   type: integer
-  required: true
-  minimum: 3e+0
-  maximum: 1.2e+1
-  advanced: false
   default: 12
+  minimum: 3
+  maximum: 12
 - name: target
-  label: {i18n: revenue_target}
+  label:
+    i18n: revenue_target
   type: number
-  required: true
-  minimum: 0e+0
-  maximum: 4e+2
-  advanced: false
   default: 170
+  minimum: 0
+  maximum: 400
 - name: show_labels
-  label: {i18n: show_labels}
+  label:
+    i18n: show_labels
   type: boolean
-  required: true
-  advanced: false
   default: false
 sources:
   sales:
@@ -64,76 +66,60 @@ dataset:
   sources:
   - id: raw
     ref: '#/sources/sales'
-  sql: |
-    WITH recent AS (
-      SELECT month, CAST(online AS DOUBLE) AS online, CAST(retail AS DOUBLE) AS retail,
-             CAST(cost AS DOUBLE) AS cost
-      FROM raw ORDER BY month DESC LIMIT $months
-    )
-    SELECT month, online, retail, online + retail - cost AS profit,
-           round(100 * (online + retail - cost) / (online + retail), 1) AS margin
-    FROM recent ORDER BY month
+  sql: "WITH recent AS (\n  SELECT month, CAST(online AS DOUBLE) AS online, CAST(retail\
+    \ AS DOUBLE) AS retail,\n         CAST(cost AS DOUBLE) AS cost\n  FROM raw ORDER\
+    \ BY month DESC LIMIT $months\n)\nSELECT month, online, retail, online + retail\
+    \ - cost AS profit,\n       round(100 * (online + retail - cost) / (online + retail),\
+    \ 1) AS margin\nFROM recent ORDER BY month\n"
 metadata:
-  tags: ["经营", "收入", "利润率", "ECharts"]
+  tags:
+  - 经营
+  - 收入
+  - 利润率
+  - ECharts
   id: example_echarts_business
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 chart:
   dataset: sales
   renderer: echarts
   option:
-    media:
-    - query:
-        maxWidth: 480
-      option:
-        legend:
-          top: 0
-          type: scroll
-        xAxis:
-          axisLabel:
-            interval: 1
-        yAxis:
-        - splitNumber: 3
-        - splitNumber: 3
-        grid:
-          containLabel: true
-          top: 44
-          left: 6
-          bottom: 12
-          right: 6
-    - query:
-        maxHeight: 190
-      option:
-        grid:
-          bottom: 16
-          top: 8
-        yAxis:
-        - splitNumber: 2
-          name: ''
-        - splitNumber: 2
-          name: ''
-        xAxis:
-          axisLabel:
-            interval: 3
-        legend:
-          show: false
+    color:
+    - '#3b82f6'
+    - '#14b8a6'
+    - '#f59e0b'
+    legend:
+      top: 4
+    tooltip:
+      trigger: axis
     grid:
-      top: 48
       left: 10
-      containLabel: true
-      bottom: 16
       right: 10
+      top: 48
+      bottom: 16
+      containLabel: true
+    xAxis:
+      type: category
+      data:
+        from: sales
+        field: month
+      axisLabel:
+        formatter: 'js: (v) => v.slice(5)'
+    yAxis:
+    - type: value
+      name:
+        i18n: amount_unit
+    - type: value
+      name:
+        i18n: margin
+      axisLabel:
+        formatter: '{value}%'
     series:
-    - id: series_1
-      markLine:
-        data:
-        - yAxis:
-            from: params
-            name: target
-        symbol: none
-        label:
-          formatter: {i18n: target}
-      name: {i18n: online}
+    - name:
+        i18n: online
+      type: bar
       stack: revenue
       data:
         from: sales
@@ -142,47 +128,68 @@ chart:
         show:
           from: params
           name: show_labels
+      markLine:
+        symbol: none
+        label:
+          formatter:
+            i18n: target
+        data:
+        - yAxis:
+            from: params
+            name: target
+    - name:
+        i18n: store
       type: bar
-    - id: series_2
-      name: {i18n: store}
+      stack: revenue
       data:
-        field: retail
         from: sales
+        field: retail
       label:
         show:
-          name: show_labels
           from: params
-      stack: revenue
-      type: bar
-    - id: series_3
+          name: show_labels
+    - name:
+        i18n: margin
       type: line
+      yAxisIndex: 1
+      data:
+        from: sales
+        field: margin
+      smooth: true
       tooltip:
         valueFormatter: 'js: (v) => Number(v).toFixed(1) + ''%'''
-      name: {i18n: margin}
-      smooth: true
-      data:
-        field: margin
-        from: sales
-      yAxisIndex: 1
-    legend:
-      top: 4
-    color:
-    - '#3b82f6'
-    - '#14b8a6'
-    - '#f59e0b'
-    yAxis:
-    - type: value
-      name: {i18n: amount_unit}
-    - axisLabel:
-        formatter: '{value}%'
-      name: {i18n: margin}
-      type: value
-    xAxis:
-      axisLabel:
-        formatter: 'js: (v) => v.slice(5)'
-      type: category
-      data:
-        field: month
-        from: sales
-    tooltip:
-      trigger: axis
+    media:
+    - query:
+        maxWidth: 480
+      option:
+        legend:
+          type: scroll
+          top: 0
+        grid:
+          left: 6
+          right: 6
+          top: 44
+          bottom: 12
+          containLabel: true
+        xAxis:
+          axisLabel:
+            interval: 1
+        yAxis:
+        - splitNumber: 3
+        - splitNumber: 3
+    - query:
+        maxHeight: 190
+      option:
+        legend:
+          show: false
+        grid:
+          top: 8
+          bottom: 16
+        xAxis:
+          axisLabel:
+            interval: 3
+        yAxis:
+        - name: ''
+          splitNumber: 2
+        - name: ''
+          splitNumber: 2

@@ -5,8 +5,10 @@ i18n:
       zh-Hans: ECharts · 矩形树图
       en: ECharts · Treemap
     notes:
-      zh-Hans: '比较虚构产品与服务各子类别的占比，矩形面积表示演示数值。可离线查看。'
-      en: 'Compare subcategory shares for fictional products and services. Rectangle area represents demonstration values. Works offline.'
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with
+        a shared four-row CSV as the executable dataset. No network, parameters or
+        connections are required.
     products:
       zh-Hans: 产品
       en: Products
@@ -25,7 +27,6 @@ i18n:
     support:
       zh-Hans: 支持
       en: Support
-
 params: []
 sources:
   sample:
@@ -38,12 +39,14 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_treemap
-  title: {i18n: title}
+  title:
+    i18n: title
   tags:
   - 图表原型
   - ECharts
   - treemap
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: echarts
@@ -53,20 +56,25 @@ chart:
       trigger: item
       confine: true
     series:
-    - id: series_1
-      type: treemap
+    - type: treemap
       data:
-      - name: {i18n: products}
+      - name:
+          i18n: products
         children:
-        - name: {i18n: tools}
+        - name:
+            i18n: tools
           value: 12
-        - name: {i18n: books}
+        - name:
+            i18n: books
           value: 8
-      - name: {i18n: services}
+      - name:
+          i18n: services
         children:
-        - name: {i18n: design}
+        - name:
+            i18n: design
           value: 9
-        - name: {i18n: support}
+        - name:
+            i18n: support
           value: 6
       roam: false
       nodeClick: false

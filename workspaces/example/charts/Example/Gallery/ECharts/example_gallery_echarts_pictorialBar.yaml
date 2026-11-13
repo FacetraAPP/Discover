@@ -6,8 +6,8 @@ i18n:
       en: ECharts · Pictorial bar
     notes:
       zh-Hans: 离线虚构数据，数值为演示单位；无需参数或连接。
-      en: Fictional offline data in demonstration units. No parameters or connections are required.
-
+      en: Fictional offline data in demonstration units. No parameters or connections
+        are required.
 params: []
 sources:
   sample:
@@ -20,12 +20,14 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_pictorialBar
-  title: {i18n: title}
+  title:
+    i18n: title
   tags:
   - 图表原型
   - ECharts
   - pictorialBar
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: echarts
@@ -49,8 +51,7 @@ chart:
       type: value
       min: 0
     series:
-    - id: series_1
-      type: pictorialBar
+    - type: pictorialBar
       symbol: circle
       symbolRepeat: true
       symbolSize:

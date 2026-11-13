@@ -5,34 +5,44 @@ i18n:
       zh-Hans: Vela · OHLCV 蜡烛图
       en: Vela · OHLCV candlesticks
     notes:
-      zh-Hans: |-
-        40 个交易日的离线虚构 OHLCV；价格单位为虚构价格点，成交量为虚构成交单位。
+      zh-Hans: '40 个交易日的离线虚构 OHLCV；价格单位为虚构价格点，成交量为虚构成交单位。
+
         每根蜡烛展示开高低收，底部成交量独立刻度；可拖动、缩放并使用十字光标查看。
-        数据按交易日升序排列，不补周末；需要支持 Vela 金融图表的 Facetra 版本。
-      en: |-
-        Forty trading days of fictional offline OHLCV data. Prices and volume use fictional price and trading units.
-        Each candle shows open, high, low and close; volume has its own scale below. Pan, zoom and use the crosshair to inspect values.
-        Trading dates are sorted ascending, without filling weekends. Requires Facetra with Vela financial charts.
 
+        数据按交易日升序排列，不补周末；需要支持 renderer: vela 的 Facetra 版本。'
+      en: 'Forty trading days of fictional offline OHLCV data. Prices and volume use
+        fictional price and trading units.
+
+        Each candle shows open, high, low and close; volume has its own scale below.
+        Pan, zoom and use the crosshair to inspect values.
+
+        Trading dates are sorted ascending, without filling weekends. Requires Facetra
+        with renderer: vela support.'
 sources:
-  prices: {source: duckdb, file: data/example/echarts-ohlcv.csv}
-
+  prices:
+    source: duckdb
+    file: data/example/echarts-ohlcv.csv
 dataset:
   id: candles
-  sources: [{id: raw, ref: '#/sources/prices'}]
-  sql: |
-    SELECT CAST(trade_date AS DATE) AS time,
-           CAST(open AS DOUBLE) AS open, CAST(high AS DOUBLE) AS high,
-           CAST(low AS DOUBLE) AS low, CAST(close AS DOUBLE) AS close,
-           CAST(volume AS BIGINT) AS volume
-    FROM raw
-    ORDER BY time
-
+  sources:
+  - id: raw
+    ref: '#/sources/prices'
+  sql: "SELECT CAST(trade_date AS DATE) AS time,\n       CAST(open AS DOUBLE) AS open,\
+    \ CAST(high AS DOUBLE) AS high,\n       CAST(low AS DOUBLE) AS low, CAST(close\
+    \ AS DOUBLE) AS close,\n       CAST(volume AS BIGINT) AS volume\nFROM raw\nORDER\
+    \ BY time\n"
 metadata:
   id: example_vela_candlestick
-  title: {i18n: title}
-  tags: [股票, 行情, K线, 成交量, Vela]
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  tags:
+  - 股票
+  - 行情
+  - K线
+  - 成交量
+  - Vela
+  notes:
+    i18n: notes
 chart:
   dataset: candles
   renderer: vela

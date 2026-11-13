@@ -10,10 +10,10 @@ i18n:
     title:
       zh-Hans: 成交量
       en: Trading volume
-
 params:
 - name: symbol
-  label: {i18n: symbol}
+  label:
+    i18n: symbol
   type: string
   required: true
   options:
@@ -23,11 +23,12 @@ params:
   advanced: false
   default: 600519.SH
 - name: days
-  label: {i18n: trading_days}
+  label:
+    i18n: trading_days
   type: integer
   required: true
   minimum: 1e+0
-  maximum: 1.8e+2
+  maximum: 180.0
   options:
   - 30
   - 60
@@ -44,21 +45,40 @@ dataset:
     with:
       symbol:
         param: symbol
-  sql: |-
-    WITH recent AS (
-      SELECT CAST(trade_date AS DATE) AS trade_date, CAST(volume AS BIGINT) AS volume
-      FROM prices WHERE symbol = $symbol
-      ORDER BY trade_date DESC LIMIT $days
-    )
-    SELECT * FROM recent ORDER BY trade_date
+  sql: "WITH recent AS (\n  SELECT CAST(trade_date AS DATE) AS trade_date, CAST(volume\
+    \ AS BIGINT) AS volume\n  FROM prices WHERE symbol = $symbol\n  ORDER BY trade_date\
+    \ DESC LIMIT $days\n)\nSELECT * FROM recent ORDER BY trade_date"
 metadata:
-  tags: ["股票", "行情", "成交量"]
+  tags:
+  - 股票
+  - 行情
+  - 成交量
   id: example_volume
-  title: {i18n: title}
+  title:
+    i18n: title
   notes: ''
 chart:
   dataset: volume
-  renderer: default
-  plot: bar
-  x: trade_date
-  y: volume
+  renderer: echarts
+  option:
+    tooltip:
+      trigger: axis
+    grid:
+      left: 12
+      right: 18
+      top: 24
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: category
+      data:
+        from: volume
+        field: trade_date
+    yAxis:
+      type: value
+      scale: true
+    series:
+    - type: bar
+      data:
+        from: volume
+        field: volume

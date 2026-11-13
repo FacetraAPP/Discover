@@ -204,39 +204,15 @@ both same-file and cross-file cycles fail validation.
 Every document requires metadata.id and metadata.title. Optional metadata.notes
 describes data provenance, units or interpretation and defaults to an empty string;
 metadata.tags defaults to an empty list. The metadata object permits only these
-four fields. Every chart block needs dataset; renderer defaults to default.
-Renderer variants cannot mix each other's fields, even when a field is null.
+four fields. Every chart block requires dataset and renderer.
 
-### Native renderer
+### Renderer selection
 
-~~~yaml
-metadata:
-  id: sales
-  title: Monthly revenue
-  notes: Fictional revenue in thousands of currency units.
-chart:
-  dataset: monthly_sales
-  renderer: default
-  plot: bar
-  x: month
-  y: revenue
-~~~
-
-plot is line, area, bar, pie, scatter, heatmap or rule. x/y are required nonempty result-column names.
-For pie, x is the category and y its numeric value. An optional average names an
-SQL-generated overlay column; pie cannot use it. Do not add value, option or scripts.
-
-Coordinate marks require the Facetra version that adds these YAML plots:
-
-| plot | Mark / bindings |
-| --- | --- |
-| scatter | PointMark; x and y are numeric columns, with true numeric X spacing |
-| heatmap | RectangleMark; x/y are categories; required color names a numeric intensity column |
-| rule | RuleMark; x and required x_end are numeric start/end; y is a category; end must be at least start |
-
-`color` belongs only to heatmap, `x_end` only to rule. These three plots do not accept
-`average`. Missing/null/nonnumeric coordinate values fail execution instead of
-becoming zero. See the [seven native prototypes](../workspaces/example/charts/Example/Gallery/SwiftCharts/).
+renderer has no default. It must be one of value, echarts, vela, html or
+vega_lite. The former Swift Charts `default` renderer and its plot, x, y,
+average, color and x_end fields are removed; such documents are rejected rather
+than migrated. Renderer variants cannot mix each other's fields, even when a
+field is null. Each renderer's final payload is produced by Rust.
 
 ### Value card
 
@@ -252,7 +228,7 @@ chart:
 
 value is the required result-column name. Configure the dataset to return the
 intended scalar, for example SELECT SUM(revenue) AS total_revenue FROM raw.
-Do not add native plot/x/y fields, ECharts option or scripts.
+Do not add ECharts option, scripts or legacy Swift Charts fields.
 
 ### Vela OHLCV
 
@@ -300,7 +276,7 @@ or [dashboard](../workspaces/example/dashboards/example_vela_dashboard.yaml) for
   `inputs` contains scalars or `{from: params, name: parameter_name}`. Input
   names follow Vela's API, for example `length`, `mult`, `fastLength`,
   `slowLength`, `signalLength`, `source: Close`, and `color`.
-- Native studies determine main-chart overlays or separate oscillator panes.
+- Built-in studies determine main-chart overlays or separate oscillator panes.
   Several instances of SMA/EMA can use different periods; `volume/vpvr` are
   single-instance. Keep enough history for warmup before limiting the dataset.
   Compact cards hide oscillator panes, volume and indicator titles.
@@ -362,7 +338,7 @@ scripts:
 
 Use {from: script, name: formatter} at the intended option property. Scripts are
 restored as expressions by Facetra; ordinary data strings do not become scripts.
-Do not add native plot/x/y/average or value fields to an ECharts chart.
+Do not add value or legacy plot/x/y/average/color/x_end fields to an ECharts chart.
 The [business](../workspaces/example/charts/Example/ECharts/example_echarts_business.yaml),
 [candlestick](../workspaces/example/charts/Example/ECharts/example_echarts_candlestick.yaml)
 and [heatmap](../workspaces/example/charts/Example/ECharts/example_echarts_heatmap.yaml)

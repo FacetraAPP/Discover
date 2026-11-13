@@ -5,9 +5,9 @@ i18n:
       zh-Hans: ECharts · 自定义区间
       en: ECharts · Custom intervals
     notes:
-      zh-Hans: '比较 3 个虚构任务的开始、结束与持续时间，单位为天。'
-      en: 'Compare the start, end and duration of three fictional tasks, in days.'
-
+      zh-Hans: 3 个虚构任务的区间，renderItem 使用 api.coord/api.size 转换坐标并裁剪矩形；单位为天。
+      en: Intervals for three fictional tasks. renderItem uses api.coord/api.size
+        to transform coordinates and clip rectangles. Units are days.
 params: []
 sources:
   sample:
@@ -20,12 +20,14 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_custom
-  title: {i18n: title}
+  title:
+    i18n: title
   tags:
   - 图表原型
   - ECharts
   - custom
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: echarts
@@ -45,18 +47,14 @@ chart:
       - Build
       - Test
     series:
-    - id: series_1
-      type: custom
-      renderItem: |-
-        js: (params, api) => {
-          const start = api.coord([api.value(0), api.value(2)]);
-          const end = api.coord([api.value(1), api.value(2)]);
-          const height = api.size([0, 1])[1] * 0.5;
-          const shape = echarts.graphic.clipRectByRect(
-            {x: start[0], y: start[1] - height / 2, width: end[0] - start[0], height},
-            {x: params.coordSys.x, y: params.coordSys.y, width: params.coordSys.width, height: params.coordSys.height});
-          return shape && {type: 'rect', shape, style: {fill: '#3b82f6'}};
-        }
+    - type: custom
+      renderItem: "js: (params, api) => {\n  const start = api.coord([api.value(0),\
+        \ api.value(2)]);\n  const end = api.coord([api.value(1), api.value(2)]);\n\
+        \  const height = api.size([0, 1])[1] * 0.5;\n  const shape = echarts.graphic.clipRectByRect(\n\
+        \    {x: start[0], y: start[1] - height / 2, width: end[0] - start[0], height},\n\
+        \    {x: params.coordSys.x, y: params.coordSys.y, width: params.coordSys.width,\
+        \ height: params.coordSys.height});\n  return shape && {type: 'rect', shape,\
+        \ style: {fill: '#3b82f6'}};\n}"
       encode:
         x:
         - 0

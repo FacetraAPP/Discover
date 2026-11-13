@@ -8,37 +8,52 @@ i18n:
       zh-Hans: Vela · K 线与技术指标
       en: Vela · Candlesticks and technical indicators
     notes:
-      zh-Hans: |-
-        40 个交易日的虚构行情；价格单位为虚构价格点，成交量为虚构成交单位。
+      zh-Hans: '40 个交易日的虚构行情；价格单位为虚构价格点，成交量为虚构成交单位。
+
         SMA、EMA 和布林带叠加主图，RSI 与 MACD 各用独立副图；均线周期可通过参数调整。
-        指标基于全部 40 个交易日计算，历史不足的初始区间留空；需要支持 Vela 金融图表的 Facetra 版本。
-      en: |-
-        Forty trading days of fictional market data, in fictional price and trading units.
-        SMA, EMA and Bollinger Bands overlay the main chart; RSI and MACD have separate panes. Parameters control the moving-average periods.
-        Indicators use all forty trading days and remain blank until enough history is available. Requires Facetra with Vela financial charts.
 
+        指标基于全部 40 行计算，预热期保留空值；需要支持 renderer: vela 的 Facetra 版本。'
+      en: 'Forty trading days of fictional market data, in fictional price and trading
+        units.
+
+        SMA, EMA and Bollinger Bands overlay the main chart; RSI and MACD have separate
+        panes. Parameters control the moving-average periods.
+
+        Indicators use all forty rows and retain warmup gaps. Requires Facetra with
+        renderer: vela support.'
 params:
-  - {name: ma_length, label: {i18n: ma_period}, type: integer, default: 10, minimum: 1, maximum: 5000}
-
+- name: ma_length
+  label:
+    i18n: ma_period
+  type: integer
+  default: 10
+  minimum: 1
+  maximum: 5000
 sources:
-  prices: {source: duckdb, file: data/example/echarts-ohlcv.csv}
-
+  prices:
+    source: duckdb
+    file: data/example/echarts-ohlcv.csv
 dataset:
   id: candles
-  sources: [{id: raw, ref: '#/sources/prices'}]
-  sql: |
-    SELECT CAST(trade_date AS DATE) AS time,
-           CAST(open AS DOUBLE) AS open, CAST(high AS DOUBLE) AS high,
-           CAST(low AS DOUBLE) AS low, CAST(close AS DOUBLE) AS close,
-           CAST(volume AS BIGINT) AS volume
-    FROM raw
-    ORDER BY time
-
+  sources:
+  - id: raw
+    ref: '#/sources/prices'
+  sql: "SELECT CAST(trade_date AS DATE) AS time,\n       CAST(open AS DOUBLE) AS open,\
+    \ CAST(high AS DOUBLE) AS high,\n       CAST(low AS DOUBLE) AS low, CAST(close\
+    \ AS DOUBLE) AS close,\n       CAST(volume AS BIGINT) AS volume\nFROM raw\nORDER\
+    \ BY time\n"
 metadata:
   id: example_vela_indicators
-  title: {i18n: title}
-  tags: [股票, 行情, K线, 均线, Vela]
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  tags:
+  - 股票
+  - 行情
+  - K线
+  - 均线
+  - Vela
+  notes:
+    i18n: notes
 chart:
   dataset: candles
   renderer: vela
@@ -52,13 +67,25 @@ chart:
     time_unit: iso8601
     timeframe: 1d
     indicators:
-      - type: sma
-        inputs: {length: {from: params, name: ma_length}, color: '#f59e0b'}
-      - type: ema
-        inputs: {length: 20, color: '#3b82f6'}
-      - type: bollinger-bands
-        inputs: {length: 20, mult: 2}
-      - type: rsi
-        inputs: {length: 14}
-      - type: macd
-        inputs: {fastLength: 12, slowLength: 26, signalLength: 9}
+    - type: sma
+      inputs:
+        length:
+          from: params
+          name: ma_length
+        color: '#f59e0b'
+    - type: ema
+      inputs:
+        length: 20
+        color: '#3b82f6'
+    - type: bollinger-bands
+      inputs:
+        length: 20
+        mult: 2
+    - type: rsi
+      inputs:
+        length: 14
+    - type: macd
+      inputs:
+        fastLength: 12
+        slowLength: 26
+        signalLength: 9

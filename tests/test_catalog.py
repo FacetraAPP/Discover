@@ -22,7 +22,9 @@ class CatalogTests(unittest.TestCase):
         (self.topic / "data/prices.csv").write_text("x,y\n1,2\n")
         self.chart = {"sources": {"prices": {"source": "duckdb", "file": "data/prices.csv"}},
                       "dataset": {"id": "prices", "sources": [{"id": "raw", "ref": "#/sources/prices"}]},
-                      "metadata": {"id": "price", "title": "Prices"}, "chart": {"dataset": "prices", "renderer": "default", "plot": "line", "x": "x", "y": "y"}}
+                      "metadata": {"id": "price", "title": "Prices"},
+                      "chart": {"dataset": "prices", "renderer": "echarts",
+                                "option": {"series": [{"type": "line", "data": {"from": "prices", "field": "y"}}]}}}
         self.write_chart("price", self.chart)
 
     def write_chart(self, name, chart):
@@ -226,6 +228,7 @@ class CatalogTests(unittest.TestCase):
         derived["sources"] = {}
         derived["dataset"] = {"id": "derived", "ref": "price.yaml#/dataset"}
         derived["chart"]["dataset"] = "derived"
+        derived["chart"]["option"]["series"][0]["data"]["from"] = "derived"
         self.write_chart("derived", derived)
         dashboard = {"version": 1, "kind": "Dashboard", "metadata": {"id": "overview", "title": "Overview", "notes": ""}, "params": [],
                      "tabs": [{"id": "main", "title": "Main", "panels": [{"id": "price", "chart": "derived"}]}]}
@@ -299,7 +302,7 @@ class PublishedExampleTests(unittest.TestCase):
         result = catalog.build_catalog(root, "0" * 40)
         self.assertEqual({workspace["path"] for workspace in result["workspaces"]}, {"workspaces/example", "workspaces/ftshare"})
         example = next(w for w in result["workspaces"] if w["id"] == "example")
-        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 68)
+        self.assertEqual(sum(r["type"] == "chart" for r in example["resources"]), 61)
         self.assertEqual(sum(r["type"] == "dashboard" for r in example["resources"]), 6)
         vela = next(r for r in example["resources"] if r["resourceID"] == "example_vela_dashboard")
         self.assertEqual(set(vela["files"]), {"dashboards/example_vela_dashboard.yaml", "charts/Example/Vela/example_vela_candlestick.yaml",

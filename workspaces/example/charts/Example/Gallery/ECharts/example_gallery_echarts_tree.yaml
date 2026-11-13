@@ -5,8 +5,10 @@ i18n:
       zh-Hans: ECharts · 树图
       en: ECharts · Tree
     notes:
-      zh-Hans: '查看虚构产品与服务及其子类别的层级关系，可离线查看。'
-      en: 'Explore the hierarchy of fictional products, services and their subcategories offline.'
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with
+        a shared four-row CSV as the executable dataset. No network, parameters or
+        connections are required.
     root:
       zh-Hans: 根节点
       en: Root
@@ -28,7 +30,6 @@ i18n:
     support:
       zh-Hans: 支持
       en: Support
-
 params: []
 sources:
   sample:
@@ -41,12 +42,14 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_tree
-  title: {i18n: title}
+  title:
+    i18n: title
   tags:
   - 图表原型
   - ECharts
   - tree
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: echarts
@@ -56,22 +59,28 @@ chart:
       trigger: item
       confine: true
     series:
-    - id: series_1
-      type: tree
+    - type: tree
       data:
-      - name: {i18n: root}
+      - name:
+          i18n: root
         children:
-        - name: {i18n: products}
+        - name:
+            i18n: products
           children:
-          - name: {i18n: tools}
+          - name:
+              i18n: tools
             value: 12
-          - name: {i18n: books}
+          - name:
+              i18n: books
             value: 8
-        - name: {i18n: services}
+        - name:
+            i18n: services
           children:
-          - name: {i18n: design}
+          - name:
+              i18n: design
             value: 9
-          - name: {i18n: support}
+          - name:
+              i18n: support
             value: 6
       left: 15%
       right: 24%

@@ -6,7 +6,7 @@ charts and dashboards are editable local copies.
 
 ## Workspaces
 
-- [Examples](workspaces/example/README.md): 68 charts and six dashboards covering
+- [Examples](workspaces/example/README.md): 61 charts and six dashboards covering
   stock prices, business data, financial indicators and chart galleries. Includes
   Chinese and English display text. The HTTP examples require internet; the other examples run offline
   with fictional data.

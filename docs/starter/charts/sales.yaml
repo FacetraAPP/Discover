@@ -27,7 +27,11 @@ metadata:
   notes: Fictional monthly revenue in thousands of currency units.
 chart:
   dataset: monthly_sales
-  renderer: default
-  plot: bar
-  x: month
-  y: revenue
+  renderer: echarts
+  option:
+    tooltip: {trigger: axis}
+    xAxis: {type: category, data: {from: monthly_sales, field: month}}
+    yAxis: {type: value}
+    series:
+      - type: bar
+        data: {from: monthly_sales, field: revenue}

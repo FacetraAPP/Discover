@@ -5,11 +5,9 @@ i18n:
       zh-Hans: 图表原型
       en: Chart Gallery
     notes:
-      zh-Hans: '浏览 37 个图形示例，涵盖常用统计图、层级、关系、流向、地图与数值卡片。全部使用离线虚构数据，无需参数或连接。'
-      en: 'Browse 37 chart examples covering common statistics, hierarchies, relationships, flows, maps and a value card. All use fictional offline data without parameters or connections.'
-    swift_charts:
-      zh-Hans: Swift Charts
-      en: Swift Charts
+      zh-Hans: Facetra 数值卡片、23 种 ECharts 6.1 核心 series 与 6 个常用变体/坐标示例。全部离线，无参数、无需连接。
+      en: A Facetra value card, all 23 core ECharts 6.1 series and six common variants
+        or coordinate examples. Everything runs offline, without parameters or connections.
     echarts_basics:
       zh-Hans: ECharts · 基础
       en: ECharts · Basics
@@ -19,49 +17,26 @@ i18n:
     echarts_more:
       zh-Hans: ECharts · 更多
       en: ECharts · More
-
 version: 1
 kind: Dashboard
 metadata:
   id: example_chart_gallery
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
   tags:
   - 图表原型
-  - Swift Charts
   - ECharts
 params: []
 tabs:
-- id: swift
-  title: {i18n: swift_charts}
-  panels:
-  - id: example_gallery_swift_line
-    chart: example_gallery_swift_line
-    height: 320
-  - id: example_gallery_swift_area
-    chart: example_gallery_swift_area
-    height: 320
-  - id: example_gallery_swift_bar
-    chart: example_gallery_swift_bar
-    height: 320
-  - id: example_gallery_swift_pie
-    chart: example_gallery_swift_pie
-    height: 320
-  - id: example_gallery_swift_scatter
-    chart: example_gallery_swift_scatter
-    height: 320
-  - id: example_gallery_swift_heatmap
-    chart: example_gallery_swift_heatmap
-    height: 320
-  - id: example_gallery_swift_rule
-    chart: example_gallery_swift_rule
-    height: 320
-  - id: example_gallery_swift_value
-    chart: example_gallery_swift_value
-    height: 320
 - id: basic
-  title: {i18n: echarts_basics}
+  title:
+    i18n: echarts_basics
   panels:
+  - id: example_gallery_value
+    chart: example_gallery_value
+    height: 320
   - id: example_gallery_echarts_line
     chart: example_gallery_echarts_line
     height: 320
@@ -87,7 +62,8 @@ tabs:
     chart: example_gallery_echarts_effectScatter
     height: 320
 - id: structure
-  title: {i18n: echarts_structures}
+  title:
+    i18n: echarts_structures
   panels:
   - id: example_gallery_echarts_tree
     chart: example_gallery_echarts_tree
@@ -108,7 +84,8 @@ tabs:
     chart: example_gallery_echarts_chord
     height: 320
 - id: more
-  title: {i18n: echarts_more}
+  title:
+    i18n: echarts_more
   panels:
   - id: example_gallery_echarts_radar
     chart: example_gallery_echarts_radar

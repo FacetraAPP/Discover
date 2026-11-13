@@ -126,7 +126,11 @@ def build_workspace(root):
                 item["localizations"] = translations
             if kind == "chart":
                 config = document["chart"]
-                item["chartType"] = config.get("plot", config.get("renderer", "chart"))
+                item["chartType"] = config["renderer"]
+                if config["renderer"] == "echarts":
+                    series = config.get("option", {}).get("series", [])
+                    if isinstance(series, list) and series and isinstance(series[0], dict) and series[0].get("type"):
+                        item["chartType"] = series[0]["type"]
                 charts[resource_id] = item
             preview = f"previews/{resource_id}.png"
             if (root / preview).exists():

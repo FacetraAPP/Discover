@@ -5,9 +5,8 @@ i18n:
       zh-Hans: Facetra · 数值卡片
       en: Facetra · Value card
     notes:
-      zh-Hans: '展示 4 个虚构数值的合计 75，单位为演示单位。'
-      en: 'The sum of four fictional values is 75, in demonstration units.'
-
+      zh-Hans: 4 个虚构数值的总和 75，由 Rust 计算并返回单个值。
+      en: The sum of four fictional values, 75, is computed by Rust and returned as one value.
 params: []
 sources:
   sample:
@@ -21,13 +20,14 @@ dataset:
   sql: |
     SELECT SUM(CAST(value AS DOUBLE)) AS total FROM raw
 metadata:
-  id: example_gallery_swift_value
-  title: {i18n: title}
+  id: example_gallery_value
+  title:
+    i18n: title
   tags:
   - 图表原型
-  - Swift Charts
   - value
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: value

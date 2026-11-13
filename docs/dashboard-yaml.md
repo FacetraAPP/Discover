@@ -152,7 +152,7 @@ The grid places panels in declaration order, supports row/column spans and does
 not rearrange earlier gaps; arbitrary spans can leave holes. Preserve a useful
 reading order for narrow screens. The
 [Mosaic example](../workspaces/example/dashboards/example_mosaic_dashboard.yaml) demonstrates
-a larger dashboard with both native and ECharts charts.
+a larger dashboard with ECharts charts in a grid layout.
 
 ## Validation
 

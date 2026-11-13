@@ -204,7 +204,7 @@ def parameters(values, context):
     result = {}
     for index, parameter in enumerate(sequence(values, context)):
         location = f"{context}[{index}]"
-        mapping(parameter, location, {"name", "label", "type", "default", "required", "minimum", "maximum", "options", "advanced"}, {"name", "type"})
+        mapping(parameter, location, {"name", "label", "type", "default", "required", "minimum", "maximum", "width", "options", "advanced"}, {"name", "type"})
         name = identifier(parameter["name"], location + ".name")
         require(name not in result, location, "duplicate parameter name")
         require(parameter["type"] in ("string", "integer", "number", "boolean", "date"), location, "unsupported parameter type")
@@ -219,6 +219,9 @@ def parameters(values, context):
         for field in ("minimum", "maximum"):
             if parameter.get(field) is not None:
                 number(parameter[field], location + "." + field)
+        if parameter.get("width") is not None:
+            number(parameter["width"], location + ".width")
+            require(parameter["width"] > 0, location + ".width", "width must be positive")
         if parameter.get("minimum") is not None and parameter.get("maximum") is not None:
             require(parameter["minimum"] <= parameter["maximum"], location, "minimum exceeds maximum")
         if parameter.get("options") is not None:
@@ -362,10 +365,8 @@ def echarts_option(value, chart, params, context, depth=0):
     require(depth < 64, context, "ECharts option is too deeply nested")
     if isinstance(value, dict) and "i18n" in value:
         localized_text(value, context)
-    elif isinstance(value, dict) and "from" in value and (chart.get("renderer", "echarts") == "echarts" or isinstance(value["from"], str)):
+    elif isinstance(value, dict) and "from" in value:
         origin = value["from"]
-        if origin == "script":
-            require(chart.get("renderer", "echarts") == "echarts", context, "script bindings require ECharts")
         if origin in ("params", "script"):
             mapping(value, context, {"from", "name"}, {"name"})
             name = text(value["name"], context + ".name")
@@ -467,41 +468,28 @@ def validate_chart(document, context):
         if "sql" in dataset:
             text(dataset["sql"], context + ".dataset.sql")
     chart = mapping(document["chart"], context + ".chart")
-    renderer = chart.get("renderer", "default")
-    fields = {"default": {"plot", "x", "y", "average", "color", "x_end"}, "value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"}, "html": {"option"}, "vega_lite": {"option"}}
+    renderer = chart.get("renderer")
+    fields = {"value": {"value"}, "echarts": {"option", "scripts"}, "vela": {"option"},
+              "html": {"option"}, "vega_lite": {"option"}}
     require(isinstance(renderer, str) and renderer in fields, context, "unsupported chart renderer")
-    mapping(chart, context + ".chart", {"dataset", "renderer"} | fields[renderer], {"dataset"})
+    mapping(chart, context + ".chart", {"dataset", "renderer"} | fields[renderer], {"dataset", "renderer"})
     require(chart["dataset"] == dataset["id"], context, "chart.dataset must equal dataset.id")
-    if renderer == "default":
-        require(chart.get("plot") in ("line", "area", "bar", "pie", "scatter", "heatmap", "rule"), context, "unsupported native plot")
-        plot = chart["plot"]
-        require("color" not in chart or plot == "heatmap", context, "color requires heatmap")
-        require("x_end" not in chart or plot == "rule", context, "x_end requires rule")
-        require(plot not in ("scatter", "heatmap", "rule") or "average" not in chart, context, "coordinate marks do not support average")
-        if plot == "heatmap":
-            text(chart.get("color"), context + ".chart.color")
-        if plot == "rule":
-            text(chart.get("x_end"), context + ".chart.x_end")
-        for field in ("x", "y"):
-            text(chart.get(field), context + ".chart." + field)
-        if "average" in chart:
-            text(chart["average"], context + ".chart.average")
-            require(chart["plot"] != "pie", context, "pie does not support average")
-    elif renderer == "value":
+    if renderer == "value":
         text(chart.get("value"), context + ".chart.value")
     elif renderer == "vela":
         vela_option(chart.get("option"), params, context + ".chart.option")
+    elif renderer == "html":
+        option = mapping(chart.get("option"), context + ".chart.option", {"html", "css", "data"}, {"html"})
+        text(option["html"], context + ".chart.option.html")
+        if "css" in option:
+            text(option["css"], context + ".chart.option.css", nonempty=False)
+        if "data" in option:
+            require(isinstance(option["data"], (dict, list)), context + ".chart.option.data", "expected an object or list")
+    elif renderer == "vega_lite":
+        option = chart.get("option")
+        require(isinstance(option, dict) and bool(option), context + ".chart.option", "expected a nonempty object")
+        require(any(key in option for key in ("mark", "layer", "facet", "hconcat", "vconcat", "concat", "repeat")), context, "Vega-Lite requires a mark or composed view")
     else:
-        if renderer == "html":
-            option = mapping(chart.get("option"), context + ".chart.option", {"html", "css", "data"}, {"html"})
-            text(option["html"], context + ".chart.option.html")
-            if "css" in option:
-                require(isinstance(option["css"], str), context, "css must be text")
-            if "data" in option:
-                require(isinstance(option["data"], (dict, list)), context, "data must be an object or array")
-        if renderer == "vega_lite":
-            option = mapping(chart.get("option"), context + ".chart.option")
-            require(any(key in option for key in ("mark", "layer", "facet", "hconcat", "vconcat", "concat", "repeat")), context, "Vega-Lite requires a mark or composed view")
         require(chart["dataset"] not in ("params", "script"), context, "reserved dataset ID")
         require(bool(mapping(chart.get("option"), context + ".chart.option")), context, "option cannot be empty")
         for name, script in mapping(chart.get("scripts", {}), context + ".chart.scripts").items():

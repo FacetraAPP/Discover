@@ -5,54 +5,62 @@ i18n:
       zh-Hans: Mosaic · 组合示例
       en: Mosaic · Layout examples
     notes:
-      zh-Hans: '十个离线图表组合展示行情、经营与网络示例。宽屏多列排列，窄屏按顺序阅读。'
-      en: 'Ten offline chart panels combine market, business and network examples. Wide screens use multiple columns; narrow screens stack cards in reading order.'
+      zh-Hans: 十个离线图表实例展示不同列宽与跨行高度。宽屏拼成一个矩形，窄屏按顺序单列排列。打开查看 YAML 可复制布局。
+      en: Ten offline chart instances demonstrate different column widths and row
+        spans. Wide layouts form a rectangle; narrow screens stack cards in order.
+        Open the YAML editor to copy the layout.
     tab_0:
       zh-Hans: Mosaic
       en: Mosaic
-
 metadata:
-  tags: ["股票", "经营", "布局", "ECharts"]
+  tags:
+  - 股票
+  - 经营
+  - 布局
+  - ECharts
   id: example_mosaic_dashboard
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 version: 1
 kind: Dashboard
 params: []
 tabs:
 - id: mosaic
-  title: {i18n: tab_0}
+  title:
+    i18n: tab_0
   panels:
   - id: mosaic_price
     chart: example_echarts_price
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 7
     responsive:
       compact:
-        card_height: 3.6e+2
+        card_height: 360.0
     row_span: 10
   - id: mosaic_monthly
     chart: example_monthly
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 5
     responsive:
       compact:
-        card_height: 2.6e+2
+        card_height: 260.0
     row_span: 4
   - id: mosaic_business
     chart: example_echarts_business
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 5
     responsive:
       compact:
-        card_height: 3.2e+2
+        card_height: 320.0
     row_span: 6
   - id: mosaic_candles
     chart: example_echarts_candlestick
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 4
     responsive:
@@ -61,61 +69,61 @@ tabs:
     row_span: 8
   - id: mosaic_volume
     chart: example_volume
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 5
     responsive:
       compact:
-        card_height: 2.6e+2
+        card_height: 260.0
     row_span: 4
   - id: mosaic_channels
     chart: example_echarts_heatmap
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 3
     responsive:
       compact:
-        card_height: 3.4e+2
+        card_height: 340.0
     row_span: 6
   - id: mosaic_monthly_again
     chart: example_monthly
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 5
     responsive:
       compact:
-        card_height: 2.6e+2
+        card_height: 260.0
     row_span: 4
   - id: mosaic_volume_again
     chart: example_volume
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 3
     responsive:
       compact:
-        card_height: 2.6e+2
+        card_height: 260.0
     row_span: 4
   - id: mosaic_native_price
     chart: example_price
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 9
     responsive:
       compact:
-        card_height: 3.6e+2
+        card_height: 360.0
     row_span: 6
   - id: mosaic_channels_again
     chart: example_echarts_heatmap
-    height: 2.4e+2
+    height: 240.0
     params: {}
     width: 3
     responsive:
       compact:
-        card_height: 3.4e+2
+        card_height: 340.0
     row_span: 4
   layout:
     type: grid
     columns: 12
-    gap: 1.2e+1
+    gap: 12.0
     row_height: 4e+1
-    min_width: 1.2e+3
+    min_width: 1200.0

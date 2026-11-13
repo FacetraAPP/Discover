@@ -128,21 +128,20 @@ class YAMLValidationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml"):
                     self.build()
 
-    def test_coordinate_marks_require_their_own_fields_and_reject_mixtures(self):
-        for plot, extras in [("scatter", {}), ("heatmap", {"color": "value"}), ("rule", {"x_end": "value"})]:
-            document = copy.deepcopy(self.chart)
-            document["chart"].update(plot=plot, **extras)
-            validation.validate_chart(document, plot)
-            for invalid in [{"average": "value"}, {"color": "value"} if plot != "heatmap" else {"color": ""},
-                            {"x_end": "value"} if plot != "rule" else {"x_end": None}]:
-                broken = copy.deepcopy(document)
-                broken["chart"].update(invalid)
-                with self.subTest(plot=plot, invalid=invalid), self.assertRaises(ValueError):
-                    validation.validate_chart(broken, plot)
-        for plot in ["heatmap", "rule"]:
-            document = copy.deepcopy(self.chart)
-            document["chart"]["plot"] = plot
-            with self.assertRaises(ValueError): validation.validate_chart(document, plot)
+    def test_renderer_is_required_and_legacy_swift_chart_fields_are_rejected(self):
+        document = copy.deepcopy(self.chart)
+        document["chart"].pop("renderer")
+        self.write(self.chart_path, document)
+        with self.assertRaisesRegex(ValueError, "unsupported chart renderer"):
+            self.build()
+        for legacy in [{"renderer": "default"}, {"plot": "line"}, {"x": "month"}, {"y": "revenue"},
+                       {"average": "revenue"}, {"color": "revenue"}, {"x_end": "revenue"}]:
+            with self.subTest(legacy=legacy):
+                broken = copy.deepcopy(self.chart)
+                broken["chart"].update(legacy)
+                self.write(self.chart_path, broken)
+                with self.assertRaisesRegex(ValueError, "sales/charts/sales.yaml"):
+                    self.build()
 
     def test_parameter_types_defaults_and_ranges_are_checked(self):
         for update in [{"type": "date"}, {"type": "integer", "default": True},

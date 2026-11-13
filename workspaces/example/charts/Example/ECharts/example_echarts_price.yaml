@@ -14,134 +14,141 @@ i18n:
       zh-Hans: ECharts · 股价与均线
       en: ECharts · Share price and moving average
     notes:
-      zh-Hans: '比较虚构股价与均线，价格采用演示单位。历史不足以计算均线的区间留空。点击图例切换曲线，缩放或轻触查看数值。'
-      en: 'Compare fictional share prices and a moving average in demonstration price units. The moving average remains blank until enough history is available. Toggle lines in the legend, zoom, or tap to inspect values.'
+      zh-Hans: '虚构行情。与原生股价图共享 Dataset，SQL 计算均线，初始 NULL 保留为断点。
+
+        点击图例切换序列，用鼠标或触摸手势缩放，悬停或轻触查看数值。'
+      en: 'Fictional market data. Shares the native price chart’s dataset; SQL calculates
+        the moving average and retains initial NULL values as gaps.
+
+        Toggle series in the legend, zoom with mouse or touch, and hover or tap to
+        inspect values.'
     close:
       zh-Hans: 收盘价
       en: Close
     moving_average:
       zh-Hans: 移动均线
       en: Moving average
-
 params:
 - name: symbol
-  label: {i18n: symbol}
+  label:
+    i18n: symbol
   type: string
-  required: true
+  default: 600519.SH
   options:
   - 600519.SH
   - 300750.SZ
   - 000001.SZ
-  advanced: false
-  default: 600519.SH
 - name: days
-  label: {i18n: trading_days}
+  label:
+    i18n: trading_days
   type: integer
-  required: true
-  minimum: 1e+0
-  maximum: 1.8e+2
-  advanced: false
   default: 60
+  minimum: 1
+  maximum: 180
 - name: ma_window
-  label: {i18n: ma_window}
+  label:
+    i18n: ma_window
   type: integer
-  required: true
-  minimum: 2e+0
-  maximum: 6e+1
-  advanced: false
   default: 20
-sources: {}
+  minimum: 2
+  maximum: 60
 dataset:
   id: history
   ref: example_price.yaml#/dataset
   with:
-    ma_window:
-      param: ma_window
-    days:
-      param: days
     symbol:
       param: symbol
+    days:
+      param: days
+    ma_window:
+      param: ma_window
 metadata:
-  tags: ["股票", "行情", "均线", "ECharts"]
+  tags:
+  - 股票
+  - 行情
+  - 均线
+  - ECharts
   id: example_echarts_price
-  title: {i18n: title}
-  notes: {i18n: notes}
+  title:
+    i18n: title
+  notes:
+    i18n: notes
 chart:
   dataset: history
   renderer: echarts
+  scripts:
+    price: '(value) => value == null ? ''—'' : ''¥'' + Number(value).toFixed(2)'
   option:
-    media:
-    - query:
-        maxWidth: 480
-      option:
-        yAxis:
-          splitNumber: 3
-        grid:
-          bottom: 20
-          left: 8
-          top: 36
-          right: 12
-          containLabel: true
-    - option:
-        yAxis:
-          splitNumber: 2
-        grid:
-          bottom: 18
-          top: 8
-        legend:
-          show: false
-      query:
-        maxHeight: 190
     color:
     - '#3b82f6'
     - '#f59e0b'
-    dataZoom:
-    - type: inside
-      zoomOnMouseWheel: ctrl
-    - show: false
-      bottom: 4
-      type: slider
-      height: 20
-    grid:
-      top: 40
-      right: 18
-      containLabel: true
-      bottom: 24
-      left: 12
-    series:
-    - id: series_1
-      showSymbol: false
-      areaStyle:
-        opacity: 8e-2
-      data:
-        x: trade_date
-        from: history
-        y: close
-      type: line
-      name: {i18n: close}
-    - id: series_2
-      lineStyle:
-        type: dashed
-      type: line
-      name: {i18n: moving_average}
-      showSymbol: false
-      data:
-        x: trade_date
-        y: ma
-        from: history
-      connectNulls: false
-    xAxis:
-      type: time
-      boundaryGap: false
+    legend:
+      top: 4
     tooltip:
       trigger: axis
       valueFormatter:
         from: script
         name: price
-    legend:
-      top: 4
+    grid:
+      left: 12
+      right: 18
+      top: 40
+      bottom: 24
+      containLabel: true
+    xAxis:
+      type: time
+      boundaryGap: false
     yAxis:
       type: value
       scale: true
-  scripts:
-    price: '(value) => value == null ? ''—'' : ''¥'' + Number(value).toFixed(2)'
+    dataZoom:
+    - type: inside
+      zoomOnMouseWheel: ctrl
+    - type: slider
+      show: false
+      height: 20
+      bottom: 4
+    series:
+    - name:
+        i18n: close
+      type: line
+      data:
+        from: history
+        x: trade_date
+        y: close
+      showSymbol: false
+      areaStyle:
+        opacity: 0.08
+    - name:
+        i18n: moving_average
+      type: line
+      data:
+        from: history
+        x: trade_date
+        y: ma
+      showSymbol: false
+      connectNulls: false
+      lineStyle:
+        type: dashed
+    media:
+    - query:
+        maxWidth: 480
+      option:
+        grid:
+          left: 8
+          right: 12
+          top: 36
+          bottom: 20
+          containLabel: true
+        yAxis:
+          splitNumber: 3
+    - query:
+        maxHeight: 190
+      option:
+        legend:
+          show: false
+        grid:
+          top: 8
+          bottom: 18
+        yAxis:
+          splitNumber: 2

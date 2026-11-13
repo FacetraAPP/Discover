@@ -5,8 +5,10 @@ i18n:
       zh-Hans: ECharts · 漏斗
       en: ECharts · Funnel
     notes:
-      zh-Hans: '比较访问、浏览、加购与购买四个阶段的虚构数量，观察逐步减少的过程。数值为演示单位，可离线查看。'
-      en: 'Compare fictional counts for visits, browsing, cart additions and purchases to see the drop across stages. Values use demonstration units and work offline.'
+      zh-Hans: 结构化虚构样本直接内嵌 chart.option；共享 4 行 CSV 作为可执行 dataset。无需网络、参数或连接。
+      en: Structured fictional samples are embedded directly in chart.option, with
+        a shared four-row CSV as the executable dataset. No network, parameters or
+        connections are required.
     visit:
       zh-Hans: 访问
       en: Visits
@@ -19,7 +21,6 @@ i18n:
     buy:
       zh-Hans: 购买
       en: Purchases
-
 params: []
 sources:
   sample:
@@ -32,12 +33,14 @@ dataset:
     ref: '#/sources/sample'
 metadata:
   id: example_gallery_echarts_funnel
-  title: {i18n: title}
+  title:
+    i18n: title
   tags:
   - 图表原型
   - ECharts
   - funnel
-  notes: {i18n: notes}
+  notes:
+    i18n: notes
 chart:
   dataset: sample
   renderer: echarts
@@ -47,8 +50,7 @@ chart:
       trigger: item
       confine: true
     series:
-    - id: series_1
-      type: funnel
+    - type: funnel
       left: 12%
       width: 76%
       top: 10%
@@ -61,11 +63,15 @@ chart:
         position: inside
         formatter: '{b}: {c}'
       data:
-      - name: {i18n: visit}
+      - name:
+          i18n: visit
         value: 100
-      - name: {i18n: browse}
+      - name:
+          i18n: browse
         value: 70
-      - name: {i18n: cart}
+      - name:
+          i18n: cart
         value: 40
-      - name: {i18n: buy}
+      - name:
+          i18n: buy
         value: 20

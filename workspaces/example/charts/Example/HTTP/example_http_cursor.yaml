@@ -55,7 +55,12 @@ dataset:
   sql: SELECT state AS name, COUNT(*) AS value FROM raw GROUP BY state ORDER BY state
 chart:
   dataset: data
-  renderer: default
-  plot: bar
-  x: name
-  y: value
+  renderer: echarts
+  option:
+    animation: false
+    tooltip: {trigger: axis, confine: true}
+    xAxis: {type: category, data: {from: data, field: name}}
+    yAxis: {type: value}
+    series:
+      - type: bar
+        data: {from: data, field: value}

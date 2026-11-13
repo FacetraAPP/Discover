@@ -12,14 +12,15 @@ content; no application checkout, private documentation or credentials are neede
 - [Workspace and parameter format](docs/workspace-yaml.md): directory layout,
   manifest fields, metadata, parameter types and connection requirements.
 - [Chart format](docs/chart-yaml.md): acquisition sources, datasets, references,
-  native/value/ECharts/Vela renderers and complete examples.
+  value/ECharts/Vela/HTML/Vega-Lite renderers and complete examples. The Swift
+  Charts `default` renderer and its legacy fields are removed.
 - [Chart authoring lessons](LESSONS.md): metric interpretation, ISO dates, axes,
   parameter controls and visual checks learned from actual chart usage. Read
   before creating or changing charts.
 - [Dashboard format](docs/dashboard-yaml.md): tabs, panels, explicit parameter
   bindings and responsive grid dimensions.
 - [Bilingual display text](docs/localization.md): resource-local catalogs, explicit references, fallback and catalog metadata.
-- [Working examples](workspaces/example/README.md): 68 charts and six dashboards, including an offline chart prototype gallery and Vela OHLCV studies.
+- [Working examples](workspaces/example/README.md): 61 charts and six dashboards, including an offline chart prototype gallery and Vela OHLCV studies.
 - [Minimal starter](docs/starter/): a CSV, chart, dashboard and manifest that can
   be copied together into a new topic under `workspaces/`.
 

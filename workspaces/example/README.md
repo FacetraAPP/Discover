@@ -1,8 +1,8 @@
 # 示例工作区 · Example workspace
 
-68 个图表和 6 个看板，涵盖股票行情、经营数据、常用图形与金融技术指标。可从 Discover 导入，在本地查看和编辑。
+61 个图表和 6 个看板，涵盖股票行情、经营数据、常用图形与金融技术指标。可从 Discover 导入，在本地查看和编辑。
 
-68 charts and six dashboards covering stock prices, business data, common chart types and financial indicators. Import from Discover to view and edit local copies.
+61 charts and six dashboards covering stock prices, business data, common chart types and financial indicators. Import from Discover to view and edit local copies.
 
 ## 使用 · Getting started
 
@@ -21,20 +21,20 @@ Import this workspace from Discover and open a chart or dashboard. The HTTP exam
 | [ECharts 配置示例 · ECharts examples](dashboards/example_echarts_dashboard.yaml) | 价格走势、K 线、收入与利润率、渠道热力图 · Prices, candles, revenue and margin, and a channel heatmap |
 | [Mosaic 布局示例 · Mosaic layout](dashboards/example_mosaic_dashboard.yaml) | 宽屏多列排列，窄屏顺序阅读 · A multi-column dashboard that stacks on narrow screens |
 | [Vela 金融图表 · Vela financial charts](dashboards/example_vela_dashboard.yaml) | 蜡烛图、成交量、均线、布林带、RSI 与 MACD · Candles, volume, moving averages, Bollinger Bands, RSI and MACD |
-| [图表原型库 · Chart Gallery](dashboards/example_chart_gallery.yaml) | 37 个离线图形示例 · 37 offline chart examples |
+| [图表原型库 · Chart Gallery](dashboards/example_chart_gallery.yaml) | 30 个离线图形示例 · 30 offline chart examples |
 | [HTML 与 Vega-Lite · Renderer gallery](dashboards/renderer_gallery.yaml) | 地区汇总卡片、报表及 12 种统计图示例 · Regional cards, a report table and 12 statistical chart examples |
 
 ## 图表原型库
 
-37 个图形示例均可独立打开，无需参数、连接或网络。
+30 个图形示例均可独立打开，无需参数、连接或网络。
 
-- **Swift Charts**：折线、面积、柱状、饼图、散点、热力图与任务区间；另有数值卡片。
+- **Facetra 数值卡片**：展示 4 个虚构数值的合计。
 - **ECharts**：常用统计图、层级图、关系图、流向图、地图、仪表盘，以及极坐标、日历与矩阵等示例。
 
 地图中的两个岛屿为虚构区域。任务区间以天为单位；其他示例的数值和单位见各图说明。
 弦图与矩阵示例需要内置 ECharts 6 或更新版本的 Facetra。
 
-The gallery contains seven native chart types, a value card and 29 ECharts examples. The two mapped islands are fictional. Task intervals use days; other units are described in each chart. Chord and matrix examples require Facetra with ECharts 6 or later.
+The gallery contains a value card and 29 ECharts examples. The two mapped islands are fictional. Task intervals use days; other units are described in each chart. Chord and matrix examples require Facetra with ECharts 6 or later.
 
 ## Vela 金融图表
 
